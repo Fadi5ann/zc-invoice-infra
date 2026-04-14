@@ -1,0 +1,51 @@
+services:
+  # Management Layer
+  jump-server:
+    image: alpine:latest
+    container_name: zc-jump-server
+    command: tail -f /dev/null
+    networks:
+      - mgmt_net
+      - dmz_net
+      - app_net
+      - db_net
+  # Web/DMZ Layer (The Bouncer)
+  web-entry:
+    image: nginx:alpine
+    container_name: zc-web-entry
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - dmz_net
+
+  # Database Layer
+  db-node:
+    image: alpine:latest
+    container_name: zc-db-node
+    command: tail -f /dev/null
+    networks:
+      - db_net
+
+networks:
+  dmz_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.10.0/24
+  app_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.30.0/24
+  db_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.40.0/24
+  mgmt_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.100.0/24

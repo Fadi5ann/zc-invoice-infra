@@ -1,0 +1,22 @@
+---
+- name: Configure Tunisian NTP for E-Invoicing Compliance
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Ensure chrony is installed
+      apt:
+        name: chrony
+        state: present
+
+    - name: Configure chrony to use Tunisian NTP pool
+      lineinfile:
+        path: /etc/chrony/chrony.conf
+        regexp: '^pool '
+        line: 'pool tn.pool.ntp.org iburst'
+        state: present
+
+    - name: Restart chrony to apply changes
+      service:
+        name: chrony
+        state: restarted
+        enabled: true
