@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s # How frequently should server checks be done
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'containers'
+    static_configs:
+      - targets: ['zc-web-entry:80']
