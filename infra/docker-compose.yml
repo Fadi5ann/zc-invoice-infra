@@ -7,7 +7,8 @@ services:
     networks:
       - mgmt_net
       - dmz_net
-      - app_net
+      - frontend_net
+      - backend_net
       - db_net
 
 # The "Librarian" - Data collection
@@ -19,7 +20,8 @@ services:
     networks:
       - mgmt_net
       - dmz_net
-      - app_net
+      - frontend_net
+      - backend_net
       - db_net
 
 # The Dashboard - Displays Graphs
@@ -54,7 +56,7 @@ services:
       - db_net
   # Backup Layer
   backup-manager:
-    image: alpin:latest
+    image: alpine:latest
     container_name: zc-backup-v200
     command: tail -f /dev/null
     networks:
