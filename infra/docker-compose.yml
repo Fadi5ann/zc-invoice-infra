@@ -2,13 +2,14 @@ services:
 # Management Layer
   jump-server:
     image: alpine:latest
-    container_name: zc-jump-server
+    container_name: zc-jump-server-v100
     command: tail -f /dev/null
     networks:
       - mgmt_net
       - dmz_net
       - app_net
       - db_net
+
 # The "Librarian" - Data collection
   prometheus:
     image: prom/prometheus:latest
@@ -20,6 +21,7 @@ services:
       - dmz_net
       - app_net
       - db_net
+
 # The Dashboard - Displays Graphs
   grafana:
     image: grafana/grafana:latest
@@ -30,43 +32,88 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     networks:
       - mgmt_net
+
 # --- WEB LAYER ---
 # Web/DMZ Layer (The Bouncer)
   web-entry:
     image: nginx:alpine
-    container_name: zc-web-entry
+    container_name: zc-proxy-v10
     ports:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
       - dmz_net
+
 # Database Layer
-  db-node:
+  db-primary:
     image: alpine:latest
-    container_name: zc-db-node
+    container_name: zc-db-master-v40
     command: tail -f /dev/null
     networks:
       - db_net
+  # Backup Layer
+  backup-manager:
+    image: alpin:latest
+    container_name: zc-backup-v200
+    command: tail -f /dev/null
+    networks:
+      backup_net:
+        ipv4_address: 10.0.200.50
+      db_net:
+        ipv4_address: 10.0.3.50
 
 networks:
+  # Vlan 10: Public Entry Point
   dmz_net:
     driver: bridge
+    labels:
+      com.zc-invoice.vlan: "10"
     ipam:
       config:
-        - subnet: 10.0.10.0/24
-  app_net:
+        - subnet: 10.0.0.0/24
+
+  # Vlan 20: User Interface
+  frontend_net:
     driver: bridge
+    labels:
+      com.zc-invoice.vlan: "20"
     ipam:
       config:
-        - subnet: 10.0.30.0/24
+        - subnet: 10.0.1.0/24
+
+  # Vlan 30: Business Logic
+  backend_net:
+    driver: bridge
+    labels:
+      com.zc-invoice.vlan: "30"
+    ipam:
+      config:
+        - subnet: 10.0.2.0/24
+
+  # Vlan 40: Data Storage
   db_net:
     driver: bridge
+    labels:
+      com.zc-invoice.vlan: "40"
     ipam:
       config:
-        - subnet: 10.0.40.0/24
+        - subnet: 10.0.3.0/24
+
+  # Vlan 100: Adiministration
   mgmt_net:
     driver: bridge
+    labels:
+      com.zc-invoice.vlan: "100"
     ipam:
       config:
         - subnet: 10.0.100.0/24
+
+  # Vlan 200: Data Recovery
+  backup_net:
+    driver: bridge
+    labels:
+      com.zc-invoice.vlan: "200"
+    ipam:
+      config:
+      - subnet: 10.0.200.0/24
