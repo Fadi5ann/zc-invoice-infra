@@ -1,0 +1,120 @@
+<mxfile host="65bd71144e">
+    <diagram id="H60Q6S0pjOL-jbhus_ks" name="Page-1">
+        <mxGraphModel dx="1484" dy="2040" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="4" value="" style="html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.cloud;fontColor=#ffffff;" vertex="1" parent="1">
+                    <mxGeometry x="380" width="90" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="" style="edgeStyle=none;html=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="425" y="80" as="sourcePoint"/>
+                        <mxPoint x="425" y="130" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="13" value="Internet / Users" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="375" y="50" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" value="" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="18" target="28">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="477.95454545454527" y="339.52" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="18" value="" style="rounded=1;whiteSpace=wrap;html=1;noLabel=0;" vertex="1" parent="1">
+                    <mxGeometry x="355" y="160" width="140" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="&amp;nbsp;VLAN 10: DMZ Zone 10.0.0.0/24" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="328" y="130" width="192" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="&lt;h4 data-path-to-node=&quot;10&quot;&gt;&lt;font&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;App Zones&lt;/span&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/font&gt;&lt;/h4&gt;&lt;h4 data-path-to-node=&quot;10&quot;&gt;&lt;font style=&quot;color: rgb(0, 0, 0); font-weight: normal;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;10.0.1.0&amp;nbsp;&amp;amp; 10.0.2.0/24&amp;nbsp;&lt;/span&gt;&lt;/font&gt;&lt;/h4&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="305" y="339.52" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;VLAN 20 (Frontend)&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;ready for React&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="280" y="389.52" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="VLAN 30 (Backend)&lt;div&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;ready for Node&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="460" y="389.52" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.203;exitY=1.001;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="18" target="27">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="398.8944578313253" y="280" as="sourcePoint"/>
+                        <mxPoint x="350" y="369.5200000000001" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="48" value="" style="ellipse;whiteSpace=wrap;html=1;dashed=1;metaEdit=0;treeFolding=0;shadow=0;" vertex="1" parent="1">
+                    <mxGeometry x="145" y="550" width="590" height="270" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="200" y="605" width="480" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" value="" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.proxy_server;" vertex="1" parent="1">
+                    <mxGeometry x="390" y="180" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.virtual_server;" vertex="1" parent="1">
+                    <mxGeometry x="247.5" y="630" width="80" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="41" value="" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.virtual_server;" vertex="1" parent="1">
+                    <mxGeometry x="390" y="630" width="80" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" value="" style="fontColor=#0066CC;verticalAlign=top;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fillColor=#CCCCCC;strokeColor=#6881B3;gradientColor=none;gradientDirection=north;strokeWidth=2;shape=mxgraph.networks.virtual_server;" vertex="1" parent="1">
+                    <mxGeometry x="535" y="630" width="80" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="43" value="&lt;h4 data-path-to-node=&quot;12&quot;&gt;&lt;span style=&quot;font-weight: normal;&quot;&gt;VLAN 40: Database Zone 10.0.3.0/24&lt;/span&gt;&lt;/h4&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="265" y="575" width="350" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="44" value="&lt;span&gt;&lt;code style=&quot;color: rgb(63, 63, 63); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot; data-index-in-node=&quot;0&quot; data-path-to-node=&quot;13,1,1,0,0&quot;&gt;zc-db-primary-v40&lt;/code&gt;&lt;span style=&quot;color: rgb(63, 63, 63);&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/span&gt;&lt;div&gt;&lt;span&gt;&lt;span style=&quot;color: rgb(63, 63, 63);&quot;&gt;(IP: 10.0.3.11)&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="230" y="725" width="115" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="45" value="&lt;span&gt;&lt;code style=&quot;color: rgb(63, 63, 63); background-color: rgb(255, 255, 255);&quot; data-index-in-node=&quot;0&quot; data-path-to-node=&quot;13,1,1,1,0&quot;&gt;zc-db-secondary1-v40&lt;/code&gt;&lt;/span&gt;&lt;div&gt;&lt;span&gt;&lt;span style=&quot;color: rgb(63, 63, 63);&quot;&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt; &lt;/span&gt;(IP: 10.0.3.12)&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="365" y="725" width="140" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="46" value="&lt;code style=&quot;color: rgb(63, 63, 63); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot; data-path-to-node=&quot;13,1,1,2,0&quot; data-index-in-node=&quot;0&quot;&gt;zc-db-secondary2-v40&lt;/code&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(63, 63, 63); background-color: transparent;&quot;&gt;(IP: 10.0.3.13)&lt;/span&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="520" y="720" width="130" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="49" value="InnoDB Cluster" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" vertex="1" parent="1">
+                    <mxGeometry x="380" y="520" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="50" value="" style="endArrow=classic;startArrow=classic;html=1;" edge="1" parent="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="434.64" y="580" as="sourcePoint"/>
+                        <mxPoint x="434.64" y="550" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="51" value="Port 33061 (Sync)" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="435" y="550" width="110" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="52" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;zc-proxy-v10&lt;/span&gt;&lt;div style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;(Nginx:80)&lt;/div&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="390" y="260" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="57" value="&lt;h4 data-path-to-node=&quot;14&quot;&gt;VLAN 100 &amp;amp; 200: Management &amp;amp; Backup (Side Boxes)&lt;/h4&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="990" y="170" width="340" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="58" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="1300" y="280" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="985" y="280" width="135" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="60" value="VLAN 200 (Backup)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="1330" y="220" width="130" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="61" value="zc-backup-v200" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="1200" y="230" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="62" value="VLAN 100 (Management)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="860" y="240" width="125" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="63" value="zc-jump-server-v100" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="890" y="500" width="130" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="64" value="Prometheus" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="910" y="530" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="65" value="Grafana" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="925" y="460" width="60" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
