@@ -55,10 +55,10 @@ services:
     container_name: zc-db-master-v40
     command: ["mysqld", "--server-id=1"]
     environment:
-      MYSQL_ROOT_PASSWORD: ${superadmin}
-      MYSQL_DATABASE: ${zc_invoice_db}
-      MYSQL_USER: ${zc_invoice_user}
-      MYSQL_PASSWORD: ${zc_invoice_password}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./mysql-config/my.cnf:/etc/mysql/my.cnf
     networks:
@@ -70,10 +70,10 @@ services:
     container_name: zc-db-replica-v40
     command: ["mysqld", "--server-id=2"]
     environment:
-      MYSQL_ROOT_PASSWORD: ${superadmin}
-      MYSQL_DATABASE: ${zc_invoice_db}
-      MYSQL_USER: ${zc_invoice_user}
-      MYSQL_PASSWORD: ${zc_invoice_password}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./mysql-config/my.cnf:/etc/mysql/my.cnf
     networks:
@@ -85,10 +85,10 @@ services:
     container_name: zc-db-replica2-v40
     command: ["mysqld", "--server-id=3"]
     environment:
-      MYSQL_ROOT_PASSWORD: ${superadmin}
-      MYSQL_DATABASE: ${zc_invoice_db}
-      MYSQL_USER: ${zc_invoice_user}
-      MYSQL_PASSWORD: ${zc_invoice_password}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./mysql-config/my.cnf:/etc/mysql/my.cnf
     networks:
