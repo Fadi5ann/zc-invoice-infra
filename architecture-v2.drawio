@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="arch-v1" name="Architecture">
-        <mxGraphModel dx="1114" dy="885" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="947" dy="752" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -14,10 +14,10 @@
                     <mxGeometry x="140" y="40" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="vlan40" value="VLAN 40: Database (10.0.3.0/24)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;startSize=30;" parent="1" vertex="1">
-                    <mxGeometry x="180" y="680" width="500" height="270" as="geometry"/>
+                    <mxGeometry x="195" y="680" width="500" height="270" as="geometry"/>
                 </mxCell>
                 <mxCell id="db-primary" value="zc-db-primary-v40&#xa;10.0.3.11" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="vlan40" vertex="1">
-                    <mxGeometry x="184" y="50" width="100" height="60" as="geometry"/>
+                    <mxGeometry x="195" y="50" width="100" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="db-sec1" value="zc-db-secondary1-v40&#xa;10.0.3.12" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="vlan40" vertex="1">
                     <mxGeometry x="50" y="140" width="130" height="60" as="geometry"/>
@@ -26,7 +26,7 @@
                     <mxGeometry x="310" y="140" width="130" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="cluster-box" value="MySQL InnoDB Cluster&#xa;(Group Replication - Port 33061)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#b85450;strokeWidth=2;dashed=1;verticalAlign=bottom;" parent="vlan40" vertex="1">
-                    <mxGeometry x="40" y="40" width="420" height="200" as="geometry"/>
+                    <mxGeometry x="35" y="40" width="420" height="200" as="geometry"/>
                 </mxCell>
                 <mxCell id="18" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#fff2cc;strokeColor=#d6b656;" edge="1" parent="1" source="vlan100" target="vlan10">
                     <mxGeometry relative="1" as="geometry">
@@ -92,6 +92,9 @@
                 </mxCell>
                 <mxCell id="vlan30" value="VLAN 30: Backend (10.0.2.0/24)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
                     <mxGeometry x="485" y="470.63" width="220" height="98.75" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="8" target="vlan40">
+                    <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="8" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=none;strokeColor=#82b366;dashed=1;" vertex="1" parent="1">
                     <mxGeometry x="145" y="440" width="600" height="160" as="geometry"/>
