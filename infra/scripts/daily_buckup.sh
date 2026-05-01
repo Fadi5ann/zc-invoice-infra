@@ -8,4 +8,4 @@ DATE=$(date +%Y-%m-%d)
 docker exec zc-backup-v200 bash -c "mysqldump -h 10.0.3.12 -u root -prootpassword --all-databases --single-transaction --routines --triggers --events --set-gtid-purged=OFF > /backup-vault/backup-$DATE.sql"
 
 # 3. Housekeeping: Delete backups older than 7 days
-find /home/fadi5an/zc-invoice-project/backups -type f -name "*.sql" -mtime +7 -delete
+find /home/fadi5an/zc-invoice-infrastructure/backups -type f -name "*.sql" -mtime +7 -delete
