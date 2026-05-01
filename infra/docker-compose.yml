@@ -97,9 +97,11 @@ services:
 
   # Backup Layer
   backup-manager:
-    image: alpine:latest
+    image: mysql:8.0
     container_name: zc-backup-v200
     command: tail -f /dev/null
+    volumes:
+      - ./backups:/backup-vault
     networks:
       backup_net:
         ipv4_address: 10.0.200.50
