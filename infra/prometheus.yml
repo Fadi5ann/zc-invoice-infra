@@ -6,6 +6,10 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'containers'
+  # - job_name: 'containers'
+  #   static_configs:
+  #     - targets: ['zc-web-entry:80']
+  
+  - job_name: 'cadvisor'
     static_configs:
-      - targets: ['zc-web-entry:80']
+      - targets: ['cadvisor:8080']

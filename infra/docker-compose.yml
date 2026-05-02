@@ -35,6 +35,18 @@ services:
     networks:
       - mgmt_net
 
+  # The "Security Camera" - Container Metrics
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: zc-cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - mgmt_net
+
 # --- WEB LAYER ---
 # Web/DMZ Layer (The Bouncer)
   web-entry:
