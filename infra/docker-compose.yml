@@ -42,6 +42,8 @@ services:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
     container_name: zc-cadvisor
     privileged: true # <-- The VIP Pass
+    pid: "host" # <-- Access to Host's Process Tree
+    cgroup: "host" # <-- Access to Host's Cgroup Metrics
     ports:
       - "8080:8080"
     volumes:
@@ -52,7 +54,7 @@ services:
       - /sys/fs/cgroup:/cgroup:ro # <-- Reads modern Ubuntu metrics
     networks:
       - mgmt_net
-      
+
 # --- WEB LAYER ---
 # Web/DMZ Layer (The Bouncer)
   web-entry:
