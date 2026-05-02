@@ -34,6 +34,8 @@ services:
       - "3001:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:  
+      - ./grafana_data:/var/lib/grafana
     networks:
       - mgmt_net
 
@@ -87,6 +89,16 @@ services:
     networks:
       - dmz_net
       - frontend_net
+      - backend_net
+
+# VLAN 30 - Application Layer
+  zc-app-v30:
+    build: ./backend
+    container_name: zc-app-v30
+    ports:
+      - "3000:3000"
+    networks:
+      - mgmt_net # (Make sure it shares the network with Nginx)
       - backend_net
 
 # Database Layer
