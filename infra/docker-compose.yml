@@ -55,6 +55,26 @@ services:
     networks:
       - mgmt_net
 
+# The Log Database
+  loki:
+    image: grafana/loki:latest
+    container_name: zc-loki
+    ports:
+      - "3100:3100"
+    networks:
+      - mgmt_net
+
+# The Log Reader
+  promtail:
+    image: grafana/promtail:latest
+    container_name: zc-promtail
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - mgmt_net
+
 # --- WEB LAYER ---
 # Web/DMZ Layer (The Bouncer)
   web-entry:
