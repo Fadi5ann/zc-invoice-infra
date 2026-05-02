@@ -41,16 +41,18 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
     container_name: zc-cadvisor
+    privileged: true # <-- The VIP Pass
     ports:
       - "8080:8080"
     volumes:
       - /:/rootfs:ro
-      - /var/run:/var/run:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro # <-- Reads the Container Names
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+      - /sys/fs/cgroup:/cgroup:ro # <-- Reads modern Ubuntu metrics
     networks:
       - mgmt_net
-
+      
 # --- WEB LAYER ---
 # Web/DMZ Layer (The Bouncer)
   web-entry:
