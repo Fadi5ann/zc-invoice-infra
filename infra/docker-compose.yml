@@ -6,9 +6,6 @@ services:
     command: tail -f /dev/null
     networks:
       - mgmt_net
-      - dmz_net
-      - frontend_net
-      - backend_net
       - db_net
 
 # The "Librarian" - Data collection
@@ -91,14 +88,28 @@ services:
       - frontend_net
       - backend_net
 
+# Frontend Layer (The Receptionist)
+  zc-frontend-v20:
+    image: node:18-alpine
+    container_name: zc-frontend-v20
+    command: tail -f /dev/null
+    expose:
+      - "3000"
+    networks:
+      - frontend_net
+      - mgmt_net # (For monitoring access)
+
 # VLAN 30 - Application Layer
   zc-app-v30:
     build: ./backend
-    container_name: zc-app-v30
-    ports:
-      - "3000:3000"
+    # Note: hide the name of the container so docker can make a clones
+    # container_name: zc-app-v30
+    expose:
+      - "3000" # Only expose to the Nginx Proxy, not to the host
+    deploy:
+      replicas: 3 # Make a 3 clones of the backend 
     networks:
-      - mgmt_net # (Make sure it shares the network with Nginx)
+      - mgmt_net 
       - backend_net
 
 # Database Layer
