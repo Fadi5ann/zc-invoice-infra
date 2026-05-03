@@ -91,8 +91,8 @@ services:
 # Frontend Layer (The Receptionist)
   zc-frontend-v20:
     image: node:18-alpine
+    build: ./frontend
     container_name: zc-frontend-v20
-    command: tail -f /dev/null
     expose:
       - "3000"
     networks:
