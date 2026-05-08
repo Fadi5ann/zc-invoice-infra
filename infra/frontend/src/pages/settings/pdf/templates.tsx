@@ -1,0 +1,18 @@
+import { GetStaticProps } from 'next';
+import { getI18nProps } from '@/lib/getStatic';
+import React from 'react';
+import { PdfSettings } from '@/components/settings/PdfSettings';
+import { ComingSoon } from '@/components/shared';
+
+export default function Page() {
+  return (
+    <div className="flex-1 flex flex-col overflow-auto">
+      <PdfSettings defaultValue={'templates'} />
+      <ComingSoon className="m-10" />
+    </div>
+  );
+}
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+  props: await getI18nProps(locale),
+});
