@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 /**
  * Hashes a plain text password.
