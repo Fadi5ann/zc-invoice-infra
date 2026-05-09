@@ -5,6 +5,7 @@ const { i18n } = require('./next-i18next.config.js');
 const nextConfig = {
   reactStrictMode: true,
   i18n,
+  output: 'standalone', 
   
   // In Next.js 16, turbopack is a stable, top-level key!
   turbopack: {
