@@ -124,6 +124,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./mysql-config/my.cnf:/etc/mysql/my.cnf
+      - db_master_data:/var/lib/mysql
     networks:
       db_net:
         ipv4_address: 10.0.3.11
@@ -139,6 +140,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./mysql-config/my.cnf:/etc/mysql/my.cnf
+      - db_replica1_data:/var/lib/mysql
     networks:
       db_net:
         ipv4_address: 10.0.3.12
@@ -154,6 +156,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./mysql-config/my.cnf:/etc/mysql/my.cnf
+      - db_replica2_data:/var/lib/mysql
     networks:
       db_net:
         ipv4_address: 10.0.3.13
@@ -225,3 +228,8 @@ networks:
     ipam:
       config:
       - subnet: 10.0.200.0/24
+
+volumes:
+  db_master_data:
+  db_replica1_data:
+  db_replica2_data:
