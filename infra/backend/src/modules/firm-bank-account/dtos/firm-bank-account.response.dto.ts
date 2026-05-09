@@ -3,12 +3,12 @@ import { ApiProperty } from '@nestjs/swagger';
 export class ResponseFirmBankAccountDto {
   @ApiProperty({
     required: false,
-    example: faker.datatype.number(),
+    example: faker.number.int(),
   })
   id?: number;
   @ApiProperty({
     required: false,
-    example: faker.name.firstName(),
+    example: faker.person.firstName(),
   })
   name?: string;
 
@@ -20,7 +20,7 @@ export class ResponseFirmBankAccountDto {
 
   @ApiProperty({
     required: false,
-    example: faker.finance.account(20),
+    example: faker.finance.accountNumber(20),
   })
   rib?: string;
 
@@ -32,7 +32,7 @@ export class ResponseFirmBankAccountDto {
 
   @ApiProperty({
     required: false,
-    example: faker.datatype.number({ min: 1, max: 1000 }),
+    example: faker.number.int({ min: 1, max: 1000 }),
   })
   currencyId?: number;
 
@@ -44,7 +44,7 @@ export class ResponseFirmBankAccountDto {
 
   @ApiProperty({
     required: false,
-    example: faker.datatype.number({ min: 1, max: 1000 }),
+    example: faker.number.int({ min: 1, max: 1000 }),
   })
   firmId?: number;
 }

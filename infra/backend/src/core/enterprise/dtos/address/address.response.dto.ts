@@ -9,19 +9,19 @@ export class ResponseAddressDto extends ResponseDtoHelper {
   @Expose()
   id: number;
 
-  @ApiProperty({ example: faker.address.streetAddress(), type: String })
+  @ApiProperty({ example: faker.location.streetAddress(), type: String })
   @Expose()
   address: string;
 
-  @ApiProperty({ example: faker.address.secondaryAddress(), type: String })
+  @ApiProperty({ example: faker.location.secondaryAddress(), type: String })
   @Expose()
   address2: string;
 
-  @ApiProperty({ example: faker.address.city(), type: String })
+  @ApiProperty({ example: faker.location.city(), type: String })
   @Expose()
   region: string;
 
-  @ApiProperty({ example: faker.address.zipCode(), type: Number })
+  @ApiProperty({ example: faker.location.zipCode(), type: Number })
   @Expose()
   zipcode: number;
 

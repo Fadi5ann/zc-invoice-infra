@@ -13,7 +13,7 @@ import {
 export class CreateFirmBankAccountDto {
   @ApiProperty({
     required: false,
-    example: faker.name.firstName(),
+    example: faker.person.firstName(),
   })
   @IsOptional()
   @IsString()

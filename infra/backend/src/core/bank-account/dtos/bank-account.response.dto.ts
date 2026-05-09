@@ -5,11 +5,11 @@ import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dt
 import { ResponseRefParamDto } from 'src/shared/reference-types/dtos/ref-param/response-ref-param.dto';
 
 export class ResponseBankAccountDto extends ResponseDtoHelper {
-  @ApiProperty({ example: faker.datatype.number() })
+  @ApiProperty({ example: faker.number.int() })
   @Expose()
   id: number;
 
-  @ApiProperty({ example: faker.name.firstName() })
+  @ApiProperty({ example: faker.person.firstName() })
   @Expose()
   name: string;
 
@@ -17,7 +17,7 @@ export class ResponseBankAccountDto extends ResponseDtoHelper {
   @Expose()
   bic: string;
 
-  @ApiProperty({ example: faker.finance.account(20) })
+  @ApiProperty({ example: faker.finance.accountNumber(20) })
   @Expose()
   rib: string;
 

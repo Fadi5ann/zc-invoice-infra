@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 
 export class CreateBankAccountDto {
-  @ApiProperty({ example: faker.name.firstName() })
+  @ApiProperty({ example: faker.person.firstName() })
   @IsString()
   @MaxLength(255)
   name: string;
@@ -20,7 +20,7 @@ export class CreateBankAccountDto {
   @IsBIC()
   bic: string;
 
-  @ApiProperty({ example: faker.finance.account(20) })
+  @ApiProperty({ example: faker.finance.accountNumber(20) })
   @IsString()
   @MaxLength(20)
   rib: string;
