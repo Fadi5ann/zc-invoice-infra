@@ -46,7 +46,7 @@ export const InvoiceArticleItem: React.FC<InvoiceArticleItemProps> = ({
       article: {
         ...article.article,
         title: e.target.value
-      }
+      } as any
     });
   };
 
@@ -56,7 +56,7 @@ export const InvoiceArticleItem: React.FC<InvoiceArticleItemProps> = ({
       article: {
         ...article.article,
         description: e.target.value
-      }
+      } as any
     });
   };
 
@@ -115,7 +115,7 @@ export const InvoiceArticleItem: React.FC<InvoiceArticleItemProps> = ({
     const selectedTax = taxes.find((tax) => tax.id === parseInt(value));
     const updatedTaxes = [...(article.articleInvoiceEntryTaxes || [])];
     if (selectedTax) {
-      updatedTaxes[index] = { tax: selectedTax };
+      updatedTaxes[index] = { tax: selectedTax } as any;
     } else {
       updatedTaxes.splice(index, 1);
     }
@@ -134,7 +134,7 @@ export const InvoiceArticleItem: React.FC<InvoiceArticleItemProps> = ({
     }
     onChange({
       ...article,
-      articleInvoiceEntryTaxes: [...(article.articleInvoiceEntryTaxes || []), {} as InvoiceTaxEntry]
+      articleInvoiceEntryTaxes: [...(article.articleInvoiceEntryTaxes || []), {} as any]
     });
   };
 
