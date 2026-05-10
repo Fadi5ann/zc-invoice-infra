@@ -35,10 +35,10 @@ export const useInterlocutorColumns = (
           column={column}
           context={context}
           title={t('interlocutor.table.columns.firstName')}
-          attribute={'firstName'}
+          attribute={'name'}
         />
       ),
-      cell: ({ row }) => <div>{row.original.firstName}</div>,
+      cell: ({ row }) => <div>{row.original.name}</div>,
       enableSorting: true,
       enableHiding: true
     },
@@ -49,10 +49,10 @@ export const useInterlocutorColumns = (
           column={column}
           context={context}
           title={t('interlocutor.table.columns.lastName')}
-          attribute={'lastName'}
+          attribute={'surname'}
         />
       ),
-      cell: ({ row }) => <div>{row.original.lastName}</div>,
+      cell: ({ row }) => <div>{row.original.surname}</div>,
       enableSorting: true,
       enableHiding: true
     },

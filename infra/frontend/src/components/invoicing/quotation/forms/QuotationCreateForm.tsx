@@ -17,7 +17,6 @@ import { useRouter } from 'next/router';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import {
-  CreateQuotationArticleDto,
   CreateQuotationDto,
   CurrencyPayload,
   ResponseBankAccountDto,
@@ -119,7 +118,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       data: interlocutors,
       labelKey: '',
       valueKey: 'id',
-      labelKeyTransformer: (_label, item) => `${item.firstName} ${item.lastName}`
+      labelKeyTransformer: (_label, item) => `${item.name} ${item.surname}`
     }),
     currencyOptions: mapToSelectOptions({
       data: currencies,

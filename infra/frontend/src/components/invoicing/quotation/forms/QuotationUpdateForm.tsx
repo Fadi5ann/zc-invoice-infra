@@ -18,10 +18,12 @@ import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import { LineArticle } from '@/types/core/article';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import {
+  ArticleQuotationEntry,
   CurrencyPayload,
+  DISCOUNT_TYPE,
+  QuotationTaxEntry,
   ResponseBankAccountDto,
   ResponseRefParamDto,
-  UpdateQuotationArticleDto,
   UpdateQuotationDto
 } from '@/types';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
@@ -42,7 +44,11 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
 
   const { workflow, isWorkflowPending, refetchWorkflow } = useQuotationWorkflow({
     id,
-    join: ['quotationArticles', 'quotationArticles.article', 'quotationArticles.taxes']
+    join: [
+      'articleQuotationEntries',
+      'articleQuotationEntries.article',
+      'articleQuotationEntries.articleQuotationEntryTaxes'
+    ]
   });
 
   const { enterprises, isEnterprisesPending, refetchEnterprises } = useEnterprises({
@@ -84,18 +90,18 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
 
       articleStore.set(
         'articles',
-        workflow.quotation.quotationArticles.map((qa) => {
+        (workflow.quotation.articleQuotationEntries || []).map((qa: ArticleQuotationEntry) => {
           return {
-            clientId: qa.article.id.toString(),
+            clientId: qa.article?.id?.toString() || qa.id?.toString() || Math.random().toString(),
             id: qa.id,
-            articleId: qa.article.id,
-            title: qa.article.title,
-            description: qa.article.description,
-            unitPrice: qa.unitPrice,
-            quantity: qa.quantity,
-            discountType: qa.discountType,
-            discountValue: qa.discountValue,
-            taxIds: qa.taxes?.map((t) => t.id) || []
+            articleId: qa.article?.id || qa.articleId || 0,
+            title: qa.article?.title || '',
+            description: qa.article?.description || '',
+            unitPrice: qa.unit_price || 0,
+            quantity: qa.quantity || 1,
+            discountType: (qa.discount_type === DISCOUNT_TYPE.PERCENTAGE ? 'rate' : qa.discount_type ? 'fixed' : undefined) as 'rate' | 'fixed' | undefined,
+            discountValue: qa.discount || 0,
+            taxIds: qa.articleQuotationEntryTaxes?.map((t: QuotationTaxEntry) => t.tax?.id || t.taxId || 0) || []
           } satisfies LineArticle;
         })
       );
@@ -166,7 +172,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       data: interlocutors,
       labelKey: '',
       valueKey: 'id',
-      labelKeyTransformer: (_label, item) => `${item.firstName} ${item.lastName}`
+      labelKeyTransformer: (_label, item) => `${item.name} ${item.surname}`
     }),
     currencyOptions: mapToSelectOptions({
       data: currencies,
