@@ -50,7 +50,7 @@ export const useQuotationCreateFormStructure = ({
     id: 'file',
     label: 'Document',
     variant: FieldVariant.FILE,
-    hidden: store.createDto.direction === 'outgoing',
+    hidden: (store.createDto as any)?.direction === 'outgoing',
     props: {
       // value: store.createDto.file,
       // onChange: (file) => store.setNested('createDto.file', file)
