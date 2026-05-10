@@ -7,7 +7,7 @@ import { useIntro } from '@/context/IntroContext';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useQuotationStore } from '@/hooks/stores/useQuotationStore';
 import { cn } from '@/lib/utils';
-import { ResponseQuotationDto, ServerErrorResponse, UpdateQuotationDto } from '@/types';
+import { Quotation, ServerErrorResponse } from '@/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useSellingQuotationColumns } from './columns';
@@ -73,7 +73,7 @@ export const QuotationPortal = ({ className }: QuotationPortalProps) => {
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
-        join: ['enterprise', 'interlocutor'].join(',')
+        join: ['firm', 'interlocutor'].join(',')
       })
   });
 
@@ -101,7 +101,7 @@ export const QuotationPortal = ({ className }: QuotationPortalProps) => {
       resetQuotation: () => quotationStore.reset()
     });
 
-  const context: DataTableConfig<ResponseQuotationDto> = {
+  const context: DataTableConfig<Quotation> = {
     singularName: 'Quotation',
     pluralName: 'Quotations',
     //dialogs

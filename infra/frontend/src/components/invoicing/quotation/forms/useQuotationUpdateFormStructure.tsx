@@ -11,11 +11,10 @@ import {
   SingleFileFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
-import { Button } from '@/components/ui/button';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { QuotationStore } from '@/hooks/stores/useQuotationStore';
-import { CurrencyPayload, ResponseEnterpriseDto, ResponseRefParamDto } from '@/types';
-import { Check, Save, Send } from 'lucide-react';
+import { CurrencyPayload, ResponseRefParamDto } from '@/types';
+import { ResponseEnterpriseDto } from '@/types/core/enterprise';
 import { useTranslation } from 'react-i18next';
 import { QuotationArticlesField } from './QuotationArticlesField';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
