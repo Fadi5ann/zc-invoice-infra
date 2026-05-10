@@ -1,5 +1,5 @@
 import { Article } from './article';
-import { BankAccount } from './core/bank-account';
+import { ResponseBankAccountDto as BankAccount } from './core/bank-account';
 import { Cabinet } from './cabinet';
 import { Currency } from './currency';
 import { DISCOUNT_TYPE } from './enums/discount-types';
@@ -115,7 +115,7 @@ export interface CreateQuotationDto
     | 'updatedAt'
     | 'deletedAt'
     | 'isDeletionRestricted'
-    | 'articles'
+    | 'articleQuotationEntries'
     | 'firm'
     | 'interlocutor'
     | 'sequential'
