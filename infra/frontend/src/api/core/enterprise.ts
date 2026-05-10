@@ -1,6 +1,6 @@
-import { CreateEnterpriseDto, ResponseEnterpriseDto, UpdateEnterpriseDto } from '@/types';
+import { CreateEnterpriseDto, ResponseEnterpriseDto, UpdateEnterpriseDto } from '@/types/core/enterprise';
 import axios from '../axios';
-import { Paginated, QueryParams } from '@/types/response';
+import { Paginated, QueryParams } from '@/types';
 
 const findPaginated = async ({
   page = '1',

@@ -1,6 +1,10 @@
-import { CreateInterlocutorDto, ResponseInterlocutorDto, UpdateInterlocutorDto } from '@/types';
+import { Paginated, QueryParams } from '@/types';
+import {
+  CoreCreateInterlocutorDto as CreateInterlocutorDto,
+  CoreUpdateInterlocutorDto as UpdateInterlocutorDto,
+  ResponseInterlocutorDto
+} from '@/types/core/enterprise';
 import axios from '../axios';
-import { Paginated, QueryParams } from '@/types/response';
 
 const findPaginated = async ({
   page = '1',
