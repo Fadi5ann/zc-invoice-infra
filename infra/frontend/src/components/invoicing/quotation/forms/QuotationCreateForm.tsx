@@ -17,11 +17,11 @@ import { useRouter } from 'next/router';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import {
-  CreateQuotationDto,
   CurrencyPayload,
   ResponseBankAccountDto,
   ResponseRefParamDto
 } from '@/types';
+import { CreateQuotationDto } from '@/types/core/invoicing';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'react-i18next';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
@@ -71,7 +71,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
   const { bankAccounts, isBankAccountsPending } = useBankAccounts();
 
   const { mutate: createQuotation, isPending: isCreationPending } = useMutation({
-    mutationFn: async (data: CreateQuotationDto) => api.invoicing.quotation.create(data),
+    mutationFn: async (data: CreateQuotationDto) => api.invoicing.quotation.create(data as any),
     onSuccess: (data) => {
       quotationStore.reset();
       router.push('/selling/quotations');
@@ -92,8 +92,9 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       return;
     } else {
       createQuotation({
-        ...quotationStore.createDto,
-        articleQuotationEntries: articleStore.articles.map(
+        ...(quotationStore.createDto as any),
+        direction: 'outgoing',
+        quotationArticles: articleStore.articles.map(
           (article) =>
             ({
               article: {

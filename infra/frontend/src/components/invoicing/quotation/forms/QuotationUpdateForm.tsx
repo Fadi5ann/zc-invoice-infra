@@ -18,14 +18,11 @@ import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import { LineArticle } from '@/types/core/article';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import {
-  ArticleQuotationEntry,
   CurrencyPayload,
-  DISCOUNT_TYPE,
-  QuotationTaxEntry,
   ResponseBankAccountDto,
-  ResponseRefParamDto,
-  UpdateQuotationDto
+  ResponseRefParamDto
 } from '@/types';
+import { UpdateQuotationDto, ResponseQuotationArticleDto } from '@/types/core/invoicing';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 import { useQuotationWorkflow } from '@/hooks/content/core/useQuotationWorkflow';
 import { Status } from '../../Status';
@@ -45,9 +42,9 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
   const { workflow, isWorkflowPending, refetchWorkflow } = useQuotationWorkflow({
     id,
     join: [
-      'articleQuotationEntries',
-      'articleQuotationEntries.article',
-      'articleQuotationEntries.articleQuotationEntryTaxes'
+      'quotationArticles',
+      'quotationArticles.article',
+      'quotationArticles.taxes'
     ]
   });
 
@@ -83,25 +80,25 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         interlocutorId: workflow?.quotation.interlocutorId,
         currencyId: workflow?.quotation.currencyId,
         bankAccountId: workflow?.quotation.bankAccountId,
-        articleQuotationEntries: []
+        quotationArticles: []
       } as any);
       const enterprise = enterprises.find((e) => e.id === workflow.quotation.enterpriseId);
       enterpriseStore.set('response', enterprise);
 
       articleStore.set(
         'articles',
-        (workflow.quotation.articleQuotationEntries || []).map((qa: ArticleQuotationEntry) => {
+        (workflow.quotation.quotationArticles || []).map((qa: ResponseQuotationArticleDto) => {
           return {
             clientId: qa.article?.id?.toString() || qa.id?.toString() || Math.random().toString(),
             id: qa.id,
             articleId: qa.article?.id || qa.articleId || 0,
             title: qa.article?.title || '',
             description: qa.article?.description || '',
-            unitPrice: qa.unit_price || 0,
+            unitPrice: qa.unitPrice || 0,
             quantity: qa.quantity || 1,
-            discountType: (qa.discount_type === DISCOUNT_TYPE.PERCENTAGE ? 'rate' : qa.discount_type ? 'fixed' : undefined) as 'rate' | 'fixed' | undefined,
-            discountValue: qa.discount || 0,
-            taxIds: qa.articleQuotationEntryTaxes?.map((t: QuotationTaxEntry) => t.tax?.id || t.taxId || 0) || []
+            discountType: qa.discountType,
+            discountValue: qa.discountValue || 0,
+            taxIds: qa.taxes?.map((t: any) => t.id || 0) || []
           } satisfies LineArticle;
         })
       );
@@ -115,7 +112,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
 
   const { mutate: updateQuotation, isPending: isUpdatePending } = useMutation({
     mutationFn: async (payload: { id: number; data: UpdateQuotationDto }) =>
-      api.invoicing.quotation.update(payload.id, payload.data),
+      api.invoicing.quotation.update(payload.id, payload.data as any),
     onSuccess: (data) => {
       toast.success('Quotation updated successfully!');
     },
@@ -136,8 +133,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       updateQuotation({
         id: quotationStore.response?.id as number,
         data: {
-          ...quotationStore.updateDto,
-          articleQuotationEntries: articleStore.articles.map(
+          ...(quotationStore.updateDto as any),
+          quotationArticles: articleStore.articles.map(
             (article) =>
               ({
                 id: article.id!,

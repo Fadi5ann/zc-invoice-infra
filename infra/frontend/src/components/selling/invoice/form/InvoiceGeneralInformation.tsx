@@ -39,7 +39,9 @@ export const InvoiceGeneralInformation = ({
   const { t: tInvoicing } = useTranslation('invoicing');
   const router = useRouter();
   const invoiceManager = useInvoiceManager();
-  const mainInterlocutor = invoiceManager.firm?.interlocutorsToFirm?.find((entry) => entry?.isMain);
+  const mainInterlocutor = 
+    (invoiceManager.firm as any)?.interlocutorsToFirm?.find((entry: any) => entry?.isMain) ||
+    (invoiceManager.firm as any)?.interlocutors?.find((entry: any) => entry?.isMain);
 
   return (
     <div className={cn(className)}>
@@ -114,7 +116,7 @@ export const InvoiceGeneralInformation = ({
                 <Select
                   onValueChange={(e) => {
                     const firm = firms?.find((firm) => firm.id === parseInt(e));
-                    invoiceManager.setFirm(firm);
+                    invoiceManager.setFirm(firm as any);
                     invoiceManager.set('currency', firm?.currency);
                   }}
                   value={invoiceManager.firm?.id?.toString()}>
@@ -149,14 +151,14 @@ export const InvoiceGeneralInformation = ({
               <Select
                 disabled={!invoiceManager?.firm?.id}
                 onValueChange={(e) => {
-                  invoiceManager.setInterlocutor({ id: parseInt(e) } as Interlocutor);
+                  invoiceManager.setInterlocutor({ id: parseInt(e) } as any);
                 }}
                 value={invoiceManager.interlocutor?.id?.toString()}>
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder={tInvoicing('invoice.associate_interlocutor')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {invoiceManager.firm?.interlocutorsToFirm?.map((entry: any) => (
+                  {((invoiceManager.firm as any)?.interlocutorsToFirm || (invoiceManager.firm as any)?.interlocutors)?.map((entry: any) => (
                     <SelectItem
                       key={entry.interlocutor?.id || 'interlocutor'}
                       value={entry.interlocutor?.id?.toString()}

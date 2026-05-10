@@ -12,6 +12,7 @@ export interface ResponseEnterpriseDto extends DatabaseEntity {
   taxId?: string;
   notes?: string;
   system?: boolean;
+  cabinetId?: number;
   activityId?: number;
   activity?: ResponseRefParamDto;
   currencyId?: number;
@@ -22,6 +23,7 @@ export interface ResponseEnterpriseDto extends DatabaseEntity {
   deliveryAddressId?: number;
   invoicingAddress?: ResponseAddressDto;
   invoicingAddressId?: number;
+  interlocutors?: ResponseEnterpriseInterlocutorDto[];
 }
 
 export interface CreateEnterpriseDto {

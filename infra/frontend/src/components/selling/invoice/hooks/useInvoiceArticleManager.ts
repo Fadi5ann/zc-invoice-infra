@@ -121,7 +121,7 @@ export const useInvoiceArticleManager = create<InvoiceArticleManager>()((set, ge
   articles: [],
   taxSummary: [],
 
-  add: (article: ArticleInvoiceEntry = {}) => {
+  add: (article: ArticleInvoiceEntry = {} as ArticleInvoiceEntry) => {
     const { subTotal, total } = calculateForInvoice(article);
 
     set((state) => ({
@@ -203,12 +203,15 @@ export const useInvoiceArticleManager = create<InvoiceArticleManager>()((set, ge
   },
   removeArticleDescription: () => {
     set((state) => ({
-      articles: state.articles.map((item) => {
-        return {
-          ...item,
-          article: { ...item.article, article: { ...item.article.article, description: '' } }
-        };
-      })
+      articles: state.articles.map((item) => ({
+        ...item,
+        article: {
+          ...item.article,
+          article: item.article.article 
+            ? { ...item.article.article, description: '' } 
+            : undefined
+        }
+      })) as InvoicePseudoItem[]
     }));
   }
 }));

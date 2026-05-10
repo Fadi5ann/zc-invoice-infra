@@ -1,18 +1,18 @@
 import { api } from '@/api';
 import {
-  BankAccount,
-  Currency,
-  Firm,
   INVOICE_STATUS,
-  Interlocutor,
-  Invoice,
   InvoiceUploadedFile,
   PaymentCondition
 } from '@/types';
+import { ResponseBankAccountDto as BankAccount } from '@/types/core/bank-account';
+import { ResponseCurrencyDto as Currency } from '@/types/currency';
+import { ResponseEnterpriseDto as Firm, ResponseInterlocutorDto as Interlocutor } from '@/types/core/enterprise';
 import { DateFormat } from '@/types/enums/date-formats';
 import { DISCOUNT_TYPE } from '@/types/enums/discount-types';
 import { fromStringToSequentialObject } from '@/utils/string.utils';
 import { create } from 'zustand';
+
+type Invoice = any; // TODO: Replace with actual ResponseInvoiceDto when available
 
 type InvoiceManager = {
   // data
@@ -92,15 +92,15 @@ const initialState: Omit<
   date: undefined,
   dueDate: undefined,
   object: '',
-  firm: api?.firm?.factory() || undefined,
-  interlocutor: api?.interlocutor?.factory() || undefined,
+  firm: undefined,
+  interlocutor: undefined,
   subTotal: 0,
   total: 0,
   amountPaid: 0,
   discount: 0,
   discountType: DISCOUNT_TYPE.PERCENTAGE,
-  bankAccount: api?.bankAccount?.factory() || undefined,
-  currency: api?.currency?.factory() || undefined,
+  bankAccount: undefined,
+  currency: undefined,
   notes: '',
   status: INVOICE_STATUS.Nonexistent,
   generalConditions: '',
@@ -122,10 +122,10 @@ export const useInvoiceManager = create<InvoiceManager>((set, get) => ({
       ...state,
       firm,
       interlocutor:
-        firm?.interlocutorsToFirm?.length === 1
-          ? firm.interlocutorsToFirm[0]
-          : api?.interlocutor?.factory() || undefined,
-      isInterlocutorInFirm: !!firm?.interlocutorsToFirm?.length,
+        firm?.interlocutors?.length === 1
+          ? firm.interlocutors[0].interlocutor
+          : undefined,
+      isInterlocutorInFirm: !!firm?.interlocutors?.length,
       date: dateRange.date,
       dueDate: dateRange.dueDate
     }));

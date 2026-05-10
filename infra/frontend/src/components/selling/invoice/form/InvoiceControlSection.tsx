@@ -24,9 +24,9 @@ import {
   DuplicateInvoiceDto,
   INVOICE_STATUS,
   PaymentInvoiceEntry,
-  ResponseQuotationDto,
   TaxWithholding
 } from '@/types';
+import { ResponseQuotationDto } from '@/types/core/invoicing';
 import { useInvoiceManager } from '../hooks/useInvoiceManager';
 import { useInvoiceArticleManager } from '../hooks/useInvoiceArticleManager';
 import { useInvoiceControlManager } from '../hooks/useInvoiceControlManager';
