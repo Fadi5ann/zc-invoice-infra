@@ -9,7 +9,7 @@ export class TranslationConfigService implements I18nOptionsFactory {
 
   createI18nOptions(): I18nOptionsWithoutResolvers {
     return {
-      fallbackLanguage: this.configService.get('i18n.language', {
+      fallbackLanguage: this.configService.get<string>('i18n.language', {
         infer: true,
       }),
       loaderOptions: {

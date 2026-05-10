@@ -11,7 +11,7 @@ import { InvoiceService } from 'src/modules/invoice/services/invoice.service';
 import { Transactional } from '@nestjs-cls/transactional';
 import { INVOICE_STATUS } from 'src/modules/invoice/enums/invoice-status.enum';
 import { createDineroAmountFromFloatWithDynamicCurrency } from 'src/utils/money.utils';
-import * as dinero from 'dinero.js';
+import dinero from 'dinero.js';
 import { PaymentInvoiceEntryEntity } from '../entities/payment-invoice-entry.entity';
 
 @Injectable()
