@@ -1,4 +1,5 @@
-import type { NextPage } from 'next';
+import { getI18nProps } from '@/lib/getStatic';
+import type { GetStaticProps, NextPage } from 'next';
 
 const BuyingQuotationsPage: NextPage = () => {
   return <div>Buying Quotations Page</div>;
