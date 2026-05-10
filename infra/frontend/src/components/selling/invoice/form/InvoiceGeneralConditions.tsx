@@ -32,12 +32,11 @@ export const InvoiceGeneralConditions = ({
       {!hidden && (
         <div className="flex flex-col gap-4">
           <Textarea
-            disabled={!edit}
+            disabled={!edit || isPending}
             placeholder={tInvoicing('invoice.attributes.general_condition')}
             className="resize-none"
             value={invoiceManager.generalConditions}
             onChange={(e) => invoiceManager.set('generalConditions', e.target.value)}
-            isPending={isPending}
             rows={7}
           />
           {edit && defaultCondition && (
