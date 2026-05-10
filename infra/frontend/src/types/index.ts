@@ -3,7 +3,7 @@ export * from './auth';
 export * from './activity';
 export * from './app-config';
 export * from './address';
-export * from './core/address';
+// export * from './core/address';
 export * from './article';
 export * from './cabinet';
 export * from './country';
@@ -16,6 +16,7 @@ export * from './payment-condition';
 export * from './permission';
 export * from './quotation';
 export * from './firm';
+export * from './firm-interlocutor-entry';
 export * from './interlocutor';
 export * from './sequence';
 export * from './role';
@@ -29,11 +30,13 @@ export * from './user';
 export * from './response';
 
 export * from './core/reference-types';
+// core exports with conflicting names have been removed from index.ts 
+// import them directly from '@/types/core/...' where needed
+// export * from './core/address';
 export * from './core/bank-account';
 export * from './core/configuration';
-export * from './core/enterprise';
-export * from './core/invoicing';
-export * from './core/reference-types';
+// export * from './core/enterprise';
+// export * from './core/invoicing';
 export * from './core/tax-rate';
 export * from './core/template';
 export * from './core/storage';

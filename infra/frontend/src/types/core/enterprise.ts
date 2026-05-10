@@ -62,7 +62,7 @@ export interface ResponseInterlocutorDto extends DatabaseEntity {
   enterprises?: ResponseEnterpriseInterlocutorDto[];
 }
 
-export interface CreateInterlocutorDto {
+export interface CoreCreateInterlocutorDto {
   title: SocialTitles;
   firstName: string;
   lastName: string;
@@ -70,7 +70,7 @@ export interface CreateInterlocutorDto {
   email: string;
 }
 
-export interface UpdateInterlocutorDto extends Partial<CreateInterlocutorDto> {}
+export interface CoreUpdateInterlocutorDto extends Partial<CoreCreateInterlocutorDto> {}
 
 // enterprise-interlocutor *******************************************************
 
@@ -85,11 +85,11 @@ export interface ResponseEnterpriseInterlocutorDto extends DatabaseEntity {
 }
 
 export interface CreateEnterpriseInterlocutorDto {
-  interlocutor: CreateInterlocutorDto;
+  interlocutor: CoreCreateInterlocutorDto;
   main: boolean;
   position: string;
 }
 
 export interface UpdateEnterpriseInterlocutorDto extends Partial<CreateEnterpriseInterlocutorDto> {
-  interlocutors?: UpdateInterlocutorDto;
+  interlocutors?: CoreUpdateInterlocutorDto;
 }

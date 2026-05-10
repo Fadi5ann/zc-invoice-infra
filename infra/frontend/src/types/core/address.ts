@@ -16,7 +16,7 @@ export interface ResponseAddressDto extends DatabaseEntity {
   countryId: number;
 }
 
-export interface CreateAddressDto {
+export interface CoreCreateAddressDto {
   address: string;
   address2?: string;
   region: string;
@@ -24,4 +24,4 @@ export interface CreateAddressDto {
   countryId?: number;
 }
 
-export interface UpdateAddressDto extends Partial<CreateAddressDto> {}
+export interface CoreUpdateAddressDto extends Partial<CoreCreateAddressDto> {}
