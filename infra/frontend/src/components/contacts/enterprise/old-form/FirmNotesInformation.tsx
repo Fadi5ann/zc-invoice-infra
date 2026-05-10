@@ -6,13 +6,13 @@ import { NotepadText } from 'lucide-react';
 import { useFirmStore } from '@/hooks/stores/useFirmStore';
 import { useTranslation } from 'next-i18next';
 
-interface FirmNotesInformation {
+interface FirmNotesInformationProps {
   className?: string;
   placeholder?: string;
   loading?: boolean;
 }
 
-const FirmNotesInformation: React.FC<FirmNotesInformation> = ({
+const FirmNotesInformation: React.FC<FirmNotesInformationProps> = ({
   className,
   placeholder = '',
   loading
@@ -31,7 +31,7 @@ const FirmNotesInformation: React.FC<FirmNotesInformation> = ({
       </CardHeader>
       <CardContent>
         <Textarea
-          isPending={loading || false}
+          disabled={loading || false}
           placeholder={placeholder}
           className="resize-none"
           value={firmStore?.notes}

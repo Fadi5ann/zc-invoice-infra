@@ -16,7 +16,7 @@ import { useFirmStore } from '@/hooks/stores/useFirmStore';
 import { useTranslation } from 'next-i18next';
 import { PhoneInput } from '@/components/ui/phone-input';
 
-interface FirmProfessionalInformationProps {
+interface FirmEntrepriseInformationProps {
   className?: string;
   activities?: Activity[];
   currencies?: ResponseCurrencyDto[];
@@ -24,7 +24,7 @@ interface FirmProfessionalInformationProps {
   loading?: boolean;
 }
 
-const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = ({
+const FirmEntrepriseInformation: React.FC<FirmEntrepriseInformationProps> = ({
   className,
   activities,
   currencies,
@@ -58,14 +58,14 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
                   firmStore.set('taxIdNumber', '');
                 }}>
                 <div className="flex items-center">
-                  <RadioGroupItem value="entreprise" />
-                  <Label className="ml-1" isPending={loading}>
+                  <RadioGroupItem value="entreprise" id="entreprise" />
+                  <Label htmlFor="entreprise" className="ml-1">
                     {tContact('firm.attributes.entreprise_type')}
                   </Label>
                 </div>
                 <div className="flex items-center">
-                  <RadioGroupItem value="particulier" />
-                  <Label className="ml-1" isPending={loading}>
+                  <RadioGroupItem value="particulier" id="particulier" />
+                  <Label htmlFor="particulier" className="ml-1">
                     {tContact('firm.attributes.particular_entreprise_type')}
                   </Label>
                 </div>
@@ -191,4 +191,4 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
   );
 };
 
-export default FirmProfessionalInformation;
+export default FirmEntrepriseInformation;
