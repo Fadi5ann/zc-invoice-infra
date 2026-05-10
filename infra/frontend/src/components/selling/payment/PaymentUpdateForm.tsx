@@ -64,7 +64,7 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
   }, [router.locale, payment?.id]);
 
   // Fetch options
-  const { currencies, isFetchCurrenciesPending } = useCurrencies();
+  const { currencies, isCurrenciesPending: isFetchCurrenciesPending } = useCurrencies();
   const { cabinet, isFetchCabinetPending } = useCabinet();
 
   React.useEffect(() => {
@@ -81,7 +81,7 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
 
   const setPaymentData = (data: Partial<Payment>) => {
     //invoice infos
-    paymentManager.setPayment({ ...data, firm: firms.find((firm: any) => firm.id === data.firmId) });
+    paymentManager.setPayment({ ...data, firm: firms.find((firm: any) => firm.id === data.firmId) as any });
     //invoice article infos
     data?.invoices &&
       data.convertionRate &&
@@ -130,16 +130,16 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
       .map((invoice: PaymentInvoiceEntry) => ({
         invoiceId: invoice.invoice?.id,
         amount: invoice.amount
-      }));
+      })) as any;
     const used = invoiceManager.calculateUsedAmount();
     
     const amountDinero = dinero({
-      amount: createDineroAmountFromFloatWithDynamicCurrency(paymentManager.amount || 0, currency?.digitAfterComma || 3),
-      precision: currency?.digitAfterComma || 3
+      amount: createDineroAmountFromFloatWithDynamicCurrency(paymentManager.amount || 0, (currency as any)?.digitAfterComma || 3),
+      precision: (currency as any)?.digitAfterComma || 3
     });
     const feeDinero = dinero({
-      amount: createDineroAmountFromFloatWithDynamicCurrency(paymentManager.fee || 0, currency?.digitAfterComma || 3),
-      precision: currency?.digitAfterComma || 3
+      amount: createDineroAmountFromFloatWithDynamicCurrency(paymentManager.fee || 0, (currency as any)?.digitAfterComma || 3),
+      precision: (currency as any)?.digitAfterComma || 3
     });
     const paid = amountDinero.add(feeDinero).toUnit();
 
@@ -178,10 +178,10 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
               <CardContent className="p-5">
                 <PaymentGeneralInformation
                   className="pb-5 border-b"
-                  firms={firms}
+                  firms={firms as any}
                   currencies={currencies.filter(
                     (c: any) => c.id == cabinet?.currencyId || c.id == paymentManager?.firm?.currencyId
-                  )}
+                  ) as any}
                   loading={fetching}
                 />
                 {paymentManager.firmId && (
@@ -199,7 +199,7 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
                   />
                   <div className="w-1/3 my-auto">
                     {/* Final Financial Information */}
-                    <PaymentFinancialInformation currency={currency} />
+                    <PaymentFinancialInformation currency={currency as any} />
                   </div>
                 </div>
               </CardContent>

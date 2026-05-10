@@ -50,7 +50,7 @@ export const PaymentCreateForm = ({ className, firmId }: PaymentFormProps) => {
   }, [router.locale, firmId]);
 
   // Fetch options
-  const { currencies, isFetchCurrenciesPending } = useCurrencies();
+  const { currencies, isCurrenciesPending: isFetchCurrenciesPending } = useCurrencies();
   const { cabinet, isFetchCabinetPending } = useCabinet();
 
   React.useEffect(() => {
@@ -96,15 +96,15 @@ export const PaymentCreateForm = ({ className, firmId }: PaymentFormProps) => {
       .map((invoice: PaymentInvoiceEntry) => ({
         invoiceId: invoice.invoice?.id,
         amount: invoice.amount
-      }));
+      })) as any;
 
     const used = invoiceManager.calculateUsedAmount();
     const paid = dinero({
       amount: createDineroAmountFromFloatWithDynamicCurrency(
         (paymentManager.amount || 0) + (paymentManager.fee || 0),
-        currency?.digitAfterComma || 3
+        (currency as any)?.digitAfterComma || 3
       ),
-      precision: currency?.digitAfterComma || 3
+      precision: (currency as any)?.digitAfterComma || 3
     }).toUnit();
 
     const payment: CreatePaymentDto = {
@@ -143,10 +143,10 @@ export const PaymentCreateForm = ({ className, firmId }: PaymentFormProps) => {
                 {/* General Information */}
                 <PaymentGeneralInformation
                   className="pb-5 border-b"
-                  firms={firms}
+                  firms={firms as any}
                   currencies={currencies.filter(
                     (c) => c.id == cabinet?.currencyId || c.id == paymentManager?.firm?.currencyId
-                  )}
+                  ) as any}
                   loading={loading}
                 />
                 {/* Invoice Management */}
@@ -165,7 +165,7 @@ export const PaymentCreateForm = ({ className, firmId }: PaymentFormProps) => {
                   />
                   <div className="w-1/3 my-auto">
                     {/* Final Financial Information */}
-                    <PaymentFinancialInformation currency={currency} />
+                    <PaymentFinancialInformation currency={currency as any} />
                   </div>
                 </div>
               </CardContent>
