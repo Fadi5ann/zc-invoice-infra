@@ -78,3 +78,11 @@ export interface UpdateQuotationArticleDto
   articleId?: number;
   article?: UpdateArticleDto;
 }
+
+export interface DuplicateQuotationDto {
+  // TODO: Add properties required to duplicate a quotation
+}
+
+export interface CreateInvoiceDto {
+  // TODO: Add properties required to create an invoice from a quotation
+}

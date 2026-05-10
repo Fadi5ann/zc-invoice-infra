@@ -7,7 +7,8 @@ import { useIntro } from '@/context/IntroContext';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useQuotationStore } from '@/hooks/stores/useQuotationStore';
 import { cn } from '@/lib/utils';
-import { Quotation, ServerErrorResponse } from '@/types';
+import { ServerErrorResponse } from '@/types';
+import { ResponseQuotationDto as Quotation } from '@/types/core/invoicing';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useSellingQuotationColumns } from './columns';
@@ -73,7 +74,7 @@ export const QuotationPortal = ({ className }: QuotationPortalProps) => {
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
-        join: ['firm', 'interlocutor'].join(',')
+        join: ['enterprise', 'interlocutor'].join(',')
       })
   });
 

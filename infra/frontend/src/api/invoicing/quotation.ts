@@ -1,3 +1,4 @@
+import { Paginated, QueryParams } from '@/types';
 import {
   CreateQuotationDto,
   ResponseQuotationDto,
@@ -5,9 +6,8 @@ import {
   UpdateQuotationDto,
   DuplicateQuotationDto,
   CreateInvoiceDto
-} from '@/types';
+} from '@/types/core/invoicing';
 import axios from '../axios';
-import { Paginated, QueryParams } from '@/types/response';
 
 const findPaginated = async ({
   page = '1',

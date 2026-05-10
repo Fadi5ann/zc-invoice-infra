@@ -3,7 +3,7 @@ import { DataTableColumnHeader } from '@/components/shared/data-table/data-table
 import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
 import { DataTableCellVariant, DataTableConfig } from '@/components/shared/data-table/types';
 import { Badge } from '@/components/ui/badge';
-import { Quotation } from '@/types';
+import { ResponseQuotationDto as Quotation } from '@/types/core/invoicing';
 import { ColumnDef } from '@tanstack/react-table';
 import { useTranslation } from 'next-i18next';
 
@@ -102,10 +102,10 @@ export const useSellingQuotationColumns = (
           column={column}
           context={context}
           title={t('quotation.table.columns.enterprise')}
-          attribute={'firm.name'}
+          attribute={'enterprise.name'}
         />
       ),
-      cell: ({ row }) => <div>{row.original.firm?.name}</div>,
+      cell: ({ row }) => <div>{row.original.enterprise?.name}</div>,
       enableSorting: true,
       enableHiding: true
     },
@@ -119,13 +119,15 @@ export const useSellingQuotationColumns = (
           attribute={'interlocutor.name'}
         />
       ),
-      cell: ({ row }) => (
-        <div>
-          {row.original.interlocutor
-            ? `${row.original.interlocutor.name} ${row.original.interlocutor.surname}`
-            : ''}
-        </div>
-      ),
+      cell: ({ row }) => {
+        // Using a type assertion since name and surname are missing from ResponseInterlocutorDto
+        const interlocutor = row.original.interlocutor as { name?: string; surname?: string } | undefined;
+        return (
+          <div>
+            {interlocutor ? `${interlocutor.name || ''} ${interlocutor.surname || ''}`.trim() : ''}
+          </div>
+        );
+      },
       enableSorting: true,
       enableHiding: true
     },
