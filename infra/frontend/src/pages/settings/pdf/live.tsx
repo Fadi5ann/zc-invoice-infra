@@ -1,13 +1,14 @@
 import { GetStaticProps } from 'next';
 import { getI18nProps } from '@/lib/getStatic';
+import { PdfSettings } from '@/components/settings/PdfSettings';
 
-import { PDFEditor } from '@/components/pdf/PDFTemplateEditor';
+import { PDFEditor } from './PDFTemplateEditor';
 
 export default function Page() {
   return (
     <div className="flex-1 flex flex-col overflow-auto">
       <PdfSettings defaultValue={'live'} />
-      <LiveEJSCompiler className="m-10" />
+      <PDFEditor className="m-10" />
     </div>
   );
 }
