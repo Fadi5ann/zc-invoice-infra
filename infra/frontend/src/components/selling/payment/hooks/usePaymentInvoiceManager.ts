@@ -76,7 +76,7 @@ export const usePaymentInvoiceManager = create<PaymentInvoiceManager>()((set, ge
       invoices: actualEntries.map((invoice) => {
         return {
           id: uuidv4(),
-          invoice
+          invoice: invoice as any
         };
       })
     });

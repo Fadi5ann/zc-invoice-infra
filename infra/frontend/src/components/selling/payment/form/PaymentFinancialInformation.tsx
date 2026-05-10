@@ -56,7 +56,7 @@ export const PaymentFinancialInformation = ({
       <div className="flex flex-col w-full">
         <div className="flex my-2">
           <Label className="mr-auto">{tInvoicing('payment.financial_status.received')}</Label>
-          <Label className="ml-auto" isPending={loading || false}>
+          <Label className="ml-auto">
             {available?.toFixed(currencyDigitAfterComma)} {currencySymbol}
           </Label>
         </div>
@@ -64,7 +64,7 @@ export const PaymentFinancialInformation = ({
       <div className="flex flex-col w-full mt-1">
         <div className="flex my-2">
           <Label className="mr-auto">{tInvoicing('payment.financial_status.used')}</Label>
-          <Label className="ml-auto" isPending={loading || false}>
+          <Label className="ml-auto">
             {used?.toFixed(currencyDigitAfterComma)} {currencySymbol}
           </Label>
         </div>
@@ -72,7 +72,7 @@ export const PaymentFinancialInformation = ({
       <div className="flex flex-col w-full border-t pt-1">
         <div className="flex my-2">
           <Label className="mr-auto">{tInvoicing('payment.financial_status.available')}</Label>
-          <Label className="ml-auto" isPending={loading || false}>
+          <Label className="ml-auto">
             {remaining_amount?.toFixed(currencyDigitAfterComma)} {currencySymbol}
           </Label>
         </div>

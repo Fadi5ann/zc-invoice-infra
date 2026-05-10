@@ -189,19 +189,19 @@ export const InvoiceGeneralInformation = ({
           <div className="flex gap-4 pb-5 border-b mt-5">
             {!isInvoicingAddressHidden && (
               <div className="w-1/2">
+                <Label className="font-bold mb-2 block">{tInvoicing('invoice.attributes.invoicing_address')}</Label>
                 <AddressDetails
-                  addressType={tInvoicing('invoice.attributes.invoicing_address')}
-                  address={invoiceManager.firm?.invoicingAddress}
-                  loading={loading}
+                  address={invoiceManager.firm?.invoicingAddress as any}
+                  {...{ loading } as any}
                 />
               </div>
             )}
             {!isDeliveryAddressHidden && (
               <div className="w-1/2">
+                <Label className="font-bold mb-2 block">{tInvoicing('invoice.attributes.delivery_address')}</Label>
                 <AddressDetails
-                  addressType={tInvoicing('invoice.attributes.delivery_address')}
-                  address={invoiceManager.firm?.deliveryAddress}
-                  loading={loading}
+                  address={invoiceManager.firm?.deliveryAddress as any}
+                  {...{ loading } as any}
                 />
               </div>
             )}
