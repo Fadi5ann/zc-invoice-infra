@@ -17,7 +17,7 @@ const validate = (address: CreateAddressDto | undefined): ValidationResult => {
     return { message: 'Region is required.' };
   }
 
-  if (!address.zipcode && address.zipcode !== 0) {
+  if (!address.zipcode && address.zipcode !== '0') {
     return { message: 'Zip code is required.' };
   }
 

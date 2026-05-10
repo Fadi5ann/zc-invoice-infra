@@ -153,8 +153,11 @@ const download = async (id: number, template: string): Promise<any> => {
   const response = await axios.get<string>(`public/invoice/${id}/download?template=${template}`, {
     responseType: 'blob'
   });
-  const blob = new Blob([response.data], { type: response.headers['content-type'] });
-  const link = document.createElement('a');
+// We force the header to a string or fallback to 'application/pdf'
+const blob = new Blob([response.data], { 
+  type: response.headers['content-type']?.toString() || 'application/pdf' 
+});  
+const link = document.createElement('a');
   link.href = window.URL.createObjectURL(blob);
   link.download = `${invoice.sequential}.pdf`;
   document.body.appendChild(link);

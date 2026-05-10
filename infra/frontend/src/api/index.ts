@@ -16,6 +16,8 @@ import { interlocutor } from './interlocutor';
 export * from './interlocutor';
 import { firmInterlocutorEntry } from './firm-interlocutor-entry';
 export * from './firm-interlocutor-entry';
+import { firm } from './firm';
+export * from './firm';
 
 import { invoice } from './invoice';
 export * from './invoice';
@@ -50,6 +52,7 @@ export const api = {
   defaultCondition,
   firmInterlocutorEntry,
   interlocutor,
+  firm,
   invoice,
   invoicing,
   payment,

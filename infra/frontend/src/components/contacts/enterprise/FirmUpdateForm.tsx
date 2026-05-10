@@ -46,8 +46,9 @@ export const FirmUpdateForm = ({ className, firmId }: FirmFormProps) => {
     data: firmResp,
     refetch: refetchFirm
   } = useQuery({
-    queryKey: ['firm', firmId],
-    queryFn: () => api.firm.findOne(firmId)
+    queryKey: ['enterprise', firmId],
+// Change 'firm' to 'enterprise'
+    queryFn: () => api.firm.findOne(firmId),
   });
 
   const firm = React.useMemo(() => {
@@ -70,8 +71,8 @@ export const FirmUpdateForm = ({ className, firmId }: FirmFormProps) => {
 
   // Fetch options
   const { activities, isFetchActivitiesPending } = useActivities();
-  const { currencies, isFetchCurrenciesPending } = useCurrencies();
-  const { countries, isFetchCountriesPending } = useCountry();
+  const { currencies, isCurrenciesPending: isFetchCurrenciesPending } = useCurrencies();
+  const { countries, isFetchCountriesPending } = useCountries();
   const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
   const fetching =
     isFetchActivitiesPending ||
@@ -107,7 +108,7 @@ export const FirmUpdateForm = ({ className, firmId }: FirmFormProps) => {
 
   //update handler
   const onSubmit = () => {
-    const data = firmManager.getFirm() as UpdateFirmDto;
+    const data = firmManager.getFirm() as unknown as UpdateFirmDto;
     const validation = api.firm.validate(data);
     if (validation.message) toast.error(validation.message);
     else {
@@ -119,7 +120,6 @@ export const FirmUpdateForm = ({ className, firmId }: FirmFormProps) => {
   //forward AbstractCopyAddressHandler
   const handleAddressCopy = (prefix: AddressType) =>
     AbstractCopyAddressHandler(
-      tContact,
       prefix,
       firmManager.invoicingAddress,
       (a?: Address) => firmManager.set('invoicingAddress', a),
@@ -156,7 +156,7 @@ export const FirmUpdateForm = ({ className, firmId }: FirmFormProps) => {
 
           <FirmEntrepriseInformation
             activities={activities}
-            currencies={currencies}
+            currencies={currencies as any}
             paymentConditions={paymentConditions}
             loading={debounceFetching}
           />
