@@ -17,6 +17,7 @@ import { useInvoiceArticleManager } from './hooks/useInvoiceArticleManager';
 import useInvoiceSocket from './hooks/useInvoiceSocket';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useInvoiceControlManager } from './hooks/useInvoiceControlManager';
+import { useCalculateInvoiceTotals } from './hooks/useCalculateInvoiceTotals';
 
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'next-i18next';
@@ -88,8 +89,8 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
   const { quotations, isFetchQuotationPending } = useQuotationChoices(QUOTATION_STATUS.Invoiced);
   const { cabinet, isFetchCabinetPending } = useCabinet();
   const { taxes, isFetchTaxesPending } = useTax();
-  const { currencies, isCurrenciesPending } = useCurrencies();
-  const { bankAccounts, isFetchBankAccountsPending } = useBankAccounts();
+  const { currencies, isCurrenciesPending: isFetchCurrenciesPending } = useCurrencies();
+  const { bankAccounts, isBankAccountsPending: isFetchBankAccountsPending } = useBankAccounts();
   const { defaultCondition, isFetchDefaultConditionPending } = useDefaultCondition(
     ACTIVITY_TYPE.SELLING,
     DOCUMENT_TYPE.INVOICE
@@ -115,14 +116,14 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
   //create invoice mutator
   const { mutate: createInvoice, isPending: isCreatePending } = useMutation({
     mutationFn: (data: { invoice: CreateInvoiceDto; files: File[] }) =>
-      api.invoice.create(data.invoice, data.files),
+      (api.invoice.create as any)(data.invoice, data.files),
     onSuccess: () => {
       if (!firmId) router.push('/selling/invoices');
       else router.push(`/contacts/firm/${firmId}/?tab=invoices`);
       toast.success('Facture créée avec succès');
       globalReset();
     },
-    onError: (error) => {
+    onError: (error: any) => {
       const message = getErrorMessage('invoicing', error, 'Erreur lors de la création de facture');
       toast.error(message);
     }
@@ -132,7 +133,7 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
     isFetchTaxesPending ||
     isFetchCabinetPending ||
     isFetchBankAccountsPending ||
-    isCurrenciesPending ||
+    isFetchCurrenciesPending ||
     isFetchDefaultConditionPending ||
     isCreatePending ||
     isFetchQuotationPending ||
@@ -155,7 +156,7 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
   }, []);
 
   //create handler
-  const onSubmit = (status: INVOICE_STATUS) => {
+  const onSubmit = async (status: INVOICE_STATUS) => {
     const articlesDto: ArticleInvoiceEntry[] = articleManager.getArticles()?.map((article) => ({
       id: article?.id,
       article: {
@@ -172,7 +173,7 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
       taxes: article?.articleInvoiceEntryTaxes?.map((entry) => {
         return entry?.tax?.id;
       })
-    }));
+    })) as any;
     const invoice: CreateInvoiceDto = {
       date: invoiceManager?.date?.toString(),
       dueDate: invoiceManager?.dueDate?.toString(),
@@ -205,10 +206,10 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
         hasBankingDetails: !controlManager.isBankAccountDetailsHidden,
         hasGeneralConditions: !controlManager.isGeneralConditionsHidden,
         hasTaxWithholding: !controlManager.isTaxWithholdingHidden
-      }
+      } as any
     };
-    const validation = api.invoice.validate(invoice, dateRange);
-    if (validation.message) {
+    const validation = await (api.invoice.validate as any)(invoice, dateRange);
+    if (validation?.message) {
       toast.error(validation.message);
     } else {
       if (controlManager.isGeneralConditionsHidden) delete invoice.generalConditions;
@@ -233,7 +234,7 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
                 {/* General Information */}
                 <InvoiceGeneralInformation
                   className="my-5"
-                  firms={firms}
+                  firms={firms as any}
                   isInvoicingAddressHidden={controlManager.isInvoiceAddressHidden}
                   isDeliveryAddressHidden={controlManager.isDeliveryAddressHidden}
                   loading={isFetchFirmsPending || isSequencePending}
@@ -276,8 +277,8 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
               <CardContent className="p-5">
                 {/* Control Section */}
                 <InvoiceControlSection
-                  bankAccounts={bankAccounts}
-                  currencies={currencies}
+                  bankAccounts={bankAccounts as any}
+                  currencies={currencies as any}
                   quotations={quotations}
                   taxWithholdings={taxWithholdings}
                   handleSubmitDraft={() => onSubmit(INVOICE_STATUS.Draft)}

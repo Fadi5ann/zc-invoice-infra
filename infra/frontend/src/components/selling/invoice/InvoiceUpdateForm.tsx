@@ -71,7 +71,7 @@ export const InvoiceUpdateForm = ({ className, invoiceId }: InvoiceFormProps) =>
     refetch: refetchInvoice
   } = useQuery({
     queryKey: ['invoice', invoiceId],
-    queryFn: () => api.invoice.findOne(parseInt(invoiceId))
+    queryFn: () => (api.invoice as any).findOne(parseInt(invoiceId))
   });
   const invoice = React.useMemo(() => {
     return invoiceResp || null;
@@ -104,8 +104,8 @@ export const InvoiceUpdateForm = ({ className, invoiceId }: InvoiceFormProps) =>
   ]);
   const { quotations, isFetchQuotationPending } = useQuotationChoices(QUOTATION_STATUS.Invoiced);
   const { taxes, isFetchTaxesPending } = useTax();
-  const { currencies, isFetchCurrenciesPending } = useCurrencies();
-  const { bankAccounts, isFetchBankAccountsPending } = useBankAccounts();
+  const { currencies, isCurrenciesPending: isFetchCurrenciesPending } = useCurrencies();
+  const { bankAccounts, isBankAccountsPending: isFetchBankAccountsPending } = useBankAccounts();
   const { taxWithholdings, isFetchTaxWithholdingsPending } = useTaxWithholding();
   const { defaultCondition, isFetchDefaultConditionPending } = useDefaultCondition(
     ACTIVITY_TYPE.SELLING,
@@ -132,7 +132,7 @@ export const InvoiceUpdateForm = ({ className, invoiceId }: InvoiceFormProps) =>
   //full invoice setter across multiple stores
   const setInvoiceData = (data: Partial<Invoice & { files: InvoiceUploadedFile[] }>) => {
     //invoice infos
-    data && invoiceManager.setInvoice(data, firms, bankAccounts);
+    data && invoiceManager.setInvoice(data, firms as any, bankAccounts as any);
     data?.quotation && quotationManager.set('sequential', data?.quotation?.sequential);
     //invoice meta infos
     controlManager.setControls({
@@ -172,12 +172,12 @@ export const InvoiceUpdateForm = ({ className, invoiceId }: InvoiceFormProps) =>
   //update invoice mutator
   const { mutate: updateInvoice, isPending: isUpdatingPending } = useMutation({
     mutationFn: (data: { invoice: UpdateInvoiceDto; files: File[] }) =>
-      api.invoice.update(data.invoice, data.files),
+      (api.invoice.update as any)(data.invoice, data.files),
     onSuccess: () => {
       refetchInvoice();
       toast.success('Facture modifiée avec succès');
     },
-    onError: (error) => {
+    onError: (error: any) => {
       const message = getErrorMessage(
         'invoicing',
         error,
@@ -188,7 +188,7 @@ export const InvoiceUpdateForm = ({ className, invoiceId }: InvoiceFormProps) =>
   });
 
   //update handler
-  const onSubmit = (status: INVOICE_STATUS) => {
+  const onSubmit = async (status: INVOICE_STATUS) => {
     const articlesDto: ArticleInvoiceEntry[] = articleManager.getArticles()?.map((article) => ({
       article: {
         title: article?.article?.title,
@@ -200,7 +200,7 @@ export const InvoiceUpdateForm = ({ className, invoiceId }: InvoiceFormProps) =>
       discount_type:
         article?.discount_type === 'PERCENTAGE' ? DISCOUNT_TYPE.PERCENTAGE : DISCOUNT_TYPE.AMOUNT,
       taxes: article?.articleInvoiceEntryTaxes?.map((entry) => entry?.tax?.id) || []
-    }));
+    })) as any;
     const invoice: UpdateInvoiceDto = {
       id: invoiceManager?.id,
       date: invoiceManager?.date?.toString(),
@@ -235,11 +235,11 @@ export const InvoiceUpdateForm = ({ className, invoiceId }: InvoiceFormProps) =>
         hasGeneralConditions: !controlManager.isGeneralConditionsHidden,
         hasTaxStamp: !controlManager.isTaxStampHidden,
         hasTaxWithholding: !controlManager.isTaxWithholdingHidden
-      },
+      } as any,
       uploads: invoiceManager.uploadedFiles.filter((u) => !!u.upload).map((u) => u.upload)
     };
-    const validation = api.invoice.validate(invoice, dateRange);
-    if (validation.message) {
+    const validation = await (api.invoice.validate as any)(invoice, dateRange);
+    if (validation?.message) {
       toast.error(validation.message, { position: validation.position || 'bottom-right' });
     } else {
       updateInvoice({
@@ -262,7 +262,7 @@ export const InvoiceUpdateForm = ({ className, invoiceId }: InvoiceFormProps) =>
               <CardContent className="p-5">
                 <InvoiceGeneralInformation
                   className="my-5"
-                  firms={firms}
+                  firms={firms as any}
                   isInvoicingAddressHidden={controlManager.isInvoiceAddressHidden}
                   isDeliveryAddressHidden={controlManager.isDeliveryAddressHidden}
                   edit={editMode}
@@ -312,8 +312,8 @@ export const InvoiceUpdateForm = ({ className, invoiceId }: InvoiceFormProps) =>
                 <InvoiceControlSection
                   status={invoiceManager.status}
                   isDataAltered={isDisabled}
-                  bankAccounts={bankAccounts}
-                  currencies={currencies}
+                  bankAccounts={bankAccounts as any}
+                  currencies={currencies as any}
                   quotations={quotations}
                   payments={invoice?.payments || []}
                   taxWithholdings={taxWithholdings}

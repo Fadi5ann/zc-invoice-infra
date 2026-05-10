@@ -66,7 +66,7 @@ export const QuotationUpdateForm = ({ className, quotationId }: QuotationFormPro
     refetch: refetchQuotation
   } = useQuery({
     queryKey: ['quotation', quotationId],
-    queryFn: () => api.quotation.findOne(parseInt(quotationId))
+    queryFn: () => (api.quotation as any).findOne(parseInt(quotationId))
   });
   const quotation = React.useMemo(() => {
     return quotationResp || null;
@@ -99,8 +99,8 @@ export const QuotationUpdateForm = ({ className, quotationId }: QuotationFormPro
     'currency'
   ]);
   const { taxes, isFetchTaxesPending } = useTax();
-  const { currencies, isFetchCurrenciesPending } = useCurrencies();
-  const { bankAccounts, isFetchBankAccountsPending } = useBankAccounts();
+  const { currencies, isCurrenciesPending: isFetchCurrenciesPending } = useCurrencies();
+  const { bankAccounts, isBankAccountsPending: isFetchBankAccountsPending } = useBankAccounts();
   const { defaultCondition, isFetchDefaultConditionPending } = useDefaultCondition(
     ACTIVITY_TYPE.SELLING,
     DOCUMENT_TYPE.QUOTATION
@@ -171,7 +171,7 @@ export const QuotationUpdateForm = ({ className, quotationId }: QuotationFormPro
   //full quotation setter across multiple stores
   const setQuotationData = (data: Partial<Quotation & { files: QuotationUploadedFile[] }>) => {
     //quotation infos
-    data && quotationManager.setQuotation(data, firms, bankAccounts);
+    data && quotationManager.setQuotation(data, firms as any, bankAccounts as any);
 
     //quotation meta infos
     controlManager.setControls({
@@ -209,8 +209,8 @@ export const QuotationUpdateForm = ({ className, quotationId }: QuotationFormPro
   //update quotation mutator
   const { mutate: updateQuotation, isPending: isUpdatingPending } = useMutation({
     mutationFn: (data: { quotation: UpdateQuotationDto; files: File[] }) =>
-      api.quotation.update(data.quotation, data.files),
-    onSuccess: (data) => {
+      (api.quotation.update as any)(data.quotation, data.files),
+    onSuccess: (data: any) => {
       if (data.status == QUOTATION_STATUS.Invoiced) {
         toast.success('Devis facturé avec succès');
         // router.push(`/selling/invoice/${data.invoiceId}`);
@@ -219,14 +219,14 @@ export const QuotationUpdateForm = ({ className, quotationId }: QuotationFormPro
       }
       refetchQuotation();
     },
-    onError: (error) => {
+    onError: (error: any) => {
       const message = getErrorMessage('contacts', error, 'Erreur lors de la modification de devis');
       toast.error(message);
     }
   });
 
   //update handler
-  const onSubmit = (status: QUOTATION_STATUS) => {
+  const onSubmit = async (status: QUOTATION_STATUS) => {
     const articlesDto: ArticleQuotationEntry[] = articleManager.getArticles()?.map((article) => ({
       article: {
         title: article?.article?.title,
@@ -238,7 +238,7 @@ export const QuotationUpdateForm = ({ className, quotationId }: QuotationFormPro
       discount_type:
         article?.discount_type === 'PERCENTAGE' ? DISCOUNT_TYPE.PERCENTAGE : DISCOUNT_TYPE.AMOUNT,
       taxes: article?.articleQuotationEntryTaxes?.map((entry) => entry?.tax?.id) || []
-    }));
+    })) as any;
 
     const quotation: UpdateQuotationDto = {
       id: quotationManager?.id,
@@ -269,11 +269,11 @@ export const QuotationUpdateForm = ({ className, quotationId }: QuotationFormPro
         showArticleDescription: !controlManager?.isArticleDescriptionHidden,
         hasBankingDetails: !controlManager.isBankAccountDetailsHidden,
         hasGeneralConditions: !controlManager.isGeneralConditionsHidden
-      },
+      } as any,
       uploads: quotationManager.uploadedFiles.filter((u) => !!u.upload).map((u) => u.upload)
     };
-    const validation = api.quotation.validate(quotation);
-    if (validation.message) {
+    const validation = await (api.quotation.validate as any)(quotation);
+    if (validation?.message) {
       toast.error(validation.message, { position: validation.position || 'bottom-right' });
     } else {
       updateQuotation({
@@ -296,7 +296,7 @@ export const QuotationUpdateForm = ({ className, quotationId }: QuotationFormPro
               <CardContent className="p-5">
                 <QuotationGeneralInformation
                   className="my-5"
-                  firms={firms}
+                  firms={firms as any}
                   isInvoicingAddressHidden={controlManager.isInvoiceAddressHidden}
                   isDeliveryAddressHidden={controlManager.isDeliveryAddressHidden}
                   edit={editMode}
@@ -344,8 +344,8 @@ export const QuotationUpdateForm = ({ className, quotationId }: QuotationFormPro
                 <QuotationControlSection
                   status={quotationManager.status}
                   isDataAltered={isDisabled}
-                  bankAccounts={bankAccounts}
-                  currencies={currencies}
+                  bankAccounts={bankAccounts as any}
+                  currencies={currencies as any}
                   invoices={quotation?.invoices || []}
                   handleSubmit={() => onSubmit(quotationManager.status)}
                   handleSubmitDraft={() => onSubmit(QUOTATION_STATUS.Draft)}

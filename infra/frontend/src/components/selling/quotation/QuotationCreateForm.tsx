@@ -86,8 +86,8 @@ export const QuotationCreateForm = ({ className, firmId }: QuotationFormProps) =
   ]);
   const { cabinet, isFetchCabinetPending } = useCabinet();
   const { taxes, isFetchTaxesPending } = useTax();
-  const { currencies, isFetchCurrenciesPending } = useCurrencies();
-  const { bankAccounts, isFetchBankAccountsPending } = useBankAccounts();
+  const { currencies, isCurrenciesPending: isFetchCurrenciesPending } = useCurrencies();
+  const { bankAccounts, isBankAccountsPending: isFetchBankAccountsPending } = useBankAccounts();
   const { defaultCondition, isFetchDefaultConditionPending } = useDefaultCondition(
     ACTIVITY_TYPE.SELLING,
     DOCUMENT_TYPE.QUOTATION
@@ -161,7 +161,7 @@ export const QuotationCreateForm = ({ className, firmId }: QuotationFormProps) =
   //create quotation mutator
   const { mutate: createQuotation, isPending: isCreatePending } = useMutation({
     mutationFn: (data: { quotation: CreateQuotationDto; files: File[] }) =>
-      api.quotation.create(data.quotation, data.files),
+      (api.quotation.create as any)(data.quotation, data.files),
     onSuccess: () => {
       if (!firmId) router.push('/selling/quotations');
       else router.push(`/contacts/firm/${firmId}/?tab=quotations`);
@@ -196,7 +196,7 @@ export const QuotationCreateForm = ({ className, firmId }: QuotationFormProps) =
   }, []);
 
   //create handler
-  const onSubmit = (status: QUOTATION_STATUS) => {
+  const onSubmit = async (status: QUOTATION_STATUS) => {
     const articlesDto: ArticleQuotationEntry[] = articleManager.getArticles()?.map((article) => ({
       id: article?.id,
       article: {
@@ -211,7 +211,7 @@ export const QuotationCreateForm = ({ className, firmId }: QuotationFormProps) =
       taxes: article?.articleQuotationEntryTaxes?.map((entry: any) => {
         return entry?.tax?.id;
       })
-    }));
+    })) as any;
     const quotation: CreateQuotationDto = {
       date: quotationManager?.date?.toString(),
       dueDate: quotationManager?.dueDate?.toString(),
@@ -240,10 +240,10 @@ export const QuotationCreateForm = ({ className, firmId }: QuotationFormProps) =
         showArticleDescription: !controlManager?.isArticleDescriptionHidden,
         hasBankingDetails: !controlManager.isBankAccountDetailsHidden,
         hasGeneralConditions: !controlManager.isGeneralConditionsHidden
-      }
+      } as any
     };
-    const validation = api.quotation.validate(quotation);
-    if (validation.message) {
+    const validation = await (api.quotation.validate as any)(quotation);
+    if (validation?.message) {
       toast.error(validation.message);
     } else {
       if (controlManager.isGeneralConditionsHidden) delete quotation.generalConditions;
@@ -269,7 +269,7 @@ export const QuotationCreateForm = ({ className, firmId }: QuotationFormProps) =
                 {/* General Information */}
                 <QuotationGeneralInformation
                   className="my-5"
-                  firms={firms}
+                  firms={firms as any}
                   isInvoicingAddressHidden={controlManager.isInvoiceAddressHidden}
                   isDeliveryAddressHidden={controlManager.isDeliveryAddressHidden}
                   loading={debounceLoading}
@@ -310,8 +310,8 @@ export const QuotationCreateForm = ({ className, firmId }: QuotationFormProps) =
               <CardContent className="p-5">
                 {/* Control Section */}
                 <QuotationControlSection
-                  bankAccounts={bankAccounts}
-                  currencies={currencies}
+                  bankAccounts={bankAccounts as any}
+                  currencies={currencies as any}
                   invoices={[]}
                   handleSubmitDraft={() => onSubmit(QUOTATION_STATUS.Draft)}
                   handleSubmitValidated={() => onSubmit(QUOTATION_STATUS.Validated)}
