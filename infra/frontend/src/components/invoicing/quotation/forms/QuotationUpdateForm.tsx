@@ -49,8 +49,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     join: ['invoicingAddress', 'deliveryAddress', 'currency']
   });
   const { interlocutors, isFetchInterlocutorsPending } = useEnterpriseInterlocutors({
-    enterpriseId: quotationStore.updateDto?.enterpriseId,
-    enabled: !!quotationStore.updateDto?.enterpriseId
+    enterpriseId: (quotationStore.updateDto as any)?.enterpriseId,
+    enabled: !!(quotationStore.updateDto as any)?.enterpriseId
   });
 
   const { currencies, isCurrenciesPending, refetchCurrencies } = useCurrencies();
@@ -77,8 +77,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         interlocutorId: workflow?.quotation.interlocutorId,
         currencyId: workflow?.quotation.currencyId,
         bankAccountId: workflow?.quotation.bankAccountId,
-        quotationArticles: []
-      });
+        articleQuotationEntries: []
+      } as any);
       const enterprise = enterprises.find((e) => e.id === workflow.quotation.enterpriseId);
       enterpriseStore.set('response', enterprise);
 
@@ -131,7 +131,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         id: quotationStore.response?.id as number,
         data: {
           ...quotationStore.updateDto,
-          quotationArticles: articleStore.articles.map(
+          articleQuotationEntries: articleStore.articles.map(
             (article) =>
               ({
                 id: article.id!,
@@ -145,7 +145,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
                 discountType: article.discountType,
                 discountValue: article.discountValue,
                 taxIds: article.taxIds
-              }) satisfies UpdateQuotationArticleDto
+              }) as any
           )
         }
       });

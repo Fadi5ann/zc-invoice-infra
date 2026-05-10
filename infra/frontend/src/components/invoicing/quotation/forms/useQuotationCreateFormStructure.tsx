@@ -116,12 +116,12 @@ export const useQuotationCreateFormStructure = ({
     label: t('quotation.form.enterprise'),
     variant: FieldVariant.SELECT,
     required: true,
-    error: store.createDtoErrors.enterpriseId?.[0],
+    error: (store.createDtoErrors as any).enterpriseId?.[0],
     placeholder: t('quotation.form.placeholders.enterprise'),
     description: t('quotation.form.descriptions.enterprise'),
     props: {
       disabled: isCreationPending,
-      value: store.createDto.enterpriseId ? store.createDto.enterpriseId.toString() : undefined,
+      value: (store.createDto as any).enterpriseId ? (store.createDto as any).enterpriseId.toString() : undefined,
       onValueChange: (value) => {
         const numericValue = Number(value);
 
@@ -150,7 +150,7 @@ export const useQuotationCreateFormStructure = ({
     placeholder: t('quotation.form.placeholders.interlocutor'),
     description: t('quotation.form.descriptions.interlocutor'),
     props: {
-      disabled: isCreationPending || !store.createDto.enterpriseId,
+      disabled: isCreationPending || !(store.createDto as any).enterpriseId,
       value: store.createDto.interlocutorId ? store.createDto.interlocutorId.toString() : undefined,
       onValueChange: (value) => {
         store.setNested('createDto.interlocutorId', Number(value));

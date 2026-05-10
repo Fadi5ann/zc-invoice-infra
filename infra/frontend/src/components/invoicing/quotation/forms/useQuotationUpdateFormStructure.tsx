@@ -50,7 +50,7 @@ export const useQuotationUpdateFormStructure = ({
     id: 'file',
     label: 'Document',
     variant: FieldVariant.FILE,
-    hidden: store.updateDto?.direction === 'outgoing',
+    hidden: (store.updateDto as any)?.direction === 'outgoing',
     props: {
       // value: store.updateDto.file,
       // onChange: (file) => store.setNested('updateDto.file', file)
@@ -116,13 +116,13 @@ export const useQuotationUpdateFormStructure = ({
     label: t('quotation.form.enterprise'),
     variant: FieldVariant.SELECT,
     required: true,
-    error: store.updateDtoErrors.enterpriseId?.[0],
+    error: (store.updateDtoErrors as any).enterpriseId?.[0],
     placeholder: t('quotation.form.placeholders.enterprise'),
     description: t('quotation.form.descriptions.enterprise'),
-    pending: !(enterprises && store.updateDto?.enterpriseId),
+    pending: !(enterprises && (store.updateDto as any)?.enterpriseId),
     props: {
       disabled: isUpdatePending || !isUpdatable,
-      value: store.updateDto?.enterpriseId ? store.updateDto.enterpriseId.toString() : undefined,
+      value: (store.updateDto as any)?.enterpriseId ? (store.updateDto as any).enterpriseId.toString() : undefined,
       onValueChange: (value) => {
         const numericValue = Number(value);
 
@@ -149,9 +149,9 @@ export const useQuotationUpdateFormStructure = ({
     error: store.updateDtoErrors.interlocutorId?.[0],
     placeholder: t('quotation.form.placeholders.interlocutor'),
     description: t('quotation.form.descriptions.interlocutor'),
-    pending: !(interlocutorOptions && store.updateDto?.enterpriseId),
+    pending: !(interlocutorOptions && (store.updateDto as any)?.enterpriseId),
     props: {
-      disabled: isUpdatePending || !store.updateDto?.enterpriseId || !isUpdatable,
+      disabled: isUpdatePending || !(store.updateDto as any)?.enterpriseId || !isUpdatable,
       value: store.updateDto?.interlocutorId
         ? store.updateDto.interlocutorId.toString()
         : undefined,

@@ -94,7 +94,7 @@ export const QuotationCreateForm = ({ className, firmId }: QuotationFormProps) =
   );
 
   //websocket to listen for server changes related to sequence number
-  const { currentSequence, isQuotationSequencePending } = useQuotationSocket();
+  const { currentSequence, isSequencePending: isQuotationSequencePending } = useQuotationSocket();
   //handle Sequential Number
   React.useEffect(() => {
     quotationManager.set('sequentialNumber', currentSequence);

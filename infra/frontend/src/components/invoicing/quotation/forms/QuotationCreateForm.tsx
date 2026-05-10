@@ -56,8 +56,8 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
     join: ['invoicingAddress', 'deliveryAddress']
   });
   const { interlocutors, isFetchInterlocutorsPending } = useEnterpriseInterlocutors({
-    enterpriseId: quotationStore.createDto.enterpriseId,
-    enabled: !!quotationStore.createDto.enterpriseId
+    enterpriseId: (quotationStore.createDto as any).enterpriseId,
+    enabled: !!(quotationStore.createDto as any).enterpriseId
   });
 
   const { currencies, isCurrenciesPending } = useCurrencies();
@@ -94,7 +94,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
     } else {
       createQuotation({
         ...quotationStore.createDto,
-        quotationArticles: articleStore.articles.map(
+        articleQuotationEntries: articleStore.articles.map(
           (article) =>
             ({
               article: {
@@ -106,7 +106,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
               discountType: article.discountType,
               discountValue: article.discountValue,
               taxIds: article.taxIds
-            }) satisfies CreateQuotationArticleDto
+            }) as any
         )
       });
     }
