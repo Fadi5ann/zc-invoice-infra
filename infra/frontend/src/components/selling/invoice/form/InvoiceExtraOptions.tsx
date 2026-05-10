@@ -78,7 +78,7 @@ export const InvoiceExtraOptions = ({ className, loading }: InvoiceExtraOptionsP
             className="resize-none"
             value={invoiceManager.notes}
             onChange={(e) => invoiceManager.set('notes', e.target.value)}
-            isPending={loading}
+            disabled={loading}
             rows={7}
           />
         </AccordionContent>
