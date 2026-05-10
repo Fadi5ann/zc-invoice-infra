@@ -18,3 +18,7 @@ export interface CreateAddressDto extends Omit<
   Address,
   'createdAt' | 'updatedAt' | 'deletedAt' | 'isDeletionRestricted' | 'country' | 'id'
 > {}
+
+export interface UpdateAddressDto extends Partial<CreateAddressDto> {
+  id?: number;
+}
