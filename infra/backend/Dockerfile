@@ -4,7 +4,7 @@ FROM node:22-bookworm-slim AS builder
 WORKDIR /app
 # Note: Stick to one package manager! If you use npm, use package-lock.json
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 COPY . .
 RUN npm run build
 
