@@ -1,7 +1,7 @@
 import { api } from '@/api';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ResponseQuotationWorkflowDto } from '@/types';
+import { ResponseQuotationWorkflowDto } from '@/types/core/invoicing';
 import { useMutation } from '@tanstack/react-query';
 import { Printer, Repeat2, Save } from 'lucide-react';
 import { useRouter } from 'next/router';

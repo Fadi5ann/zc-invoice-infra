@@ -1,5 +1,5 @@
 import { DatabaseEntity } from '../response/database-entity';
-import { CreateAddressDto, ResponseAddressDto } from './address';
+import { CoreCreateAddressDto as CreateAddressDto, ResponseAddressDto } from './address';
 import { ResponseRefParamDto } from './reference-types';
 
 // enterprise *******************************************************

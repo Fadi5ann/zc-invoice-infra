@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { useTranslation } from 'react-i18next';
-import { ResponseAddressDto } from '@/types';
+import { ResponseAddressDto } from '@/types/core/address';
 
 interface AddressDetailsProps {
   className?: string;
