@@ -343,7 +343,7 @@ export const InvoiceControlSection = ({
                     {quotations?.map((q) => {
                       return (
                         <SelectItem key={q.id} value={q?.id?.toString() || ''}>
-                          <span className="font-bold">{q?.sequential}</span>
+                          <span className="font-bold">{(q as any)?.sequential}</span>
                         </SelectItem>
                       );
                     })}
@@ -352,7 +352,7 @@ export const InvoiceControlSection = ({
               ) : invoiceManager.quotationId ? (
                 <Input
                   className="font-bold my-4"
-                  value={quotations.find((q) => q.id == invoiceManager.quotationId)?.sequential}
+                  value={(quotations.find((q) => q.id == invoiceManager.quotationId) as any)?.sequential}
                 />
               ) : (
                 <Label className="flex p-2 items-center justify-center gap-2 underline ">
