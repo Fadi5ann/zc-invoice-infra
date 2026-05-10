@@ -110,6 +110,7 @@ services:
       replicas: 3 # Make a 3 clones of the backend 
     networks:
       - mgmt_net 
+      - db_net
       - backend_net
 
 # Database Layer
@@ -117,6 +118,7 @@ services:
     image: mysql:8.0
     container_name: zc-db-master-v40
     command: ["mysqld", "--server-id=1", "--report-host=10.0.3.11"]
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -133,6 +135,7 @@ services:
     image: mysql:8.0
     container_name: zc-db-replica-v40
     command: ["mysqld", "--server-id=2", "--report-host=10.0.3.12"]
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -149,6 +152,7 @@ services:
     image: mysql:8.0
     container_name: zc-db-replica2-v40
     command: ["mysqld", "--server-id=3", "--report-host=10.0.3.13"]
+    restart: always # This tells Docker to restart the container when MySQL reboots
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
