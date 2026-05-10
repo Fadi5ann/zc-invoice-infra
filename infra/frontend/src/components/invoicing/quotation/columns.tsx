@@ -3,13 +3,13 @@ import { DataTableColumnHeader } from '@/components/shared/data-table/data-table
 import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
 import { DataTableCellVariant, DataTableConfig } from '@/components/shared/data-table/types';
 import { Badge } from '@/components/ui/badge';
-import { ResponseQuotationDto } from '@/types';
+import { Quotation } from '@/types';
 import { ColumnDef } from '@tanstack/react-table';
 import { useTranslation } from 'next-i18next';
 
 export const useSellingQuotationColumns = (
-  context: DataTableConfig<ResponseQuotationDto>
-): ColumnDef<ResponseQuotationDto>[] => {
+  context: DataTableConfig<Quotation>
+): ColumnDef<Quotation>[] => {
   const { t } = useTranslation('invoicing');
   const { t: tCurrency } = useTranslation('currency');
 
@@ -102,10 +102,10 @@ export const useSellingQuotationColumns = (
           column={column}
           context={context}
           title={t('quotation.table.columns.enterprise')}
-          attribute={'enterprise.name'}
+          attribute={'firm.name'}
         />
       ),
-      cell: ({ row }) => <div>{row.original.enterprise?.name}</div>,
+      cell: ({ row }) => <div>{row.original.firm?.name}</div>,
       enableSorting: true,
       enableHiding: true
     },
@@ -116,13 +116,13 @@ export const useSellingQuotationColumns = (
           column={column}
           context={context}
           title={t('quotation.table.columns.interlocutor')}
-          attribute={'interlocutor.firstName'}
+          attribute={'interlocutor.name'}
         />
       ),
       cell: ({ row }) => (
         <div>
           {row.original.interlocutor
-            ? `${row.original.interlocutor.firstName} ${row.original.interlocutor.lastName}`
+            ? `${row.original.interlocutor.name} ${row.original.interlocutor.surname}`
             : ''}
         </div>
       ),
