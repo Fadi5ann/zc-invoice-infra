@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    // "ignoreDeprecations": "6.0",
+    "useUnknownInCatchVariables": false,
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -9,12 +11,13 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
-
-     "paths": {
-      "src/*": ["src/*"]
+    "baseUrl": "./src",
+    "types": ["node", "multer", "jest"],
+    "paths": {
+      "src/*": ["*"]
     },
     "incremental": true,
+    "tsBuildInfoFile": "./dist/tsconfig.build.tsbuildinfo",
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
