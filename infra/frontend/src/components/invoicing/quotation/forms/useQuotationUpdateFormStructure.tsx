@@ -67,7 +67,7 @@ export const useQuotationUpdateFormStructure = ({
     description: t('quotation.form.descriptions.date'),
     props: {
       disabled: isUpdatePending || !isUpdatable,
-      value: store.updateDto?.date,
+      value: store.updateDto?.date as any,
       onDateChange: (date) => {
         store.setNested('updateDto.date', date);
         store.setNested('updateDtoErrors.date', []);
@@ -85,7 +85,7 @@ export const useQuotationUpdateFormStructure = ({
     description: t('quotation.form.descriptions.dueDate'),
     props: {
       disabled: isUpdatePending || !isUpdatable,
-      value: store.updateDto?.dueDate,
+      value: store.updateDto?.dueDate as any,
       onDateChange: (date) => {
         store.setNested('updateDto.dueDate', date);
         store.setNested('updateDtoErrors.dueDate', []);

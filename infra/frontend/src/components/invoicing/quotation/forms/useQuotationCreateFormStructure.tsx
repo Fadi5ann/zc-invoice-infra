@@ -67,7 +67,7 @@ export const useQuotationCreateFormStructure = ({
     description: t('quotation.form.descriptions.date'),
     props: {
       disabled: isCreationPending,
-      value: store.createDto.date,
+      value: store.createDto.date as any,
       onDateChange: (date) => {
         store.setNested('createDto.date', date);
         store.setNested('createDtoErrors.date', []);
@@ -85,7 +85,7 @@ export const useQuotationCreateFormStructure = ({
     description: t('quotation.form.descriptions.dueDate'),
     props: {
       disabled: isCreationPending,
-      value: store.createDto.dueDate,
+      value: store.createDto.dueDate as any,
       onDateChange: (date) => {
         store.setNested('createDto.dueDate', date);
         store.setNested('createDtoErrors.dueDate', []);
