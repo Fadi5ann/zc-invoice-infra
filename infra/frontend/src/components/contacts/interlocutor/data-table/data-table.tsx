@@ -14,7 +14,7 @@ import {
   useReactTable
 } from '@tanstack/react-table';
 
-import { DataTableToolbar } from './data-table-toolbar';
+import { DataTableToolbar } from '@/components/shared/data-table/data-table-toolbar';
 import {
   Table,
   TableBody,
@@ -23,11 +23,12 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { DataTablePagination } from './data-table-pagination';
+import { DataTablePagination } from '@/components/shared/data-table/data-table-pagination';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'next-i18next';
 import { PackageOpen } from 'lucide-react';
 import { Spinner } from '@/components/shared';
+import { DataTableConfig } from '@/components/shared/data-table/types';
 
 interface DataTableProps<TData, TValue> {
   className?: string;
@@ -35,6 +36,7 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isPending: boolean;
+  context: DataTableConfig<TData>;
 }
 
 export function DataTable<TData, TValue>({
@@ -42,7 +44,8 @@ export function DataTable<TData, TValue>({
   containerClassName,
   columns,
   data,
-  isPending
+  isPending,
+  context
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -79,7 +82,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className={cn(className, 'space-y-6')}>
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} context={context} />
       <div className={cn('rounded-md border overflow-x-auto', containerClassName)}>
         <Table>
           <TableHeader>
@@ -98,7 +101,7 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length && !isPending ? (
+            {table.getRowModel().rows?.length > 0 && !isPending ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                   {row.getVisibleCells().map((cell) => (
@@ -120,7 +123,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center ">
                   <div className="flex items-center justify-center gap-2 font-bold">
-                    {tCommon('table.loading')} <Spinner />
+                    {tCommon('table.loading')} <Spinner show={true} />
                   </div>
                 </TableCell>
               </TableRow>
@@ -128,7 +131,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination table={table} context={context} />
     </div>
   );
 }
