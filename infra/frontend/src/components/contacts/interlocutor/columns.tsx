@@ -1,4 +1,4 @@
-import { Interlocutor, ResponseInterlocutorDto } from '@/types';
+import { Interlocutor } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
 import { transformDateTime } from '@/utils/date.utils';
@@ -8,12 +8,12 @@ import { DataTableConfig } from '@/components/shared/data-table/types';
 import { useTranslation } from 'next-i18next';
 
 export const useInterlocutorColumns = (
-  context: DataTableConfig<ResponseInterlocutorDto>
-): ColumnDef<ResponseInterlocutorDto>[] => {
+  context: DataTableConfig<Interlocutor>
+): ColumnDef<Interlocutor>[] => {
   const { t } = useTranslation('contacts');
   const { t: tCommon } = useTranslation('common');
 
-  const columns: ColumnDef<ResponseInterlocutorDto>[] = [
+  const columns: ColumnDef<Interlocutor>[] = [
     {
       accessorKey: t('interlocutor.table.columns.socialTitle'),
       header: ({ column }) => (
