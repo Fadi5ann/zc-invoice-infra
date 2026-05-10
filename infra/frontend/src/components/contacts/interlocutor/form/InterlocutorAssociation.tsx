@@ -1,13 +1,5 @@
 import React from 'react';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectShimmer,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
 import { useTranslation } from 'next-i18next';
 import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
 import { cn } from '@/lib/utils';
@@ -60,7 +52,7 @@ export const InterlocutorAssociation: React.FC<InterlocutorAssociationProps> = (
       <div className="mx-1 w-full">
         <Label>{tCommon('interlocutor.attributes.position')}</Label>
         <Input
-          isPending={loading || false}
+          disabled={loading || false}
           className="mt-1"
           placeholder="Ex. CEO"
           value={interlocutorStore && interlocutorStore.position}

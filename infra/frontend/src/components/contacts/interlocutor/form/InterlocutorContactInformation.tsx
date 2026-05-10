@@ -6,7 +6,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
@@ -36,31 +35,30 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
       <div>
         <Label>{tCommon('interlocutor.attributes.title')} (*)</Label>
         <div>
-          <SelectShimmer isPending={loading || false}>
-            <Select
-              onValueChange={(e) => {
-                interlocutorStore.set('title', e);
-              }}
-              value={interlocutorStore.title}>
-              <SelectTrigger>
-                <SelectValue placeholder="Titre" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.values(SOCIAL_TITLE).map((title) => (
-                  <SelectItem key={title} value={title}>
-                    {tSocial(title)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </SelectShimmer>
+          <Select
+            disabled={loading || false}
+            onValueChange={(e) => {
+              interlocutorStore.set('title', e);
+            }}
+            value={interlocutorStore.title}>
+            <SelectTrigger>
+              <SelectValue placeholder="Titre" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(SOCIAL_TITLE).map((title) => (
+                <SelectItem key={title} value={title}>
+                  {tSocial(title)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
       {/* name */}
       <div>
         <Label>{tCommon('interlocutor.attributes.name')} (*)</Label>
         <Input
-          isPending={loading || false}
+          disabled={loading || false}
           className="mt-1"
           placeholder="Ex. John"
           value={interlocutorStore.name}
@@ -71,7 +69,7 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
       <div>
         <Label>{tCommon('interlocutor.attributes.surname')} (*)</Label>
         <Input
-          isPending={loading || false}
+          disabled={loading || false}
           className="mt-1"
           placeholder="Ex. Doe"
           value={interlocutorStore.surname}
@@ -83,7 +81,7 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
         <div className="mx-1 w-full">
           <Label>{tCommon('interlocutor.attributes.email')}</Label>
           <Input
-            isPending={loading || false}
+            disabled={loading || false}
             type="email"
             className="mt-1"
             placeholder="Ex. johndoe@zedneycreative.com"
@@ -112,7 +110,7 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
         <div className="mx-1 w-full">
           <Label>{tCommon('interlocutor.attributes.position')}</Label>
           <Input
-            isPending={loading || false}
+            disabled={loading || false}
             className="mt-1"
             placeholder="Ex. CEO"
             value={interlocutorStore && interlocutorStore.position}
