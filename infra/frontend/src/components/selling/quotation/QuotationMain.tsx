@@ -77,14 +77,14 @@ export const QuotationMain: React.FC<QuotationMainProps> = ({ className }) => {
       debouncedSearchTerm
     ],
     queryFn: () =>
-      api.quotation.findPaginated(
-        debouncedPage,
-        debouncedSize,
-        debouncedSortDetails.order ? 'ASC' : 'DESC',
-        debouncedSortDetails.sortKey,
-        debouncedSearchTerm,
-        ['firm', 'interlocutor', 'currency', 'invoices']
-      )
+      api.quotation.findPaginated({
+        page: debouncedPage,
+        size: debouncedSize,
+        order: debouncedSortDetails.order ? 'ASC' : 'DESC',
+        sortKey: debouncedSortDetails.sortKey,
+        search: debouncedSearchTerm,
+        join: ['firm', 'interlocutor', 'currency', 'invoices']
+      } as any)
   });
 
   const quotations = React.useMemo(() => {
@@ -167,7 +167,7 @@ export const QuotationMain: React.FC<QuotationMainProps> = ({ className }) => {
 
   //Invoice quotation
   const { mutate: invoiceQuotation, isPending: isInvoicingPending } = useMutation({
-    mutationFn: (data: { id?: number; createInvoice: boolean }) =>
+    mutationFn: (data: { id: number; createInvoice: boolean }) =>
       api.quotation.invoice(data.id, data.createInvoice),
     onSuccess: (data) => {
       toast.success('Devis facturé avec succès');
@@ -198,7 +198,7 @@ export const QuotationMain: React.FC<QuotationMainProps> = ({ className }) => {
         sequential={quotationManager?.sequential || ''}
         open={deleteDialog}
         deleteQuotation={() => {
-          quotationManager?.id && removeQuotation(quotationManager?.id);
+          quotationManager?.id && removeQuotation(quotationManager.id);
         }}
         isDeletionPending={isDeletePending}
         onClose={() => setDeleteDialog(false)}
@@ -210,7 +210,7 @@ export const QuotationMain: React.FC<QuotationMainProps> = ({ className }) => {
         duplicateQuotation={(includeFiles: boolean) => {
           quotationManager?.id &&
             duplicateQuotation({
-              id: quotationManager?.id,
+              id: quotationManager.id,
               includeFiles: includeFiles
             });
         }}
@@ -221,7 +221,7 @@ export const QuotationMain: React.FC<QuotationMainProps> = ({ className }) => {
         id={quotationManager?.id || 0}
         open={downloadDialog}
         downloadQuotation={(template: string) => {
-          quotationManager?.id && downloadQuotation({ id: quotationManager?.id, template });
+          quotationManager?.id && downloadQuotation({ id: quotationManager.id, template });
         }}
         isDownloadPending={isDownloadPending}
         onClose={() => setDownloadDialog(false)}
@@ -241,7 +241,7 @@ export const QuotationMain: React.FC<QuotationMainProps> = ({ className }) => {
         context={context}
         className="flex flex-col flex-1 overflow-hidden p-1"
         containerClassName="overflow-auto"
-        data={quotations}
+        data={quotations as any[]}
         columns={getQuotationColumns(tInvoicing, router)}
         isPending={isPending}
       />

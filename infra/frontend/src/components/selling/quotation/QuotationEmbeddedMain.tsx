@@ -80,16 +80,16 @@ export const QuotationEmbeddedMain: React.FC<QuotationEmbeddedMainProps> = ({
       debouncedSearchTerm
     ],
     queryFn: () =>
-      api.quotation.findPaginated(
-        debouncedPage,
-        debouncedSize,
-        debouncedSortDetails.order ? 'ASC' : 'DESC',
-        debouncedSortDetails.sortKey,
-        debouncedSearchTerm,
-        ['firm', 'interlocutor', 'currency', 'invoices'],
+      api.quotation.findPaginated({
+        page: debouncedPage,
+        size: debouncedSize,
+        order: debouncedSortDetails.order ? 'ASC' : 'DESC',
+        sortKey: debouncedSortDetails.sortKey,
+        search: debouncedSearchTerm,
+        join: ['firm', 'interlocutor', 'currency', 'invoices'],
         firmId,
         interlocutorId
-      )
+      } as any)
   });
 
   const quotations = React.useMemo(() => {
@@ -166,7 +166,7 @@ export const QuotationEmbeddedMain: React.FC<QuotationEmbeddedMainProps> = ({
 
   //Invoice quotation
   const { mutate: invoiceQuotation, isPending: isInvoicingPending } = useMutation({
-    mutationFn: (data: { id?: number; createInvoice: boolean }) =>
+    mutationFn: (data: { id: number; createInvoice: boolean }) =>
       api.quotation.invoice(data.id, data.createInvoice),
     onSuccess: (data) => {
       toast.success('Devis facturé avec succès');
@@ -202,7 +202,7 @@ export const QuotationEmbeddedMain: React.FC<QuotationEmbeddedMainProps> = ({
           sequential={quotationManager?.sequential || ''}
           open={deleteDialog}
           deleteQuotation={() => {
-            quotationManager?.id && removeQuotation(quotationManager?.id);
+            quotationManager?.id && removeQuotation(quotationManager.id);
           }}
           isDeletionPending={isDeletePending}
           onClose={() => setDeleteDialog(false)}
@@ -214,7 +214,7 @@ export const QuotationEmbeddedMain: React.FC<QuotationEmbeddedMainProps> = ({
           duplicateQuotation={(includeFiles: boolean) => {
             quotationManager?.id &&
               duplicateQuotation({
-                id: quotationManager?.id,
+                id: quotationManager.id,
                 includeFiles: includeFiles
               });
           }}
@@ -225,7 +225,7 @@ export const QuotationEmbeddedMain: React.FC<QuotationEmbeddedMainProps> = ({
           id={quotationManager?.id || 0}
           open={downloadDialog}
           downloadQuotation={(template: string) => {
-            quotationManager?.id && downloadQuotation({ id: quotationManager?.id, template });
+            quotationManager?.id && downloadQuotation({ id: quotationManager.id, template });
           }}
           isDownloadPending={isDownloadPending}
           onClose={() => setDownloadDialog(false)}
@@ -245,7 +245,7 @@ export const QuotationEmbeddedMain: React.FC<QuotationEmbeddedMainProps> = ({
           <DataTable
             className="flex flex-col flex-1 overflow-hidden p-1"
             containerClassName="overflow-auto"
-            data={quotations}
+            data={quotations as any[]}
             columns={getQuotationColumns(tInvoicing, router, firmId, interlocutorId)}
             isPending={isPending}
           />
