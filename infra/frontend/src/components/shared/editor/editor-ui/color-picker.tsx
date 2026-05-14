@@ -36,7 +36,7 @@ function setRef<T>(ref: PossibleRef<T>, value: T) {
   }
 
   if (ref !== null && ref !== undefined) {
-    ref.current = value
+    (ref as React.MutableRefObject<T>).current = value
   }
 }
 
@@ -610,10 +610,10 @@ function useLazyRef<T>(fn: () => T) {
   const ref = React.useRef<T | null>(null)
 
   if (ref.current === null) {
-    ref.current = fn()
+    (ref as React.MutableRefObject<T | null>).current = fn()
   }
 
-  return ref as React.RefObject<T>
+  return ref as React.MutableRefObject<T>
 }
 
 interface ColorPickerStoreState {
@@ -640,8 +640,8 @@ interface ColorPickerStore {
 }
 
 function createColorPickerStore(
-  listenersRef: React.RefObject<Set<() => void>>,
-  stateRef: React.RefObject<ColorPickerStoreState>,
+  listenersRef: React.MutableRefObject<Set<() => void>>,
+  stateRef: React.MutableRefObject<ColorPickerStoreState>,
   callbacks?: ColorPickerStoreCallbacks
 ): ColorPickerStore {
   const store: ColorPickerStore = {
@@ -724,6 +724,21 @@ function createColorPickerStore(
   return store
 }
 
+interface ColorPickerContextValue {
+  dir: Direction
+  disabled?: boolean
+  inline?: boolean
+  readOnly?: boolean
+  required?: boolean
+}
+
+const ColorPickerStoreContext = React.createContext<ColorPickerStore | null>(
+  null
+)
+const ColorPickerContext = React.createContext<ColorPickerContextValue | null>(
+  null
+)
+
 function useColorPickerStoreContext(consumerName: string) {
   const context = React.useContext(ColorPickerStoreContext)
   if (!context) {
@@ -746,21 +761,6 @@ function useColorPickerStore<U>(
 
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot)
 }
-
-interface ColorPickerContextValue {
-  dir: Direction
-  disabled?: boolean
-  inline?: boolean
-  readOnly?: boolean
-  required?: boolean
-}
-
-const ColorPickerStoreContext = React.createContext<ColorPickerStore | null>(
-  null
-)
-const ColorPickerContext = React.createContext<ColorPickerContextValue | null>(
-  null
-)
 
 function useColorPickerContext(consumerName: string) {
   const context = React.useContext(ColorPickerContext)
@@ -901,7 +901,7 @@ function ColorPickerRootImpl(props: ColorPickerRootImplProps) {
   const [formTrigger, setFormTrigger] = React.useState<HTMLDivElement | null>(
     null
   )
-  const composedRef = useComposedRefs(ref, (node) => setFormTrigger(node))
+  const composedRef = useComposedRefs(ref as React.Ref<HTMLDivElement>, (node) => setFormTrigger(node))
 
   const isFormControl = formTrigger ? !!formTrigger.closest("form") : true
 
@@ -1052,7 +1052,7 @@ function ColorPickerArea(props: ColorPickerAreaProps) {
 
   const isDraggingRef = React.useRef(false)
   const areaRef = React.useRef<HTMLDivElement>(null)
-  const composedRef = useComposedRefs(ref, areaRef)
+  const composedRef = useComposedRefs(ref as React.Ref<HTMLDivElement>, areaRef)
 
   const updateColorFromPosition = React.useCallback(
     (clientX: number, clientY: number) => {
@@ -1363,8 +1363,10 @@ function ColorPickerEyeDropper(props: ColorPickerEyeDropperProps) {
 }
 
 interface ColorPickerFormatSelectProps
-  extends Omit<React.ComponentProps<typeof Select>, "value" | "onValueChange">,
-    Pick<React.ComponentProps<typeof SelectTrigger>, "size" | "className"> {}
+  extends Omit<React.ComponentProps<typeof Select>, "value" | "onValueChange"> {
+  size?: any;
+  className?: string;
+}
 
 function ColorPickerFormatSelect(props: ColorPickerFormatSelectProps) {
   const { size, className, ...selectProps } = props
@@ -1390,8 +1392,8 @@ function ColorPickerFormatSelect(props: ColorPickerFormatSelectProps) {
     >
       <SelectTrigger
         data-slot="color-picker-format-select-trigger"
-        size={size ?? "sm"}
         className={cn(className)}
+        {...({ size: size ?? "sm" } as any)}
       >
         <SelectValue />
       </SelectTrigger>
@@ -1474,6 +1476,8 @@ function ColorPickerInput(props: ColorPickerInputProps) {
       />
     )
   }
+
+  return null
 }
 
 const inputGroupItemVariants = cva(
