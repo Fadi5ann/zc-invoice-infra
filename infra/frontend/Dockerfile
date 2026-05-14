@@ -2,7 +2,7 @@ FROM node:22-alpine AS base
 
 # --- Stage 1: Dependencies ---
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat python3 build-base
 WORKDIR /app
 COPY package.json package-lock.json ./
 # Use the exact fix we needed earlier for ESLint 10

@@ -102,6 +102,15 @@ services:
 # VLAN 30 - Application Layer
   zc-app-v30:
     build: ./backend
+    env_file:
+      - .env
+    environment:
+      - DATABASE_TYPE=mysql
+      - DATABASE_HOST=db-primary
+      - DATABASE_PORT=3306
+      - DATABASE_USERNAME=${DB_USER}
+      - DATABASE_PASSWORD=${DB_PASSWORD}
+      - DATABASE_NAME=${DB_NAME}
     # Note: hide the name of the container so docker can make a clones
     # container_name: zc-app-v30
     expose:
