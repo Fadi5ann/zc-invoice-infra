@@ -121,6 +121,9 @@ services:
       - "3000" # Only expose to the Nginx Proxy, not to the host
     deploy:
       replicas: 3 # Make a 3 clones of the backend 
+    depends_on:
+      db-primary:
+        condition: service_healthy
     networks:
       - mgmt_net 
       - db_net
@@ -137,6 +140,11 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - ./mysql-config/my.cnf:/etc/mysql/my.cnf
       - db_master_data:/var/lib/mysql
@@ -154,6 +162,9 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      db-primary:
+        condition: service_healthy
     volumes:
       - ./mysql-config/my.cnf:/etc/mysql/my.cnf
       - db_replica1_data:/var/lib/mysql
@@ -171,6 +182,9 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      db-primary:
+        condition: service_healthy
     volumes:
       - ./mysql-config/my.cnf:/etc/mysql/my.cnf
       - db_replica2_data:/var/lib/mysql
