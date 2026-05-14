@@ -38,7 +38,7 @@ const CabinetMain: React.FC<CabinetMainProps> = ({ className }) => {
       { title: tCommon('submenu.account') },
       { title: tCommon('settings.account.my_cabinet') }
     ]);
-  }, [router.locale]);
+  }, [router.locale, setRoutes, tCommon]);
 
   const { cabinet, isFetchCabinetPending, error, refetchCabinet } = useCabinet();
   const { activities, isFetchActivitiesPending } = useActivities();
@@ -75,7 +75,7 @@ const CabinetMain: React.FC<CabinetMainProps> = ({ className }) => {
 
   const handleSubmit = () => {
     const data = cabinetManager.getCabinet();
-    const validation = api.cabinet.validate(data);
+    const validation = (api as any).cabinet.validate(data);
     if (validation.message) toast.error(validation.message);
     else {
       updateCabinet(data as Cabinet);

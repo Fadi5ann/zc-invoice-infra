@@ -24,7 +24,6 @@ type CabinetManager = {
 const initialState: Omit<CabinetManager, 'set' | 'reset' | 'setCabinet' | 'getCabinet'> = {
   id: undefined,
   enterpriseName: '',
-  email: '',
   phone: '',
   taxIdNumber: '',
   activity: undefined,
