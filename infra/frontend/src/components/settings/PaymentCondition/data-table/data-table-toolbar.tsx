@@ -29,7 +29,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
             setPage(1);
             setSearchTerm(event.target.value);
           }}
-          className="h-8 w-[150px] lg:w-[300px]"
+          className="h-8 w-37.5 lg:w-75"
         />
         {searchTerm && (
           <Button variant="ghost" onClick={() => setSearchTerm('')} className="h-8 px-2 lg:px-3">

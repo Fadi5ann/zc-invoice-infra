@@ -20,7 +20,7 @@ export function DataTableToolbar() {
           })}
           value={searchTerm.toString()}
           onChange={(event) => setSearchTerm(event.target.value)}
-          className="h-8 w-[150px] lg:w-[300px]"
+          className="h-8 w-37.5 lg:w-75"
         />
         {(searchTerm || page != 1 || size != 5) && (
           <Button

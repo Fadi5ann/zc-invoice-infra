@@ -33,7 +33,7 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
             setPage(1);
             setSize(Number(value));
           }}>
-          <SelectTrigger className="h-8 w-[100px] -mt-1">
+          <SelectTrigger className="h-8 w-25 -mt-1">
             <SelectValue placeholder={table.getState().pagination.pageSize} />
           </SelectTrigger>
           <SelectContent side="bottom" align="center">
@@ -47,7 +47,7 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
         <p className="text-sm font-medium">{tCommon('pagination.rows_per')}</p>
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
-        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+        <div className="flex w-25 items-center justify-center text-sm font-medium">
           {tCommon('pagination.enumerate', { page, totalPageCount })}
         </div>
         <div className="flex items-center space-x-2">

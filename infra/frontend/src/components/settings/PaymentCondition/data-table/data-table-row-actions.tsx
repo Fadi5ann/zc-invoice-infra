@@ -11,7 +11,7 @@ import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
 import { useTranslation } from 'next-i18next';
 import { usePaymentConditionActions } from './ActionsContext';
-import { usePaymentConditionManager } from '../hooks/usePaymentConditionManager';
+import { usePaymentConditionManager } from './usePaymentConditionManager';
 import { PaymentCondition } from '@/types';
 import { Settings2, Trash2 } from 'lucide-react';
 
@@ -32,7 +32,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <DotsHorizontalIcon className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="center" className="w-[160px]">
+      <DropdownMenuContent align="center" className="w-40">
         <DropdownMenuLabel className="text-center">{tCommon('commands.actions')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem

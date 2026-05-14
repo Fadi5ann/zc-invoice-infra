@@ -1,4 +1,4 @@
-import { BankAccount } from '@/types';
+import { Activity } from '@/types';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,12 +11,12 @@ import {
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
 import { useTranslation } from 'next-i18next';
-import { useActivityManager } from '../hooks/useActivityManager';
+import { useActivityManager } from '../hooks';
 import { useActivityActions } from './ActionDialogContext';
 import { Settings2, Trash2 } from 'lucide-react';
 
 interface DataTableRowActionsProps {
-  row: Row<BankAccount>;
+  row: Row<Activity>;
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
@@ -31,7 +31,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <DotsHorizontalIcon className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="center" className="w-[160px]">
+      <DropdownMenuContent align="center" className="w-40">
         <DropdownMenuLabel className="text-center">{tCommon('commands.actions')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem

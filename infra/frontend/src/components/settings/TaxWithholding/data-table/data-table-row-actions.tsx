@@ -1,4 +1,4 @@
-import { BankAccount } from '@/types';
+import { CreateTaxWithholdingDto } from '@/types';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -16,7 +16,7 @@ import { useTaxWithholdingManager } from '../hooks/useTaxWithholdingManager';
 import { useTaxWithholdingActions } from './ActionDialogContext';
 
 interface DataTableRowActionsProps {
-  row: Row<BankAccount>;
+  row: Row<CreateTaxWithholdingDto>;
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
@@ -31,7 +31,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <DotsHorizontalIcon className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="center" className="w-[160px]">
+      <DropdownMenuContent align="center" className="w-40">
         <DropdownMenuLabel className="text-center">{tCommon('commands.actions')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
