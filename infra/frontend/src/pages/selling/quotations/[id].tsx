@@ -1,7 +1,12 @@
 import { QuotationUpdateForm } from '@/components/invoicing/quotation/forms/QuotationUpdateForm';
-import { useParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 export default function Page() {
-  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const id = router.query.id as string;
   return <QuotationUpdateForm id={Number(id)} />;
+}
+
+export async function getServerSideProps() {
+  return { props: {} };
 }

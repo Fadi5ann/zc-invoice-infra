@@ -1,5 +1,3 @@
-import { GetStaticProps } from 'next';
-import { getI18nProps } from '@/lib/getStatic';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { InvoiceUpdateForm } from '@/components/selling/invoice/InvoiceUpdateForm';
@@ -14,6 +12,6 @@ export default function Page() {
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => ({
-  props: await getI18nProps(locale),
-});
+export async function getServerSideProps() {
+  return { props: {} };
+}

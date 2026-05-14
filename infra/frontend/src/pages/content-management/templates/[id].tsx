@@ -6,3 +6,7 @@ export default function Page() {
   const id = router.query.id as string;
   return <UpdateTemplateForm id={id} />;
 }
+
+export async function getServerSideProps() {
+  return { props: {} };
+}
