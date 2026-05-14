@@ -6,10 +6,12 @@ import { ResponseAddressDto } from '@/types/core/address';
 
 interface AddressDetailsProps {
   className?: string;
-  address?: ResponseAddressDto;
+  address?: ResponseAddressDto | any;
+  addressType?: string;
+  loading?: boolean;
 }
 
-export const AddressDetails = ({ className, address }: AddressDetailsProps) => {
+export const AddressDetails = ({ className, address, addressType, loading }: AddressDetailsProps) => {
   const { t: tContacts } = useTranslation('contacts');
   const { t: tCountry } = useTranslation('country');
 

@@ -32,6 +32,8 @@ import { sequence } from './sequence';
 export * from './sequence';
 import { tax } from './tax';
 export * from './tax';
+import { taxWithholding } from './tax-withholding';
+export * from './tax-withholding';
 import { upload } from './upload';
 export * from './upload';
 import { user } from './user';
@@ -60,6 +62,7 @@ export const api = {
   role,
   sequence,
   tax,
+  taxWithholding,
   upload,
   user,
   quotation: invoicing.quotation // Add quotation to root level for backward compatibility

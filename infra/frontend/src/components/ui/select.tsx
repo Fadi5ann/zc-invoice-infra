@@ -132,6 +132,23 @@ const SelectSeparator = React.forwardRef<
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
+const SelectShimmer = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & { isPending?: boolean }
+>(({ className, isPending, children, ...props }, ref) => {
+  if (isPending) {
+    return (
+      <div
+        ref={ref}
+        className={cn('flex h-9 w-full rounded-md border border-input bg-muted animate-pulse', className)}
+        {...props}
+      />
+    );
+  }
+  return <>{children}</>;
+});
+SelectShimmer.displayName = 'SelectShimmer';
+
 export {
   Select,
   SelectGroup,
@@ -142,5 +159,6 @@ export {
   SelectItem,
   SelectSeparator,
   SelectScrollUpButton,
-  SelectScrollDownButton
+  SelectScrollDownButton,
+  SelectShimmer
 };

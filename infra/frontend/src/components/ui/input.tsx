@@ -1,9 +1,17 @@
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
+import { Skeleton } from './skeleton';
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
-  ({ className, type, ...props }, ref) => {
+export interface InputProps extends React.ComponentProps<'input'> {
+  isPending?: boolean;
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, isPending, ...props }, ref) => {
+    if (isPending) {
+      return <Skeleton className={cn('h-9 w-full', className)} />;
+    }
     return (
       <input
         type={type}

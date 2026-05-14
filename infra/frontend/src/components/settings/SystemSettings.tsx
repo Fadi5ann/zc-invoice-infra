@@ -58,7 +58,7 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({ className, child
         <aside className="flex-1 mb-2">
           <SidebarNav items={sidebarNavItems} />
         </aside>
-        <div className="flex flex-col flex-[7] overflow-hidden">{children}</div>
+        <div className="flex flex-col flex-7 overflow-hidden">{children}</div>
       </div>
     </div>
   );

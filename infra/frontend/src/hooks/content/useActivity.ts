@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 const useActivity = (id: number, enabled: boolean = true) => {
   const { isPending: isFetchActivityPending, data: activityResp } = useQuery({
     queryKey: [`activity-${id}`],
-    queryFn: () => api.activity.findOne(id),
+    queryFn: () => api.admin.refParam.findById(id),
     enabled: !!id && enabled
   });
 

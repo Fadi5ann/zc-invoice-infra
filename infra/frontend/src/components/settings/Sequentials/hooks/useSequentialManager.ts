@@ -1,10 +1,10 @@
 import { create } from 'zustand';
-import { UpdateQuotationSequentialNumber, UpdateSequentialDto } from '@/types';
+import { UpdateSequentialDto } from '@/types';
 
 type SequentialManager = {
   // data
-  sellingQuotation?: UpdateQuotationSequentialNumber;
-  sellingInvoice?: UpdateQuotationSequentialNumber;
+  sellingQuotation?: UpdateSequentialDto;
+  sellingInvoice?: UpdateSequentialDto;
   // methods
   setSequential: (
     attribute: keyof Omit<SequentialManager, 'set' | 'reset' | 'setSequential'>,
