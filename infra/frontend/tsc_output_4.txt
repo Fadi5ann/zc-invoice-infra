@@ -1,0 +1,53 @@
+src/components/settings/Tax/TaxMain.tsx(9,31): error TS2307: Cannot find module './hooks/useTaxManager' or its corresponding type declarations.
+src/components/settings/Tax/TaxMain.tsx(77,9): error TS2322: Type 'number' is not assignable to type 'string'.
+src/components/settings/Tax/TaxMain.tsx(78,9): error TS2322: Type 'number' is not assignable to type 'string'.
+src/components/settings/Tax/TaxMain.tsx(142,20): error TS2552: Cannot find name 'createTaxSchema'. Did you mean 'createTaxSheet'?
+src/components/settings/Tax/data-table/columns.tsx(18,10): error TS2741: Property 'context' is missing in type '{ column: Column<Tax, unknown>; title: string; attribute: string; }' but required in type 'DataTableColumnHeaderProps<Tax, unknown>'.
+src/components/settings/Tax/data-table/columns.tsx(27,10): error TS2741: Property 'context' is missing in type '{ column: Column<Tax, unknown>; title: string; attribute: string; }' but required in type 'DataTableColumnHeaderProps<Tax, unknown>'.
+src/components/settings/Tax/data-table/columns.tsx(36,10): error TS2741: Property 'context' is missing in type '{ column: Column<Tax, unknown>; title: string; attribute: string; }' but required in type 'DataTableColumnHeaderProps<Tax, unknown>'.
+src/components/settings/Tax/data-table/columns.tsx(38,47): error TS2339: Property 'type' does not exist on type 'Tax'.
+src/components/settings/Tax/data-table/columns.tsx(48,45): error TS2322: Type '{ row: Row<Tax>; onEdit: () => void; onDelete: () => void; }' is not assignable to type 'IntrinsicAttributes & DataTableRowActionsProps<unknown>'.
+  Property 'onEdit' does not exist on type 'IntrinsicAttributes & DataTableRowActionsProps<unknown>'.
+src/components/settings/Tax/modals/TaxCreateSheet.tsx(6,25): error TS2307: Cannot find module '../TaxForm' or its corresponding type declarations.
+src/components/settings/Tax/modals/TaxUpdateSheet.tsx(6,25): error TS2307: Cannot find module '../TaxForm' or its corresponding type declarations.
+src/components/shared/editor/editor-ui/color-picker.tsx(39,9): error TS2540: Cannot assign to 'current' because it is a read-only property.
+src/components/shared/editor/editor-ui/color-picker.tsx(904,39): error TS2345: Argument of type 'LegacyRef<HTMLDivElement> | undefined' is not assignable to parameter of type 'PossibleRef<HTMLDivElement>'.
+  Type 'string' is not assignable to type 'PossibleRef<HTMLDivElement>'.
+src/components/shared/editor/editor-ui/color-picker.tsx(1055,39): error TS2345: Argument of type 'LegacyRef<HTMLDivElement> | undefined' is not assignable to parameter of type 'PossibleRef<HTMLDivElement>'.
+  Type 'string' is not assignable to type 'PossibleRef<HTMLDivElement>'.
+src/components/shared/editor/editor-ui/color-picker.tsx(1367,54): error TS2344: Type '"size" | "className"' does not satisfy the constraint '"popover" | "id" | "value" | "name" | "title" | "type" | "form" | "slot" | "style" | "prefix" | "role" | "children" | "onChange" | "defaultChecked" | "className" | "defaultValue" | ... 272 more ... | keyof RefAttributes<...>'.
+  Type '"size"' is not assignable to type '"popover" | "id" | "value" | "name" | "title" | "type" | "form" | "slot" | "style" | "prefix" | "role" | "children" | "onChange" | "defaultChecked" | "className" | "defaultValue" | ... 272 more ... | keyof RefAttributes<...>'.
+src/components/shared/editor/editor-ui/color-picker.tsx(1393,9): error TS2322: Type '{ children: Element; "data-slot": string; size: {}; className: string; }' is not assignable to type 'IntrinsicAttributes & Omit<SelectTriggerProps & RefAttributes<HTMLButtonElement>, "ref"> & RefAttributes<...>'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Omit<SelectTriggerProps & RefAttributes<HTMLButtonElement>, "ref"> & RefAttributes<...>'.
+src/components/shared/editor/plugins/toolbar/font-background-toolbar-plugin.tsx(72,37): error TS2322: Type '"icon-sm"' is not assignable to type '"lg" | "sm" | "default" | "icon" | null | undefined'.
+src/components/shared/editor/plugins/toolbar/font-background-toolbar-plugin.tsx(86,12): error TS2741: Property 'size' is missing in type '{}' but required in type 'ColorPickerFormatSelectProps'.
+src/components/shared/editor/plugins/toolbar/font-color-toolbar-plugin.tsx(67,35): error TS2322: Type '"icon-sm"' is not assignable to type '"lg" | "sm" | "default" | "icon" | null | undefined'.
+src/components/shared/editor/plugins/toolbar/font-color-toolbar-plugin.tsx(81,12): error TS2741: Property 'size' is missing in type '{}' but required in type 'ColorPickerFormatSelectProps'.
+src/hooks/content/core/useQuotation.ts(25,5): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(options: DefinedInitialDataOptions<Quotation, unknown, Quotation, readonly unknown[]>, queryClient?: QueryClient | undefined): DefinedUseQueryResult<...>', gave the following error.
+    Type '() => Promise<ResponseQuotationDto>' is not assignable to type 'QueryFunction<Quotation, readonly unknown[]>'.
+      Type 'Promise<ResponseQuotationDto>' is not assignable to type 'Quotation | Promise<Quotation>'.
+        Type 'Promise<ResponseQuotationDto>' is not assignable to type 'Promise<Quotation>'.
+          Property 'invoices' is missing in type 'ResponseQuotationDto' but required in type 'Quotation'.
+  Overload 2 of 3, '(options: UndefinedInitialDataOptions<Quotation, unknown, Quotation, readonly unknown[]>, queryClient?: QueryClient | undefined): UseQueryResult<...>', gave the following error.
+    Type '() => Promise<ResponseQuotationDto>' is not assignable to type 'unique symbol | QueryFunction<Quotation, readonly unknown[], never> | undefined'.
+      Type '() => Promise<ResponseQuotationDto>' is not assignable to type 'QueryFunction<Quotation, readonly unknown[], never>'.
+        Type 'Promise<ResponseQuotationDto>' is not assignable to type 'Quotation | Promise<Quotation>'.
+          Type 'Promise<ResponseQuotationDto>' is not assignable to type 'Promise<Quotation>'.
+            Property 'invoices' is missing in type 'ResponseQuotationDto' but required in type 'Quotation'.
+  Overload 3 of 3, '(options: UseQueryOptions<Quotation, unknown, Quotation, readonly unknown[]>, queryClient?: QueryClient | undefined): UseQueryResult<Quotation, unknown>', gave the following error.
+    Type '() => Promise<ResponseQuotationDto>' is not assignable to type 'unique symbol | QueryFunction<Quotation, readonly unknown[], never> | undefined'.
+      Type '() => Promise<ResponseQuotationDto>' is not assignable to type 'QueryFunction<Quotation, readonly unknown[], never>'.
+        Type 'Promise<ResponseQuotationDto>' is not assignable to type 'Quotation | Promise<Quotation>'.
+          Type 'Promise<ResponseQuotationDto>' is not assignable to type 'Promise<Quotation>'.
+            Property 'invoices' is missing in type 'ResponseQuotationDto' but required in type 'Quotation'.
+src/hooks/content/useActivity.ts(8,24): error TS2339: Property 'activity' does not exist on type '{ admin: { refType: { findPaginated: ({ page, limit, sort, search, filter, join, }: QueryParams) => Promise<Paginated<ResponseRefTypeDto<object>>>; findAll: () => Promise<ResponseRefTypeDto<object>[]>; findById: (id: number) => Promise<...>; create: (role: CreateRefTypeDto<...>) => Promise<...>; update: (id?: number...'.
+src/hooks/content/useQuotationChoice.ts(9,46): error TS2554: Expected 0 arguments, but got 1.
+src/hooks/stores/useFirmStore.ts(55,25): error TS2339: Property 'address' does not exist on type '{ admin: { refType: { findPaginated: ({ page, limit, sort, search, filter, join, }: QueryParams) => Promise<Paginated<ResponseRefTypeDto<object>>>; findAll: () => Promise<ResponseRefTypeDto<object>[]>; findById: (id: number) => Promise<...>; create: (role: CreateRefTypeDto<...>) => Promise<...>; update: (id?: number...'.
+src/hooks/stores/useFirmStore.ts(56,24): error TS2339: Property 'address' does not exist on type '{ admin: { refType: { findPaginated: ({ page, limit, sort, search, filter, join, }: QueryParams) => Promise<Paginated<ResponseRefTypeDto<object>>>; findAll: () => Promise<ResponseRefTypeDto<object>[]>; findById: (id: number) => Promise<...>; create: (role: CreateRefTypeDto<...>) => Promise<...>; update: (id?: number...'.
+src/hooks/stores/useFirmStore.ts(114,10): error TS2352: Conversion of type '{ notes: any; invoicingAddress: any; deliveryAddress: any; taxIdNumber?: any; id: any; name: any; mainInterlocutor: { title: any; name: any; surname: any; phone: any; email: any; position: any; }; activityId: any; ... 4 more ...; phone: any; }' to type 'Firm' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ notes: any; invoicingAddress: any; deliveryAddress: any; taxIdNumber?: any; id: any; name: any; mainInterlocutor: { title: any; name: any; surname: any; phone: any; email: any; position: any; }; activityId: any; ... 4 more ...; phone: any; }' is missing the following properties from type 'Firm': createdAt, updatedAt, deletedAt, isDeletionRestricted
+src/hooks/stores/useQuotationStore.ts(1,30): error TS2724: '"@/types"' has no exported member named 'ResponseQuotationDto'. Did you mean 'CreateQuotationDto'?
+src/hooks/stores/useQuotationStore.ts(21,5): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+src/hooks/stores/useQuotationStore.ts(22,5): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+src/utils/string.utils.ts(1,10): error TS2305: Module '"@/types"' has no exported member 'Sequential'.
