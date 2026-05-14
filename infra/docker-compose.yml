@@ -102,6 +102,7 @@ services:
 # VLAN 30 - Application Layer
   zc-app-v30:
     build: ./backend
+    container_name: zc-app-v30
     env_file:
       - .env
     environment:
@@ -115,12 +116,14 @@ services:
       - SMTP_PASS=${SMTP_PASS}
       - SMTP_HOST=${SMTP_HOST}
       - SMTP_PORT=${SMTP_PORT}
-    # Note: hide the name of the container so docker can make a clones
-    # container_name: zc-app-v30
     expose:
       - "3000" # Only expose to the Nginx Proxy, not to the host
-    deploy:
-      replicas: 3 # Make a 3 clones of the backend 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     depends_on:
       db-primary:
         condition: service_healthy
