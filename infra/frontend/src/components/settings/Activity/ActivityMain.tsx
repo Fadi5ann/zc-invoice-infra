@@ -7,7 +7,7 @@ import { useDebounce } from '@/hooks/other/useDebounce';
 import { ActivityDeleteDialog } from './dialogs/ActivityDeleteDialog';
 import { useTranslation } from 'next-i18next';
 import { ActivityUpdateDialog } from './dialogs/ActivityUpdateDialog';
-import { useActivityManager } from './hooks/useActivityManager';
+import { useActivityManager } from './hooks';
 import { ActivityCreateDialog } from './dialogs/ActivityCreateDialog';
 import { Activity } from '@/types';
 import { DataTable } from './data-table/data-table';
@@ -36,7 +36,7 @@ const ActivityMain: React.FC<ActivityMainProps> = ({ className }) => {
       { title: tCommon('submenu.system') },
       { title: tCommon('settings.system.activity') }
     ]);
-  }, [router.locale]);
+  }, [router.locale, setRoutes, tCommon]);
 
   const activityManager = useActivityManager();
 
@@ -74,7 +74,7 @@ const ActivityMain: React.FC<ActivityMainProps> = ({ className }) => {
       debouncedSearchTerm
     ],
     queryFn: () =>
-      api.activity.findPaginated(
+      (api as any).activity.findPaginated(
         debouncedPage,
         debouncedSize,
         debouncedSortDetails.order ? 'ASC' : 'DESC',
@@ -106,8 +106,8 @@ const ActivityMain: React.FC<ActivityMainProps> = ({ className }) => {
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey })
   };
 
-  const { mutate: createActivity, isPending: isCreatePending } = useMutation({
-    mutationFn: (data: Activity) => api.activity.create(data),
+  const { mutate: createMutation, isPending: isCreatePending } = useMutation({
+    mutationFn: (data: Activity) => (api as any).activity.create(data),
     onSuccess: () => {
       toast.success('Activité ajoutée avec succès');
       refetchActivities();
@@ -118,8 +118,8 @@ const ActivityMain: React.FC<ActivityMainProps> = ({ className }) => {
     }
   });
 
-  const { mutate: updateActivity, isPending: isUpdatePending } = useMutation({
-    mutationFn: (data: Activity) => api.activity.update(data),
+  const { mutate: updateMutation, isPending: isUpdatePending } = useMutation({
+    mutationFn: (data: Activity) => (api as any).activity.update(data),
     onSuccess: () => {
       toast.success('Activité modifiée avec succès');
       refetchActivities();
@@ -130,10 +130,10 @@ const ActivityMain: React.FC<ActivityMainProps> = ({ className }) => {
     }
   });
 
-  const { mutate: removeActivity, isPending: isDeletePending } = useMutation({
-    mutationFn: (id: number) => api.activity.remove(id),
+  const { mutate: removeMutation, isPending: isDeletePending } = useMutation({
+    mutationFn: (id: number) => (api as any).activity.remove(id),
     onSuccess: () => {
-      if (activities?.length == 1 && page > 1) setPage(page - 1);
+      if (activities.length === 1 && page > 1) setPage(page - 1);
       toast.success('Activité supprimée avec succès');
       refetchActivities();
       setDeleteDialog(false);
@@ -147,7 +147,7 @@ const ActivityMain: React.FC<ActivityMainProps> = ({ className }) => {
     activity: Activity,
     callback: (activity: Activity) => void
   ): boolean => {
-    const validation = api.activity.validate(activity);
+    const validation = (api as any).activity.validate(activity);
     if (validation.message) {
       toast.error(validation.message);
       return false;
@@ -175,8 +175,9 @@ const ActivityMain: React.FC<ActivityMainProps> = ({ className }) => {
         open={createDialog}
         isCreatePending={isCreatePending}
         createActivity={() => {
-          handleActivitySubmit(activityManager.getActivity(), createActivity) &&
+          if (handleActivitySubmit(activityManager.getActivity(), createMutation)) {
             setCreateDialog(false);
+          }
         }}
         onClose={() => {
           setCreateDialog(false);
@@ -185,8 +186,9 @@ const ActivityMain: React.FC<ActivityMainProps> = ({ className }) => {
       <ActivityUpdateDialog
         open={updateDialog}
         updateActivity={() => {
-          handleActivitySubmit(activityManager.getActivity(), updateActivity) &&
+          if (handleActivitySubmit(activityManager.getActivity(), updateMutation)) {
             setUpdateDialog(false);
+          }
         }}
         isUpdatePending={isUpdatePending}
         onClose={() => {
@@ -196,7 +198,9 @@ const ActivityMain: React.FC<ActivityMainProps> = ({ className }) => {
       <ActivityDeleteDialog
         open={deleteDialog}
         deleteActivity={() => {
-          activityManager?.id && removeActivity(activityManager?.id);
+          if (activityManager?.id !== undefined) {
+            removeMutation(activityManager.id);
+          }
         }}
         isDeletionPending={isDeletePending}
         label={activityManager?.label}

@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/shared';
-import { ActivityForm } from '../ActivityForm';
+import { ActivityForm } from '@/components/settings/Activity/ActivityForm';
 import { BriefcaseBusiness, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
@@ -45,26 +45,26 @@ export const ActivityCreateDialog: React.FC<ActivityCreateDialogProps> = ({
   const title = (
     <>
       <BriefcaseBusiness className="responsive-icon" />
-      <Label className="font-semibold"> Nouvelle activité</Label>
+      <span className="font-semibold"> Nouvelle activité</span>
     </>
   );
   const description = (
     <>
       <Info className="w-12 h-12" />
-      <Label className="leading-5">
+      <span className="leading-5">
         Introduisez les détails pour créer une nouvelle activité. Assurez-vous que tous les champs
         obligatoires sont remplis avant d&apos;enregistrer.
-      </Label>
+      </span>
     </>
   );
   const footer = (
     <div className="flex gap-2 mt-2">
       <Button
         onClick={() => {
-          createActivity?.();
+          createActivity();
         }}>
         {tCommon('commands.save')}
-        <Spinner show={isCreatePending} />
+        <Spinner show={!!isCreatePending} />
       </Button>
       <Button
         variant={'secondary'}

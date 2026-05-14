@@ -10,10 +10,9 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/shared';
-import { ActivityForm } from '../ActivityForm';
+import { ActivityForm } from '@/components/settings/Activity/ActivityForm';
 import { BriefcaseBusiness, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
 import { useMediaQuery } from '@/hooks/other/useMediaQuery';
 import {
   Drawer,
@@ -45,16 +44,16 @@ export const ActivityUpdateDialog: React.FC<ActivityUpdateDialogProps> = ({
   const title = (
     <>
       <BriefcaseBusiness />
-      <Label className="font-semibold"> Mise à jour d&apos;une activité</Label>
+      <span className="font-semibold"> Mise à jour d&apos;une activité</span>
     </>
   );
   const description = (
     <>
       <Info className="w-12 h-12" />
-      <Label className="leading-5">
+      <span className="leading-5">
         Vous pouvez ici mettre à jour les détails de l&apos;activité sélectionnée. Assurez-vous de
         vérifier vos modifications avant de les enregistrer.
-      </Label>
+      </span>
     </>
   );
 
@@ -62,10 +61,10 @@ export const ActivityUpdateDialog: React.FC<ActivityUpdateDialogProps> = ({
     <div className="flex gap-2 mt-2">
       <Button
         onClick={() => {
-          updateActivity?.();
+          updateActivity();
         }}>
         {tCommon('commands.save')}
-        <Spinner show={isUpdatePending} />
+        <Spinner show={!!isUpdatePending} />
       </Button>
       <Button
         variant={'secondary'}
