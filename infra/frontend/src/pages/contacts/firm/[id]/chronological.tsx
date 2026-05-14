@@ -1,4 +1,4 @@
-import { GetStaticProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { getI18nProps } from '@/lib/getStatic';
 import React from 'react';
 import { ComingSoon, Page404 } from '@/components/shared';
@@ -14,6 +14,13 @@ export default function Page() {
     </FirmDetails>
   );
 }
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: await getI18nProps(locale),
