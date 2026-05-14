@@ -1,6 +1,6 @@
 import React from 'react';
 import { api } from '@/api';
-import { Tax } from '@/types';
+import { CreateTaxWithholdingDto, TaxWithholding } from '@/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
@@ -8,11 +8,15 @@ import { getErrorMessage } from '@/utils/errors';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useTranslation } from 'next-i18next';
 import { useTaxWithholdingManager } from './hooks/useTaxWithholdingManager';
-import { DataTable } from './data-table/data-table';
+import { DataTable } from '@/components/shared/data-table/data-table';
+import { DataTableConfig } from '@/components/shared/data-table/types';
 import { TaxWithholdingCreateDialog } from './dialogs/TaxWithholdingCreateDialog';
 import { TaxWithholdingUpdateDialog } from './dialogs/TaxWithholdingUpdateDialog';
 import { TaxWithholdingDeleteDialog } from './dialogs/TaxWithholdingDeleteDialog';
-import { TaxWithholdingActionsContext } from './data-table/ActionDialogContext';
+import {
+  TaxWithholdingActionsContext,
+  TaxWithholdingActionsContextProps
+} from './data-table/ActionDialogContext';
 import { getTaxWithholdingColumns } from './data-table/columns';
 import { useRouter } from 'next/router';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
@@ -88,12 +92,18 @@ const TaxWithholdingMain: React.FC<TaxWithholdingMainProps> = ({ className }) =>
     return taxWithholdingsResp?.data || [];
   }, [taxWithholdingsResp]);
 
-  const context = {
-    //dialogs
-    openCreateDialog: () => setCreateDialog(true),
-    openUpdateDialog: () => setUpdateDialog(true),
-    openDeleteDialog: () => setDeleteDialog(true),
-    //search, filtering, sorting & paging
+  const dataTableContext: DataTableConfig<CreateTaxWithholdingDto> = {
+    singularName: tSettings('withholding.singular'),
+    pluralName: tSettings('withholding.plural'),
+    createCallback: () => setCreateDialog(true),
+    updateCallback: (tax: CreateTaxWithholdingDto) => {
+      taxWithholdingManger.setTax(tax);
+      setUpdateDialog(true);
+    },
+    deleteCallback: (tax: CreateTaxWithholdingDto) => {
+      taxWithholdingManger.setTax(tax);
+      setDeleteDialog(true);
+    },
     searchTerm,
     setSearchTerm,
     page,
@@ -106,9 +116,30 @@ const TaxWithholdingMain: React.FC<TaxWithholdingMainProps> = ({ className }) =>
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey })
   };
 
+  const actionDialogContext: TaxWithholdingActionsContextProps = {
+    openCreateDialog: () => setCreateDialog(true),
+    openUpdateDialog: () => setUpdateDialog(true),
+    openDeleteDialog: () => setDeleteDialog(true),
+    searchTerm,
+    setSearchTerm,
+    page,
+    totalPageCount: taxWithholdingsResp?.meta.pageCount || 1,
+    setPage,
+    size,
+    setSize,
+    order: sortDetails.order,
+    sortKey: sortDetails.sortKey,
+    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey })
+  };
+
+  const context = {
+    ...dataTableContext,
+    ...actionDialogContext
+  } as DataTableConfig<CreateTaxWithholdingDto> & TaxWithholdingActionsContextProps;
+
   //create tax-withholding
   const { mutate: createTaxWithholding, isPending: isCreatePending } = useMutation({
-    mutationFn: (data: Tax) => api.taxWithholding.create(data),
+    mutationFn: (data: TaxWithholding) => api.taxWithholding.create(data),
     onSuccess: () => {
       toast.success('Retenue à la source ajoutée avec succès');
       refetchTaxWithholdings();
@@ -120,7 +151,7 @@ const TaxWithholdingMain: React.FC<TaxWithholdingMainProps> = ({ className }) =>
 
   //update tax-withholding
   const { mutate: updateTaxWithholding, isPending: isUpdatePending } = useMutation({
-    mutationFn: (data: Tax) => api.taxWithholding.update(data),
+    mutationFn: (data: TaxWithholding) => api.taxWithholding.update(data),
     onSuccess: () => {
       toast.success('Retenue à la source modifiée avec succès');
       refetchTaxWithholdings();
@@ -227,7 +258,8 @@ const TaxWithholdingMain: React.FC<TaxWithholdingMainProps> = ({ className }) =>
           className="flex flex-col flex-1 overflow-hidden p-1"
           containerClassName="overflow-auto"
           data={taxWithholdings}
-          columns={getTaxWithholdingColumns(tSettings)}
+          columns={getTaxWithholdingColumns(tSettings, context)}
+          context={context}
           isPending={isPending}
         />
       </ContentSection>

@@ -7,13 +7,13 @@ import {
   SwitchFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
-import { TaxManager } from './hooks/useTaxManager';
-import { Currency } from '@/types';
+import { TaxManager } from './data-table/useTaxManager';
+import { CurrencyPayload, ResponseRefParamDto } from '@/types';
 import { useTranslation } from 'next-i18next';
 
 interface useTaxFormStructureProps {
   store: TaxManager;
-  currencies: Currency[];
+  currencies: ResponseRefParamDto<CurrencyPayload>[];
 }
 
 export const useTaxFormStructure = ({ store, currencies }: useTaxFormStructureProps) => {
@@ -28,6 +28,7 @@ export const useTaxFormStructure = ({ store, currencies }: useTaxFormStructurePr
     variant: FieldVariant.TEXT,
     placeholder: 'Ex. FODEC',
     description: 'Enter a unique name for the tax (e.g., VAT, FODEC)',
+    error: store.errors?.label?.[0],
     props: {
       value: store.label,
       onChange: (e: string) => store.set('label', e)
@@ -41,6 +42,7 @@ export const useTaxFormStructure = ({ store, currencies }: useTaxFormStructurePr
     variant: FieldVariant.NUMBER,
     placeholder: 'Ex. 10',
     description: 'Enter the value of the tax (e.g., 10 for 10%)',
+    error: store.errors?.value?.[0],
     props: {
       value: store.value,
       onChange: (e: number) => store.set('value', e)
@@ -54,6 +56,7 @@ export const useTaxFormStructure = ({ store, currencies }: useTaxFormStructurePr
     variant: FieldVariant.SELECT,
     placeholder: 'Ex. PERCENTAGE',
     description: 'Select the type of tax (e.g., percentage or amount)',
+    error: store.errors?.isRate?.[0],
     props: {
       options: [
         {
@@ -76,6 +79,7 @@ export const useTaxFormStructure = ({ store, currencies }: useTaxFormStructurePr
     variant: FieldVariant.SWITCH,
     description:
       'Une taxe spéciale est appliquée sur le montant après que les taxes normales ont déjà été calculées.',
+    error: store.errors?.isSpecial?.[0],
     props: {
       checked: store.isSpecial,
       onCheckedChange: (e: boolean) => store.set('isSpecial', e)
@@ -87,6 +91,7 @@ export const useTaxFormStructure = ({ store, currencies }: useTaxFormStructurePr
     label: 'Specific Currency',
     variant: FieldVariant.SWITCH,
     description: 'Set a specific currency for this tax',
+    error: store.errors?.specificCurrency?.[0],
     props: {
       checked: store.specificCurrency,
       onCheckedChange: (e: boolean) => store.set('specificCurrency', e)
@@ -101,9 +106,10 @@ export const useTaxFormStructure = ({ store, currencies }: useTaxFormStructurePr
     placeholder: 'Ex. Tunisian Dinar',
     description: 'Choose the currency of the tax',
     hidden: !store.specificCurrency,
+    error: store.errors?.currencyId?.[0],
     props: {
       options: currencies.map((c) => ({
-        label: `${c.label} (${c.symbol})`,
+        label: `${c.label} (${c.extras?.symbol})`,
         value: c.id?.toString()
       })),
       value: store.currencyId?.toString(),
@@ -112,11 +118,11 @@ export const useTaxFormStructure = ({ store, currencies }: useTaxFormStructurePr
   };
 
   const taxFormStructure: FormStructure = {
-    title: 'Tax Form',
+    title: { value: 'Tax Form' },
     orientation: 'horizontal',
     fieldsets: [
       {
-        title: 'Tax',
+        title: { value: 'Tax' },
         rows: [
           {
             fields: [labelField]

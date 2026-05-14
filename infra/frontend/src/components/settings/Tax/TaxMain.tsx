@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useTranslation } from 'next-i18next';
-import { useTaxManager } from './hooks/useTaxManager';
+import { useTaxManager } from './data-table/useTaxManager';
 import { DataTable } from './data-table/data-table';
 import { TaxActionsContext } from './data-table/ActionDialogContext';
 import { getTaxColumns } from './data-table/columns';
@@ -18,7 +18,7 @@ import { useTaxDeleteDialog } from './modals/TaxDeleteDialog';
 import { useTaxCreateSheet } from './modals/TaxCreateSheet';
 import { useTaxUpdateSheet } from './modals/TaxUpdateSheet';
 import { TAX_FILTER_ATTRIBUTES } from '@/constants/tax.filter-attributes';
-import { createTaxSchema, updateTaxSchema } from '@/types/validations/tax.validation';
+import { createTaxRateSchema, updateTaxRateSchema } from '@/types/validations/tax.validation';
 
 interface TaxMainProps {
   className?: string;
@@ -74,8 +74,8 @@ const TaxMain: React.FC<TaxMainProps> = ({ className }) => {
     ],
     queryFn: () =>
       api.tax.findPaginated({
-        page: debouncedPage,
-        limit: debouncedSize,
+        page: debouncedPage.toString(),
+        limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         filter: debouncedSearchTerm
           ? Object.values(TAX_FILTER_ATTRIBUTES)
@@ -139,7 +139,7 @@ const TaxMain: React.FC<TaxMainProps> = ({ className }) => {
 
   const handleTaxCreateSubmit = () => {
     const tax = taxManger.getTax();
-    const result = createTaxSchema.safeParse(tax);
+    const result = createTaxRateSchema.safeParse(tax);
     if (!result.success) {
       taxManger.set('errors', result.error.flatten().fieldErrors);
       return false;
@@ -153,9 +153,12 @@ const TaxMain: React.FC<TaxMainProps> = ({ className }) => {
 
   const handleTaxUpdateSubmit = () => {
     const tax = taxManger.getTax();
-    const validation = api.tax.validate(tax);
-    if (validation.message) {
-      toast.error(validation.message);
+    const result = updateTaxRateSchema.safeParse(tax);
+    if (!result.success) {
+      const errorMessage = Object.values(result.error.flatten().fieldErrors)
+        .flat()
+        .join(', ');
+      toast.error(errorMessage);
       return false;
     } else {
       updateTax(tax);
@@ -174,7 +177,7 @@ const TaxMain: React.FC<TaxMainProps> = ({ className }) => {
   const { updateTaxSheet, openUpdateTaxSheet, closeUpdateTaxSheet } = useTaxUpdateSheet(
     handleTaxUpdateSubmit,
     isUpdatePending,
-    !taxManger.isChanged(),
+    false,
     taxManger.reset
   );
 
