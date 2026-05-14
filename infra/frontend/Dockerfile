@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 # Use the exact fix we needed earlier for ESLint 10
 RUN npm install --legacy-peer-deps
-RUN npm install @napi-rs/canvas-linux-x64-musl
+RUN npm install @napi-rs/canvas-linux-x64-musl --legacy-peer-deps
 
 # --- Stage 2: Builder ---
 FROM base AS builder
