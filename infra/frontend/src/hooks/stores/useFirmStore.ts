@@ -52,8 +52,20 @@ const initialState: FirmData = {
   currency: undefined,
   paymentCondition: undefined,
   notes: '',
-  invoicingAddress: api.address.factory(),
-  deliveryAddress: api.address.factory(),
+  invoicingAddress: {
+    address: '',
+    address2: '',
+    region: '',
+    zipcode: undefined,
+    countryId: undefined
+  } as unknown as Address,
+  deliveryAddress: {
+    address: '',
+    address2: '',
+    region: '',
+    zipcode: undefined,
+    countryId: undefined
+  } as unknown as Address,
   position: '',
   snapshot: undefined,
   changed: false
@@ -132,5 +144,5 @@ const getNormalizedFirm = (data: any) => {
     notes: data?.notes,
     invoicingAddress: data?.invoicingAddress,
     deliveryAddress: data?.deliveryAddress
-  } as Firm;
+  } as unknown as Firm;
 };
