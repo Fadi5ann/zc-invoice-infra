@@ -196,7 +196,7 @@ export const QuotationGeneralInformation = ({
               <div className="w-1/2">
                 <AddressDetails
                   addressType={tInvoicing('quotation.attributes.invoicing_address')}
-                  address={quotationManager.firm?.invoicingAddress}
+                  address={quotationManager.firm?.invoicingAddress as any}
                   loading={loading}
                 />
               </div>
@@ -205,7 +205,7 @@ export const QuotationGeneralInformation = ({
               <div className="w-1/2">
                 <AddressDetails
                   addressType={tInvoicing('quotation.attributes.delivery_address')}
-                  address={quotationManager.firm?.deliveryAddress}
+                  address={quotationManager.firm?.deliveryAddress as any}
                   loading={loading}
                 />
               </div>

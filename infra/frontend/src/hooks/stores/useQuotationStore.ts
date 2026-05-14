@@ -1,8 +1,8 @@
-import { CreateQuotationDto, ResponseQuotationDto, UpdateQuotationDto } from '@/types';
+import { CreateQuotationDto, Quotation, UpdateQuotationDto } from '@/types';
 import { BaseActions, createBaseStore } from './useBaseStore';
 
 interface QuotationData {
-  response: ResponseQuotationDto | null;
+  response: Quotation | null;
   createDto: CreateQuotationDto;
   createDtoErrors: Record<string, string[]>;
 
@@ -17,16 +17,13 @@ export interface QuotationStore extends IQuotationStore, BaseActions<IQuotationS
 const initialState: QuotationData = {
   response: null,
   createDto: {
-    direction: 'outgoing',
-    date: null,
-    dueDate: null,
+    date: undefined as unknown as string,
+    dueDate: undefined as unknown as string,
     object: '',
     generalConditions: undefined,
-    enterpriseId: undefined,
     interlocutorId: undefined,
     currencyId: undefined,
-    bankAccountId: undefined,
-    quotationArticles: []
+    bankAccountId: undefined
   },
   createDtoErrors: {},
   updateDtoErrors: {}

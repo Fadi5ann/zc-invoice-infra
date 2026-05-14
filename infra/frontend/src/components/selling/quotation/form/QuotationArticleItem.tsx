@@ -47,7 +47,7 @@ export const QuotationArticleItem: React.FC<QuotationArticleItemProps> = ({
         ...article.article,
         title: e.target.value
       }
-    });
+    } as any);
   };
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -57,7 +57,7 @@ export const QuotationArticleItem: React.FC<QuotationArticleItemProps> = ({
         ...article.article,
         description: e.target.value
       }
-    });
+    } as any);
   };
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,7 +115,7 @@ export const QuotationArticleItem: React.FC<QuotationArticleItemProps> = ({
     const selectedTax = taxes.find((tax) => tax.id === parseInt(value));
     const updatedTaxes = [...(article.articleQuotationEntryTaxes || [])];
     if (selectedTax) {
-      updatedTaxes[index] = { tax: selectedTax };
+      updatedTaxes[index] = { ...updatedTaxes[index], tax: selectedTax } as any;
     } else {
       updatedTaxes.splice(index, 1);
     }

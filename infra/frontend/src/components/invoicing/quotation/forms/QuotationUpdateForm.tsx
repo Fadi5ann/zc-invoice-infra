@@ -69,7 +69,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
 
   React.useEffect(() => {
     if (workflow && enterprises) {
-      quotationStore.set('response', workflow.quotation);
+      quotationStore.set('response', workflow.quotation as any);
       quotationStore.set('updateDto', {
         date: workflow?.quotation.date ? new Date(workflow.quotation.date) : undefined,
         dueDate: workflow?.quotation.dueDate ? new Date(workflow.quotation.dueDate) : undefined,

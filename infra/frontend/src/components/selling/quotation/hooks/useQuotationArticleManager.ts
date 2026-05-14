@@ -3,7 +3,7 @@ import { DISCOUNT_TYPE } from '@/types/enums/discount-types';
 import { v4 as uuidv4 } from 'uuid';
 import { create } from 'zustand';
 
-type QuotationPseudoItem = { id: string; article: ArticleQuotationEntry & { total?: number } };
+type QuotationPseudoItem = { id: string; article: ArticleQuotationEntry & { total?: number; subTotal?: number } };
 
 export type QuotationArticleManager = {
   articles: QuotationPseudoItem[];
@@ -13,7 +13,7 @@ export type QuotationArticleManager = {
   delete: (id: string) => void;
   setArticles: (articles: ArticleQuotationEntry[]) => void;
   reset: () => void;
-  getArticles: () => (ArticleQuotationEntry & { total: number })[];
+  getArticles: () => (ArticleQuotationEntry & { total: number; subTotal: number })[];
   //feature
   removeArticleDescription: () => void;
 };
@@ -22,7 +22,7 @@ const calculateForQuotation = (article: ArticleQuotationEntry) => {
   const quantity = article?.quantity || 0;
   const unit_price = article?.unit_price || 0;
   const discount = article?.discount || 0;
-  const discount_type = article?.discount_type || DISCOUNT_TYPE?.PERCENTAGE;
+  const discount_type = article?.discount_type || DISCOUNT_TYPE.PERCENTAGE;
 
   const subTotal = quantity * unit_price;
 
@@ -38,13 +38,15 @@ const calculateForQuotation = (article: ArticleQuotationEntry) => {
 
   if (article?.articleQuotationEntryTaxes) {
     for (const entry of article?.articleQuotationEntryTaxes) {
-      if (entry?.tax?.isRate) {
-        if (entry?.tax?.isSpecial) {
+      if (entry?.tax?.isRate === true) {
+        if (entry?.tax?.isSpecial === true) {
           specialTaxAmount += entry?.tax?.value || 0;
         } else {
           regularTaxAmount += entry?.tax?.value || 0;
         }
-      } else fixedTaxAmount += entry?.tax?.value || 0;
+      } else {
+        fixedTaxAmount += entry?.tax?.value || 0;
+      }
     }
   }
 
@@ -70,22 +72,26 @@ const calculateTaxSummary = (articles: QuotationPseudoItem[]) => {
       const tax = taxEntry.tax;
 
       // Check if the tax is a percentage-based tax
-      if (!tax?.isSpecial && tax?.isRate) {
-        const taxAmount = subTotalPlusDiscount * ((tax?.value || 0) / 100);
+      if (tax && tax.isSpecial !== true && tax.isRate === true) {
+        const taxAmount = subTotalPlusDiscount * ((tax.value || 0) / 100);
         regularTaxAmount += taxAmount;
-        if (tax?.id && taxSummaryMap.has(tax.id)) {
-          taxSummaryMap.get(tax.id)!.amount += taxAmount;
-        } else {
-          tax?.id && taxSummaryMap.set(tax.id, { tax, amount: taxAmount });
+        if (tax.id !== undefined) {
+          if (taxSummaryMap.has(tax.id)) {
+            taxSummaryMap.get(tax.id)!.amount += taxAmount;
+          } else {
+            taxSummaryMap.set(tax.id, { tax, amount: taxAmount });
+          }
         }
       }
       // Check if the tax is a fixed value tax (not rate-based)
-      else if (!tax?.isSpecial && !tax?.isRate) {
-        const taxAmount = tax?.value || 0; // Fixed amount tax
-        if (tax?.id && taxSummaryMap.has(tax.id)) {
-          taxSummaryMap.get(tax.id)!.amount += taxAmount;
-        } else {
-          tax?.id && taxSummaryMap.set(tax.id, { tax, amount: taxAmount });
+      else if (tax && tax.isSpecial !== true && tax.isRate !== true) {
+        const taxAmount = tax.value || 0; // Fixed amount tax
+        if (tax.id !== undefined) {
+          if (taxSummaryMap.has(tax.id)) {
+            taxSummaryMap.get(tax.id)!.amount += taxAmount;
+          } else {
+            taxSummaryMap.set(tax.id, { tax, amount: taxAmount });
+          }
         }
       }
     });
@@ -94,21 +100,25 @@ const calculateTaxSummary = (articles: QuotationPseudoItem[]) => {
     const totalAfterRegularTax = subTotalPlusDiscount + regularTaxAmount;
     taxes.forEach((taxEntry) => {
       const tax = taxEntry.tax;
-      if (tax?.isSpecial && tax?.isRate) {
-        const taxAmount = totalAfterRegularTax * ((tax?.value || 0) / 100);
-        if (tax?.id && taxSummaryMap.has(tax.id)) {
-          taxSummaryMap.get(tax.id)!.amount += taxAmount;
-        } else {
-          tax?.id && taxSummaryMap.set(tax.id, { tax, amount: taxAmount });
+      if (tax && tax.isSpecial === true && tax.isRate === true) {
+        const taxAmount = totalAfterRegularTax * ((tax.value || 0) / 100);
+        if (tax.id !== undefined) {
+          if (taxSummaryMap.has(tax.id)) {
+            taxSummaryMap.get(tax.id)!.amount += taxAmount;
+          } else {
+            taxSummaryMap.set(tax.id, { tax, amount: taxAmount });
+          }
         }
       }
       // Add special fixed tax amount (non-percentage-based special tax)
-      else if (tax?.isSpecial && !tax?.isRate) {
-        const taxAmount = tax?.value || 0; // Fixed amount special tax
-        if (tax?.id && taxSummaryMap.has(tax.id)) {
-          taxSummaryMap.get(tax.id)!.amount += taxAmount;
-        } else {
-          tax?.id && taxSummaryMap.set(tax.id, { tax, amount: taxAmount });
+      else if (tax && tax.isSpecial === true && tax.isRate !== true) {
+        const taxAmount = tax.value || 0; // Fixed amount special tax
+        if (tax.id !== undefined) {
+          if (taxSummaryMap.has(tax.id)) {
+            taxSummaryMap.get(tax.id)!.amount += taxAmount;
+          } else {
+            taxSummaryMap.set(tax.id, { tax, amount: taxAmount });
+          }
         }
       }
     });
@@ -121,8 +131,9 @@ export const useQuotationArticleManager = create<QuotationArticleManager>()((set
   articles: [],
   taxSummary: [],
 
-  add: (article: ArticleQuotationEntry = {}) => {
-    const { subTotal, total } = calculateForQuotation(article);
+  add: (article?: ArticleQuotationEntry) => {
+    const defaultArticle = article || ({} as ArticleQuotationEntry);
+    const { subTotal, total } = calculateForQuotation(defaultArticle);
 
     set((state) => ({
       articles: [
@@ -130,11 +141,11 @@ export const useQuotationArticleManager = create<QuotationArticleManager>()((set
         {
           id: uuidv4(),
           article: {
-            ...article,
+            ...defaultArticle,
             total,
             subTotal,
-            discount_type: article.discount_type || DISCOUNT_TYPE.AMOUNT,
-            discount: article.discount || 0
+            discount_type: defaultArticle.discount_type || DISCOUNT_TYPE.AMOUNT,
+            discount: defaultArticle.discount || 0
           }
         }
       ]
@@ -206,7 +217,10 @@ export const useQuotationArticleManager = create<QuotationArticleManager>()((set
       articles: state.articles.map((item) => {
         return {
           ...item,
-          article: { ...item.article, article: { ...item.article.article, description: '' } }
+          article: { 
+            ...item.article, 
+            article: item.article.article ? { ...item.article.article, description: '' } : item.article.article
+          }
         };
       })
     }));

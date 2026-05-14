@@ -1,6 +1,6 @@
 import React from 'react';
 import { api } from '@/api';
-import { BankAccount, Currency, DuplicateQuotationDto, Invoice, QUOTATION_STATUS } from '@/types';
+import { ResponseBankAccountDto as BankAccount, Currency, DuplicateQuotationDto, Invoice, QUOTATION_STATUS } from '@/types';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -155,7 +155,7 @@ export const QuotationControlSection = ({
   //Invoice quotation
   const { mutate: invoiceQuotation, isPending: isInvoicingPending } = useMutation({
     mutationFn: (data: { id?: number; createInvoice: boolean }) =>
-      api.quotation.invoice(data.id, data.createInvoice),
+      api.quotation.invoice(data.id as number, data.createInvoice),
     onSuccess: (data) => {
       toast.success('Devis facturé avec succès');
       refetch?.();

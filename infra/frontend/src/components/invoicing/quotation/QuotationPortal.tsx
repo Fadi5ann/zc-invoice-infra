@@ -113,7 +113,7 @@ export const QuotationPortal = ({ className }: QuotationPortalProps) => {
       router.push(`/selling/quotations/${quotation.id}`);
     },
     deleteCallback: (quotation) => {
-      quotationStore.set('response', quotation);
+      quotationStore.set('response', quotation as any);
       openDeleteQuotationDialog();
     },
     additionalActions: {},
@@ -129,7 +129,7 @@ export const QuotationPortal = ({ className }: QuotationPortalProps) => {
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
     targetEntity: (entity) => {
-      quotationStore.set('response', entity);
+      quotationStore.set('response', entity as any);
     }
   };
 

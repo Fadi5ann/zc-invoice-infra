@@ -20,7 +20,7 @@ export const useQuotation = (
     data: quotationResp,
     isPending: isFetchQuotationPending,
     refetch: refetchQuotation
-  } = useQuery<Quotation, unknown, Quotation>({
+  } = useQuery({
     queryKey: ['quotation', id, join],
     queryFn: () => api.invoicing.quotation.findById(id!, join?.join(',')),
     enabled: enabled && !!id
@@ -28,7 +28,7 @@ export const useQuotation = (
 
   const quotation = React.useMemo<Quotation | null>(() => {
     if (!quotationResp) return null;
-    return quotationResp as Quotation;
+    return quotationResp as unknown as Quotation;
   }, [quotationResp]);
 
   return {

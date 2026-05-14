@@ -1,6 +1,5 @@
 import { api } from '@/api';
 import {
-  BankAccount,
   Currency,
   Firm,
   Interlocutor,
@@ -32,7 +31,7 @@ type QuotationManager = {
   total: number;
   discount: number;
   discountType: DISCOUNT_TYPE;
-  bankAccount?: BankAccount;
+  bankAccount?: any;
   currency?: Currency;
   notes: string;
   status: QUOTATION_STATUS;
@@ -48,7 +47,7 @@ type QuotationManager = {
   setQuotation: (
     quotation: Partial<Quotation & { files: QuotationUploadedFile[] }>,
     firms?: Firm[],
-    bankAccounts?: BankAccount[]
+    bankAccounts?: any[]
   ) => void;
   reset: () => void;
 };
@@ -57,8 +56,6 @@ const getDateRangeAccordingToPaymentConditions = (paymentCondition: PaymentCondi
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
-
-  if (!paymentCondition) return { date: undefined, dueDate: undefined };
 
   switch (paymentCondition.id) {
     case 1:
@@ -81,22 +78,23 @@ const initialState: Omit<
   id: -1,
   sequentialNumber: {
     prefix: '',
-    dateFormat: DateFormat.yy_MM,
+    dateFormat: DateFormat.YYMM,
     next: 0
   },
   sequential: '',
   date: undefined,
   dueDate: undefined,
   object: '',
-  firm: api?.firm?.factory() || undefined,
-  interlocutor: api?.interlocutor?.factory() || undefined,
+  firm: (api as any).firm?.factory() ?? undefined,
+  interlocutor: (api as any).interlocutor?.factory() ?? undefined,
   subTotal: 0,
   total: 0,
   discount: 0,
   discountType: DISCOUNT_TYPE.PERCENTAGE,
-  bankAccount: api?.bankAccount?.factory() || undefined,
-  currency: api?.currency?.factory() || undefined,
+  bankAccount: (api as any).bankAccount?.factory() ?? undefined,
+  currency: (api as any).currency?.factory() ?? undefined,
   notes: '',
+  generalConditions: '',
   status: QUOTATION_STATUS.Draft,
   isInterlocutorInFirm: false,
   uploadedFiles: []
@@ -105,7 +103,7 @@ const initialState: Omit<
 export const useQuotationManager = create<QuotationManager>((set, get) => ({
   ...initialState,
   setFirm: (firm?: Firm) => {
-    const dateRange = firm?.paymentCondition
+    const dateRange = firm?.paymentCondition !== undefined
       ? getDateRangeAccordingToPaymentConditions(firm.paymentCondition)
       : { date: undefined, dueDate: undefined };
 
@@ -115,8 +113,8 @@ export const useQuotationManager = create<QuotationManager>((set, get) => ({
       interlocutor:
         firm?.interlocutorsToFirm?.length === 1
           ? firm.interlocutorsToFirm[0]
-          : api?.interlocutor?.factory() || undefined,
-      isInterlocutorInFirm: !!firm?.interlocutorsToFirm?.length,
+          : (api as any).interlocutor?.factory() ?? undefined,
+      isInterlocutorInFirm: (firm?.interlocutorsToFirm?.length ?? 0) > 0,
       date: dateRange.date,
       dueDate: dateRange.dueDate
     }));
@@ -180,25 +178,25 @@ export const useQuotationManager = create<QuotationManager>((set, get) => ({
   setQuotation: (
     quotation: Partial<Quotation & { files: QuotationUploadedFile[] }>,
     firms?: Firm[],
-    bankAccounts?: BankAccount[]
+    bankAccounts?: any[]
   ) => {
     set((state) => ({
       ...state,
-      id: quotation?.id,
-      sequentialNumber: fromStringToSequentialObject(quotation?.sequential || ''),
-      date: quotation?.date ? new Date(quotation?.date) : undefined,
-      dueDate: quotation?.dueDate ? new Date(quotation?.dueDate) : undefined,
-      object: quotation?.object,
-      firm: firms?.find((firm) => quotation?.firm?.id === firm.id),
-      interlocutor: quotation?.interlocutor,
-      discount: quotation?.discount,
-      discountType: quotation?.discount_type,
-      bankAccount: quotation?.bankAccount,
-      currency: quotation?.currency || quotation?.firm?.currency,
-      notes: quotation?.notes,
-      generalConditions: quotation?.generalConditions,
-      status: quotation?.status,
-      uploadedFiles: quotation?.files || []
+      id: quotation.id,
+      sequentialNumber: fromStringToSequentialObject(quotation.sequential ?? ''),
+      date: quotation.date !== undefined ? new Date(quotation.date) : undefined,
+      dueDate: quotation.dueDate !== undefined ? new Date(quotation.dueDate) : undefined,
+      object: quotation.object,
+      firm: firms?.find((firm) => quotation.firm?.id === firm.id),
+      interlocutor: quotation.interlocutor,
+      discount: quotation.discount,
+      discountType: quotation.discount_type,
+      bankAccount: quotation.bankAccount,
+      currency: quotation.currency ?? quotation.firm?.currency,
+      notes: quotation.notes,
+      generalConditions: quotation.generalConditions,
+      status: quotation.status,
+      uploadedFiles: quotation.files ?? []
     }));
   },
   reset: () => set({ ...initialState })
