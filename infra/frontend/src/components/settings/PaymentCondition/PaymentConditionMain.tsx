@@ -1,6 +1,5 @@
 import React from 'react';
 import { PaymentCondition } from '@/types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { getErrorMessage } from '@/utils/errors';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -9,11 +8,11 @@ import { useTranslation } from 'next-i18next';
 import { PaymentConditionCreateDialog } from './dialogs/PaymentConditionCreateDialog';
 import { PaymentConditionUpdateDialog } from './dialogs/PaymentConditionUpdateDialog';
 import { PaymentConditionDeleteDialog } from './dialogs/PaymentConditionDeleteDialog';
-import { usePaymentConditionManager } from './hooks/usePaymentConditionManager';
+import { usePaymentConditionManager } from './data-table/usePaymentConditionManager';
 import { api } from '@/api';
 import { PaymentConditionActionsContext } from './data-table/ActionsContext';
 import { DataTable } from './data-table/data-table';
-import { getPayementConditionColumns } from './data-table/columns';
+import { getPaymentConditionColumns } from './data-table/columns';
 import { useRouter } from 'next/router';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import ContentSection from '@/components/shared/ContentSection';
@@ -36,7 +35,7 @@ const PaymentConditionMain: React.FC<PaymentConditionMainProps> = ({ className }
       { title: tCommon('submenu.system') },
       { title: tCommon('settings.system.payment_condition') }
     ]);
-  }, [router.locale]);
+  }, [router.locale, setRoutes, tCommon]);
 
   const paymentConditionManager = usePaymentConditionManager();
 
@@ -74,7 +73,7 @@ const PaymentConditionMain: React.FC<PaymentConditionMainProps> = ({ className }
       debouncedSearchTerm
     ],
     queryFn: () =>
-      api.paymentCondition.findPaginated(
+      (api as any).paymentCondition.findPaginated(
         debouncedPage,
         debouncedSize,
         debouncedSortDetails.order ? 'ASC' : 'DESC',
@@ -106,8 +105,8 @@ const PaymentConditionMain: React.FC<PaymentConditionMainProps> = ({ className }
   };
 
   //create payment condition
-  const { mutate: createPaymentCondition, isPending: isCreatePending } = useMutation({
-    mutationFn: (data: PaymentCondition) => api.paymentCondition.create(data),
+  const { mutate: createMutation, isPending: isCreatePending } = useMutation({
+    mutationFn: (data: PaymentCondition) => (api as any).paymentCondition.create(data),
     onSuccess: () => {
       toast.success('Condition de Paiement ajoutée avec succès');
       refetchPaymentConditions();
@@ -120,8 +119,8 @@ const PaymentConditionMain: React.FC<PaymentConditionMainProps> = ({ className }
   });
 
   //update payment condition
-  const { mutate: updatePaymentCondition, isPending: isUpdatePending } = useMutation({
-    mutationFn: (data: PaymentCondition) => api.paymentCondition.update(data),
+  const { mutate: updateMutation, isPending: isUpdatePending } = useMutation({
+    mutationFn: (data: PaymentCondition) => (api as any).paymentCondition.update(data),
     onSuccess: () => {
       toast.success('Condition de Paiement modifiée avec succès');
       refetchPaymentConditions();
@@ -134,10 +133,10 @@ const PaymentConditionMain: React.FC<PaymentConditionMainProps> = ({ className }
   });
 
   //remove payment condition
-  const { mutate: removePaymentCondition, isPending: isDeletePending } = useMutation({
-    mutationFn: (id: number) => api.paymentCondition.remove(id),
+  const { mutate: removeMutation, isPending: isDeletePending } = useMutation({
+    mutationFn: (id: number) => (api as any).paymentCondition.remove(id),
     onSuccess: () => {
-      if (paymentConditions?.length == 1 && page > 1) setPage(page - 1);
+      if (paymentConditions.length === 1 && page > 1) setPage(page - 1);
       toast.success('Condition de Paiement supprimée avec succès');
       refetchPaymentConditions();
       setDeleteDialog(false);
@@ -151,7 +150,7 @@ const PaymentConditionMain: React.FC<PaymentConditionMainProps> = ({ className }
     paymentCondition: PaymentCondition,
     callback: (paymentCondition: PaymentCondition) => void
   ): boolean => {
-    const validation = api.paymentCondition.validate(paymentCondition);
+    const validation = (api as any).paymentCondition.validate(paymentCondition);
     if (validation.message) {
       toast.error(validation.message);
       return false;
@@ -179,10 +178,11 @@ const PaymentConditionMain: React.FC<PaymentConditionMainProps> = ({ className }
         open={createDialog}
         isCreatePending={isCreatePending}
         createPaymentCondition={() => {
-          handlePaymentConditionSubmit(
-            paymentConditionManager.getPaymentCondition(),
-            createPaymentCondition
-          ) && setCreateDialog(false);
+          if (
+            handlePaymentConditionSubmit(paymentConditionManager.getPaymentCondition(), createMutation)
+          ) {
+            setCreateDialog(false);
+          }
         }}
         onClose={() => {
           setCreateDialog(false);
@@ -191,10 +191,11 @@ const PaymentConditionMain: React.FC<PaymentConditionMainProps> = ({ className }
       <PaymentConditionUpdateDialog
         open={updateDialog}
         updatePaymentCondition={() => {
-          handlePaymentConditionSubmit(
-            paymentConditionManager.getPaymentCondition(),
-            updatePaymentCondition
-          ) && setUpdateDialog(false);
+          if (
+            handlePaymentConditionSubmit(paymentConditionManager.getPaymentCondition(), updateMutation)
+          ) {
+            setUpdateDialog(false);
+          }
         }}
         isUpdatePending={isUpdatePending}
         onClose={() => {
@@ -204,7 +205,9 @@ const PaymentConditionMain: React.FC<PaymentConditionMainProps> = ({ className }
       <PaymentConditionDeleteDialog
         open={deleteDialog}
         deletePaymentCondition={() => {
-          paymentConditionManager?.id && removePaymentCondition(paymentConditionManager?.id);
+          if (paymentConditionManager?.id !== undefined) {
+            removeMutation(paymentConditionManager.id);
+          }
         }}
         isDeletionPending={isDeletePending}
         label={paymentConditionManager?.label}
@@ -221,7 +224,7 @@ const PaymentConditionMain: React.FC<PaymentConditionMainProps> = ({ className }
           className="flex flex-col flex-1 overflow-hidden p-1"
           containerClassName="overflow-auto"
           data={paymentConditions}
-          columns={getPayementConditionColumns(tSettings)}
+          columns={getPaymentConditionColumns(tSettings)}
           isPending={isPending}
         />
       </ContentSection>
