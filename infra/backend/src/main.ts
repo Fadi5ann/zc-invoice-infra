@@ -97,7 +97,7 @@ async function bootstrap() {
   }
   //===================================================================
 
-  await app.listen(port);
+  await app.listen(port, host);
   logger.log(`==========================================================`);
   logger.log(`Http Server running on ${await app.getUrl()}`, 'NestApplication');
   logger.log(

@@ -106,6 +106,7 @@ services:
     env_file:
       - .env
     environment:
+      - APP_HOST=0.0.0.0
       - DATABASE_TYPE=mysql
       - DATABASE_HOST=db-primary
       - DATABASE_PORT=3306
