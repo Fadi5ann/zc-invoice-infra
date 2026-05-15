@@ -98,7 +98,7 @@ async function bootstrap() {
   //===================================================================
 
   // Bind to 0.0.0.0 so the NestJS container can accept connections from the Nginx container
-  await app.listen(port, '0.0.0.0');
+  await app.listen(3000, '0.0.0.0'); // Listen on all network interfaces
   logger.log(`==========================================================`);
   logger.log(`Http Server running on ${await app.getUrl()}`, 'NestApplication');
   logger.log(
