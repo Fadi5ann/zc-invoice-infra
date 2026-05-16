@@ -25,6 +25,9 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 
+# Copy generated types for i18n
+COPY --from=builder /app/src/generated ./src/generated
+
 # Tell Puppeteer exactly where Chrome is located to prevent crash errors
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
