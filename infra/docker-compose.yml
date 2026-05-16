@@ -96,6 +96,8 @@ services:
     environment:
       - NEXTAUTH_SECRET=7f51b9e0c7a42bc6d13d4e8f9a2d6c5b3e8f7a1b0c9d2e4f5a6b7c8d9e0f1a2b
       - NEXTAUTH_URL=http://localhost
+      - NEXT_PUBLIC_BASE_URL=http://localhost/api
+      - BASE_URL=http://zc-app-v30:3000
     expose:
       - "3000"
     networks:
