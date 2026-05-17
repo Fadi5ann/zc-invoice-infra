@@ -94,15 +94,22 @@ services:
     build: ./frontend
     container_name: zc-frontend-v20
     environment:
+      - HOSTNAME=0.0.0.0 #Forces TO listen to the Docker network adapters
       - NEXTAUTH_SECRET=7f51b9e0c7a42bc6d13d4e8f9a2d6c5b3e8f7a1b0c9d2e4f5a6b7c8d9e0f1a2b
       - NEXTAUTH_URL=http://localhost
       - NEXT_PUBLIC_BASE_URL=http://localhost/api
       - BASE_URL=http://zc-app-v30:3000
+      - NEXT_PUBLIC_API_URL=http://localhost/api
+      - BACKEND_URL=http://zc-app-v30:3000
+      - API_URL=http://zc-app-v30:3000
     expose:
       - "3000"
     networks:
-      - frontend_net
-      - mgmt_net # (For monitoring access)
+      frontend_net:
+        aliases:
+          - zc-frontend-link # A unique hostname only on the frontend VLAN
+      mgmt_net: # (For monitoring access)
+      backend_net:
 
 # VLAN 30 - Application Layer
   zc-app-v30:
@@ -112,6 +119,7 @@ services:
       - .env
     environment:
       - APP_HOST=0.0.0.0
+      - HTTP_ENABLE=true
       - DATABASE_TYPE=mysql
       - DATABASE_HOST=db-primary
       - DATABASE_PORT=3306
@@ -125,7 +133,7 @@ services:
     expose:
       - "3000" # Only expose to the Nginx Proxy, not to the host
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api" ]
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -142,7 +150,7 @@ services:
   db-primary:
     image: mysql:8.0
     container_name: zc-db-master-v40
-    command: ["mysqld", "--server-id=1", "--report-host=10.0.3.11"]
+    command: ["mysqld", "--server-id=1", "--report-host=10.0.3.11", "--lower_case_table_names=1"]
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
@@ -164,7 +172,8 @@ services:
   db-secondary-1:
     image: mysql:8.0
     container_name: zc-db-replica-v40
-    command: ["mysqld", "--server-id=2", "--report-host=10.0.3.12"]
+    # Appended case-insensitivity flag to the end of the array
+    command: ["mysqld", "--server-id=2", "--report-host=10.0.3.12", "--lower_case_table_names=1"]
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
@@ -184,7 +193,7 @@ services:
   db-secondary-2:
     image: mysql:8.0
     container_name: zc-db-replica2-v40
-    command: ["mysqld", "--server-id=3", "--report-host=10.0.3.13"]
+    command: ["mysqld", "--server-id=3", "--report-host=10.0.3.13", "--lower_case_table_names=1"]
     restart: always # This tells Docker to restart the container when MySQL reboots
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
