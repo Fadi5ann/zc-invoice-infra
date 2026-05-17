@@ -11,11 +11,11 @@ export class UserService extends AbstractUserService {
 
   async approve(id: string): Promise<UserEntity | null> {
     const user = await this.findOneById(id);
-    return this.userRepository.update(id, { ...user, isApproved: true });
+    return this.userRepository.update(id, { ...user /*, isApproved: true */ });
   }
 
   async disapprove(id: string): Promise<UserEntity | null> {
     const user = await this.findOneById(id);
-    return this.userRepository.update(id, { ...user, isApproved: false });
+    return this.userRepository.update(id, { ...user /*, isApproved: false */ });
   }
 }

@@ -3,7 +3,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AbstractUserEntity } from './abstract-user.entity';
 import { RolePermissionEntity } from './role-permission.entity';
 
-@Entity('roles')
+@Entity('role')
 export class RoleEntity extends EntityHelper {
   @PrimaryGeneratedColumn('uuid')
   id: string;

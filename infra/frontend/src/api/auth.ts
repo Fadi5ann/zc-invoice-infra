@@ -2,17 +2,16 @@ import { ResponseSigninDto, ResponseSignupDto, SigninPayload, SignupPayload } fr
 import axios from './axios';
 
 const signIn = async (payload: SigninPayload): Promise<ResponseSigninDto> => {
-  const response = await axios.post<ResponseSigninDto>('/auth/sign-in', payload);  // Remove public
+  const response = await axios.post<ResponseSigninDto>('/auth/sign-in', payload);
   return response.data;
 };
-
 const signUp = async (payload: SignupPayload): Promise<ResponseSignupDto> => {
-  const response = await axios.post('auth/register', payload);  // /register or /sign-up?
+  const response = await axios.post('/auth/register', payload);
   return response.data;
 };
 
 const resetPassword = async (token: string, password: string): Promise<{ message: string }> => {
-  const response = await axios.post<{ message: string }>(`/auth/register/${token}`, { // add /register
+  const response = await axios.post<{ message: string }>(`/auth/register/${token}`, {
     password
   });
   return response.data;

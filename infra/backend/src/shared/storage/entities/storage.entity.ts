@@ -1,7 +1,7 @@
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('storage')
+@Entity('upload')
 export class StorageEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;

@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { RolePermissionEntity } from './role-permission.entity';
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
 
-@Entity('permissions')
+@Entity('permission')
 export class PermissionEntity extends EntityHelper {
   @PrimaryColumn()
   id: string;

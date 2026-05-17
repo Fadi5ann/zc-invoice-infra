@@ -5,14 +5,14 @@ import { Gender } from 'src/shared/abstract-user-management/enums/gender.enum';
 
 @ChildEntity()
 export class UserEntity extends AbstractUserEntity {
-  @Column({ unique: true, nullable: true })
-  phone?: string;
+  // @Column({ unique: true, nullable: true })
+  // phone?: string;
 
-  @Column({ type: 'text', nullable: true })
-  bio?: string;
+  // @Column({ type: 'text', nullable: true })
+  // bio?: string;
 
-  @Column({ type: 'enum', enum: Gender, nullable: true })
-  gender?: Gender;
+  // @Column({ type: 'enum', enum: Gender, nullable: true })
+  // gender?: Gender;
 
   @ManyToOne(() => StorageEntity, {
     onDelete: 'CASCADE',
@@ -25,6 +25,6 @@ export class UserEntity extends AbstractUserEntity {
   @Column({ nullable: true })
   pictureId?: number;
 
-  @Column({ nullable: true })
-  isApproved?: boolean;
+  // @Column({ nullable: true })
+  // isApproved?: boolean;
 }

@@ -99,9 +99,9 @@ export class AuthService {
       throw new AuthNotActiveException();
     }
 
-    if (!user.isApproved) {
-      throw new UnauthorizedException('User not approved');
-    }
+    // if (!user.isApproved) {
+    //   throw new UnauthorizedException('User not approved');
+    // }
 
     const { access_token, refresh_token } = await this.generateTokens(
       user.id,

@@ -11,7 +11,7 @@ import {
 import { RoleEntity } from './role.entity';
 import { LogEntity } from 'src/shared/logger/entities/log.entity';
 
-@Entity('users')
+@Entity('user')
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
 export abstract class AbstractUserEntity extends EntityHelper {
   @PrimaryGeneratedColumn('uuid')
@@ -38,11 +38,11 @@ export abstract class AbstractUserEntity extends EntityHelper {
   @Column({ unique: true })
   email: string;
 
-  @Column({ type: 'timestamp', nullable: true })
-  emailVerified?: Date;
+  // @Column({ type: 'timestamp', nullable: true })
+  // emailVerified?: Date;
 
-  @Column({ nullable: true })
-  image?: string;
+  // @Column({ nullable: true })
+  // image?: string;
 
   @ManyToOne(() => RoleEntity, (role) => role.users, {
     onDelete: 'CASCADE',

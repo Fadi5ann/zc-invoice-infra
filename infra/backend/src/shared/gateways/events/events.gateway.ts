@@ -83,13 +83,13 @@ export class EventsGateway
         return;
       }
 
-      if (!user.isApproved) {
-        this.logger.warn(
-          `Connection rejected: User ${user.email} is not approved`,
-        );
-        client.disconnect(true);
-        return;
-      }
+      // if (!user.isApproved) {
+      //   this.logger.warn(
+      //     `Connection rejected: User ${user.email} is not approved`,
+      //   );
+      //   client.disconnect(true);
+      //   return;
+      // }
 
       // Generate unique identifier for this connection
       const uniqueId = randomBytes(4).toString('hex');
