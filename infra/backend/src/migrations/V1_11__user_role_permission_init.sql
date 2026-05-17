@@ -40,7 +40,7 @@ CREATE TABLE
 
 CREATE TABLE
     IF NOT EXISTS `user` (
-        `id` VARCHAR(255) NOT NULL,
+        `id` INT NOT NULL AUTO_INCREMENT,
         `username` VARCHAR(255) NOT NULL,
         `firstName` VARCHAR(255) DEFAULT NULL,
         `lastName` VARCHAR(255) DEFAULT NULL,
