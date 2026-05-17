@@ -12,7 +12,7 @@ CREATE TABLE
 
 CREATE TABLE
     IF NOT EXISTS `permission` (
-        `id` INT NOT NULL AUTO_INCREMENT,
+        `id` VARCHAR(255) NOT NULL,
         `label` VARCHAR(255) NOT NULL,
         `description` VARCHAR(255) NOT NULL,
         `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -26,7 +26,7 @@ CREATE TABLE
     IF NOT EXISTS `role_permission` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `roleId` INT NOT NULL,
-        `permissionId` INT NOT NULL,
+        `permissionId` VARCHAR(255) NOT NULL,
         `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         `deletedAt` TIMESTAMP DEFAULT NULL,
