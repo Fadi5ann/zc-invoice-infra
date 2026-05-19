@@ -1,6 +1,6 @@
 CREATE TABLE
     IF NOT EXISTS `default-condition` (
-        `id` INT,
+        `id` INT NOT NULL AUTO_INCREMENT,
         `document_type` ENUM ('quotation', 'invoice') DEFAULT NULL,
         `activity_type` ENUM ('selling', 'buying') DEFAULT NULL,
         `value` VARCHAR(1024) DEFAULT NULL,

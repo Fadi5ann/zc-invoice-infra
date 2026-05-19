@@ -2,8 +2,8 @@ CREATE TABLE
     IF NOT EXISTS `template-category` (
         `id` int NOT NULL AUTO_INCREMENT,
         `label` VARCHAR(255) DEFAULT NULL,
-        `createdAt` TIMESTAMP DEFAULT NOW (),
-        `updatedAt` TIMESTAMP DEFAULT NOW (),
+        `createdAt` TIMESTAMP DEFAULT NOW(),
+        `updatedAt` TIMESTAMP DEFAULT NOW(),
         `deletedAt` TIMESTAMP DEFAULT NULL,
         `isDeletionRestricted` BOOLEAN DEFAULT FALSE,
         PRIMARY KEY (`id`)
@@ -15,8 +15,8 @@ CREATE TABLE
         `markdownContent` TEXT DEFAULT NULL,
         `stylesheetContent` TEXT DEFAULT NULL,
         `categoryId` int NOT NULL,
-        `createdAt` TIMESTAMP DEFAULT NOW (),
-        `updatedAt` TIMESTAMP DEFAULT NOW (),
+        `createdAt` TIMESTAMP DEFAULT NOW(),
+        `updatedAt` TIMESTAMP DEFAULT NOW(),
         `deletedAt` TIMESTAMP DEFAULT NULL,
         `isDeletionRestricted` BOOLEAN DEFAULT FALSE,
         PRIMARY KEY (`id`),

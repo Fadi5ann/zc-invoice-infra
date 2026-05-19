@@ -4,7 +4,7 @@ CREATE TABLE
         `event` VARCHAR(255) NULL,
         `api` VARCHAR(255) NULL,
         `method` VARCHAR(50) NULL,
-        `userId` VARCHAR(255) NULL,
+        `userId` INT NULL,
         `logInfo` json DEFAULT NULL,
         `loggedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         KEY `FK_user_logger` (`userId`),
