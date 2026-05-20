@@ -13,6 +13,7 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app: NestApplication = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('contacts');
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
@@ -99,6 +100,24 @@ async function bootstrap() {
 
   // Bind to 0.0.0.0 so the NestJS container can accept connections from the Nginx container
   await app.listen(3000, '0.0.0.0'); // Listen on all network interfaces
+
+  const server = app.getHttpServer();
+  const router = server._events.request._router;
+
+  const availableRoutes = router.stack
+    .map((layer: any) => {
+      if (layer.route) {
+        return {
+          route: {
+            path: layer.route?.path,
+            method: layer.route?.stack[0].method,
+          },
+        };
+      }
+    })
+    .filter((item: any) => item !== undefined);
+  console.log('Available Routes:', JSON.stringify(availableRoutes, null, 2));
+
   logger.log(`==========================================================`);
   logger.log(`Http Server running on ${await app.getUrl()}`, 'NestApplication');
   logger.log(

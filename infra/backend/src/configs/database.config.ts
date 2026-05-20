@@ -9,6 +9,7 @@ import {
   ValidateIf,
   IsBoolean,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import validateConfig from 'src/utils/validate-config';
 
 class EnvironmentVariablesValidator {
@@ -28,6 +29,7 @@ class EnvironmentVariablesValidator {
   @IsInt()
   @Min(0)
   @Max(65535)
+  @Type(() => Number)
   DATABASE_PORT: number;
 
   @ValidateIf((envValues) => !envValues.DATABASE_URL)

@@ -3,6 +3,7 @@ import { UserManagementModule } from 'src/modules/user-management/user-managemen
 import { PermissionsSeederCommand } from './permissions.seeder';
 import { RolesSeederCommand } from './roles.seeder';
 import { AdminSeederCommand } from './admin.seeder';
+import { CabinetSeederCommand } from './cabinet.seeder';
 import { CurrencyModule } from 'src/modules/currency/currency.module';
 import { ActivityModule } from 'src/modules/activity/activity.module';
 import { PaymentConditionModule } from 'src/modules/payment-condition/payment-condition.module';
@@ -25,7 +26,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
     PermissionsSeederCommand,
     RolesSeederCommand,
     AdminSeederCommand,
-    // CabinetSeederCommand,
+    CabinetSeederCommand,
     SequencesSeederCommand,
     RefCurrenciesSeedCommand,
     RefActivitiesSeedCommand,
