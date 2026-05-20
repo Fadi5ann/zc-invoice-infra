@@ -101,58 +101,100 @@ const findOne = async (
 };
 
 const create = async (firm: CreateFirmDto): Promise<Firm> => {
-  const response = await axios.post<Firm>('public/firm', {
-    ...firm,
+  const backendPayload = {
+    website: firm.website || undefined,
+    name: firm.name,
+    phone: firm.mainInterlocutor?.phone || '', 
+    particular: Boolean(firm.isPerson),        // Remap frontend 'isPerson' to backend 'particular'
+    taxId: firm.taxIdNumber || '',             // Remap frontend 'taxIdNumber' to backend 'taxId'
+    notes: firm.notes || undefined,
+    activityId: firm.activityId && firm.activityId > 0 ? Number(firm.activityId) : undefined,
+    currencyId: firm.currencyId && firm.currencyId > 0 ? Number(firm.currencyId) : undefined,
+    paymentConditionId: firm.paymentConditionId && firm.paymentConditionId > 0 ? Number(firm.paymentConditionId) : undefined,
+    
+    // Explicitly reconstruct the invoicing address to match CreateAddressDto
+    invoicingAddress: {
+      address: firm.invoicingAddress?.address || '',
+      address2: firm.invoicingAddress?.address2 || '',
+      region: firm.invoicingAddress?.region || '',
+      zipcode: String(firm.invoicingAddress?.zipcode || ''), 
+      countryId: firm.invoicingAddress?.countryId && firm.invoicingAddress.countryId > 0 
+        ? Number(firm.invoicingAddress.countryId) 
+        : undefined,
+    },
+
+    // Explicitly reconstruct the delivery address
+    deliveryAddress: {
+      address: firm.deliveryAddress?.address || firm.invoicingAddress?.address || '',
+      address2: firm.deliveryAddress?.address2 || '',
+      region: firm.deliveryAddress?.region || firm.invoicingAddress?.region || '',
+      zipcode: String(firm.deliveryAddress?.zipcode || firm.invoicingAddress?.zipcode || ''),
+      countryId: firm.deliveryAddress?.countryId && firm.deliveryAddress.countryId > 0 
+        ? Number(firm.deliveryAddress.countryId) 
+        : firm.invoicingAddress?.countryId && firm.invoicingAddress.countryId > 0
+          ? Number(firm.invoicingAddress.countryId)
+          : undefined,
+    },
+    
     cabinetId: parseInt(TEST_CABINET || '1')
-  });
-  return response.data;
-};
+  };
 
-const validate = (firm: CreateFirmDto | UpdateFirmDto): ToastValidation => {
-  const interlocutorValidation = firm?.mainInterlocutor
-    ? interlocutor.validate(firm?.mainInterlocutor)
-    : undefined;
-  if (interlocutorValidation?.message) return interlocutorValidation;
-
-  if (!firm.name) return { message: 'firm.errors.empty_entreprise_name' };
-  if (!firm.taxIdNumber && !firm.isPerson)
-    return { message: "Numéro d'idnetification fiscale est obligatoire" };
-
-  if (firm?.website != '' && !isValidUrl(firm?.website || ''))
-    return { message: 'Site Web Invalide' };
-
-  if (!firm.paymentConditionId)
-    return { message: "La sélection d'une condition de paiement est obligatoire" };
-
-  const invoicingAddressValidation = firm?.invoicingAddress
-    ? address.validate(firm?.invoicingAddress)
-    : undefined;
-  if (invoicingAddressValidation?.message)
-    return {
-      ...invoicingAddressValidation,
-      message: 'Adresse de Facturation : ' + invoicingAddressValidation?.message
-    };
-
-  const deliveryAddressValidation = firm?.deliveryAddress
-    ? address.validate(firm?.deliveryAddress)
-    : undefined;
-  if (deliveryAddressValidation?.message)
-    return {
-      ...deliveryAddressValidation,
-      message: 'Adresse de Livraison : ' + deliveryAddressValidation?.message
-    };
-
-  return { message: '' };
+  try {
+    // Replace 'public/firm' with 'enterprise' if your Nest main.ts global routing path changed!
+    const response = await axios.post<Firm>('public/firm', backendPayload); 
+    return response.data;
+  } catch (error: any) {
+    console.error('API ERROR:', error.response?.data || error.message);
+    throw error;
+  }
 };
 
 const update = async (firm: UpdateFirmDto): Promise<Firm> => {
-  const response = await axios.put<Firm>(`public/firm/${firm.id}`, firm);
+  const { id, isPerson, taxIdNumber, ...rest } = firm;
+  const payload = {
+    ...rest,
+    ...(isPerson !== undefined && { particular: isPerson }),
+    ...(taxIdNumber !== undefined && { taxId: taxIdNumber })
+  };
+  const response = await axios.put<Firm>(`public/firm/${id}`, payload);
   return response.data;
 };
 
 const remove = async (id: number) => {
   const { data, status } = await axios.delete<Firm>(`public/firm/${id}`);
   return { data, status };
+};
+
+const validate = (firm: Partial<CreateFirmDto>): ToastValidation => {
+  if (!firm.name?.trim()) {
+    return { message: 'Firm name is required.' };
+  }
+
+  if (firm.website && !isValidUrl(firm.website)) {
+    return { message: 'Invalid website URL.' };
+  }
+
+  if (!firm.isPerson && !firm.taxIdNumber?.trim()) {
+    return { message: 'Tax ID is required for companies.' };
+  }
+
+  if (firm.invoicingAddress) {
+    const addressValidation = address.validate(firm.invoicingAddress);
+    if (addressValidation.message) {
+      return addressValidation;
+    }
+  } else {
+    return { message: 'Invoicing address is required.' };
+  }
+
+  if (firm.mainInterlocutor) {
+    const interlocutorValidation = interlocutor.validate(firm.mainInterlocutor);
+    if (interlocutorValidation.message && interlocutorValidation.type !== 'warning') {
+      return interlocutorValidation;
+    }
+  }
+
+  return { message: '' };
 };
 
 export const firm = {

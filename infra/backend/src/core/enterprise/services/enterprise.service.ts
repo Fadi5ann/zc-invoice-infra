@@ -5,11 +5,8 @@ import { EnterpriseEntity } from '../entities/enterprise.entity';
 import { CreateEnterpriseDto } from '../dtos/enterprise/enterprise.create.dto';
 import { Transactional } from '@nestjs-cls/transactional';
 import { EnterpriseInterlocutorService } from './enterprise-interlocutor.service';
-import { CreateAddressDto } from '../dtos/address/address.create.dto';
 import { AddressService } from './address.service';
 import { UpdateEnterpriseDto } from '../dtos/enterprise/enterprise.update.dto';
-import { UpdateAddressDto } from '../dtos/address/address.update.dto';
-import { CreateEnterpriseInterlocutorDto } from '../dtos/enterprise-interlocutor/create-enterprise-interlocutor.dto';
 
 @Injectable()
 export class EnterpriseService extends AbstractCrudService<EnterpriseEntity> {
@@ -24,26 +21,32 @@ export class EnterpriseService extends AbstractCrudService<EnterpriseEntity> {
   @Transactional()
   async extendedSave(
     createEnterpriseDto: CreateEnterpriseDto,
-    deliveryAddressDto: CreateAddressDto,
-    invoicingAddressDto: CreateAddressDto,
-    interlocutors: CreateEnterpriseInterlocutorDto[],
   ): Promise<EnterpriseEntity> {
+    const {
+      invoicingAddress: invoicingAddressDto,
+      deliveryAddress: deliveryAddressDto,
+      interlocutors,
+      ...enterpriseData
+    } = createEnterpriseDto;
+
     const deliveryAddress = await this.addressService.save(deliveryAddressDto);
     const invoicingAddress =
       await this.addressService.save(invoicingAddressDto);
 
     const enterprise = await this.enterpriseRepository.save({
-      ...createEnterpriseDto,
+      ...enterpriseData,
       deliveryAddress,
       invoicingAddress,
     });
 
-    await this.enterpriseInterlocutorService.extendedSaveMany(
-      interlocutors.map((interlocutor) => ({
-        ...interlocutor,
-        enterprise,
-      })),
-    );
+    if (interlocutors && interlocutors.length > 0) {
+      await this.enterpriseInterlocutorService.extendedSaveMany(
+        interlocutors.map((interlocutor) => ({
+          ...interlocutor,
+          enterprise,
+        })),
+      );
+    }
 
     return enterprise;
   }
@@ -52,21 +55,32 @@ export class EnterpriseService extends AbstractCrudService<EnterpriseEntity> {
   async extendedUpdate(
     id: number,
     updateEnterpriseDto: UpdateEnterpriseDto,
-    deliveryAddressDto: UpdateAddressDto,
-    invoicingAddressDto: UpdateAddressDto,
   ): Promise<EnterpriseEntity> {
+    const {
+      invoicingAddress: invoicingAddressDto,
+      deliveryAddress: deliveryAddressDto,
+      ...enterpriseData
+    } = updateEnterpriseDto;
+
     const enterprise = await this.findOneById(id);
-    const deliveryAddress = await this.addressService.update(
-      enterprise.deliveryAddressId,
-      deliveryAddressDto,
-    );
-    const invoicingAddress = await this.addressService.update(
-      enterprise.invoicingAddressId,
-      invoicingAddressDto,
-    );
+
+    // It's safer to use .save() for address updates to correctly handle relation mapping.
+    const deliveryAddress = deliveryAddressDto
+      ? await this.addressService.save({
+          id: enterprise.deliveryAddressId,
+          ...deliveryAddressDto,
+        })
+      : enterprise.deliveryAddress;
+    const invoicingAddress = invoicingAddressDto
+      ? await this.addressService.save({
+          id: enterprise.invoicingAddressId,
+          ...invoicingAddressDto,
+        })
+      : enterprise.invoicingAddress;
+
     return this.enterpriseRepository.save({
       ...enterprise,
-      ...updateEnterpriseDto,
+      ...enterpriseData,
       deliveryAddress,
       invoicingAddress,
     });

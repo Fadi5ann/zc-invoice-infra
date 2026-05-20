@@ -1,10 +1,6 @@
-import { CreateAddressDto } from '@/types';
+import { CreateAddressDto, ToastValidation } from '@/types';
 
-interface ValidationResult {
-  message?: string;
-}
-
-const validate = (address: CreateAddressDto | undefined): ValidationResult => {
+const validate = (address: CreateAddressDto | undefined): ToastValidation => {
   if (!address) {
     return { message: 'Address is required.' };
   }
@@ -25,7 +21,7 @@ const validate = (address: CreateAddressDto | undefined): ValidationResult => {
     return { message: 'Country is required.' };
   }
 
-  return {};
+  return { message: '' };
 };
 
 export const address = {

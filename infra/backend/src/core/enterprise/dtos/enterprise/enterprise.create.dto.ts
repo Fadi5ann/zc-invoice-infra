@@ -7,7 +7,9 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { CreateAddressDto } from '../address/address.create.dto';
 import { CreateEnterpriseInterlocutorDto } from '../enterprise-interlocutor/create-enterprise-interlocutor.dto';
 import { Optional } from '@nestjs/common';
@@ -61,14 +63,20 @@ export class CreateEnterpriseDto {
 
   @ApiProperty({ type: CreateAddressDto })
   @IsObject()
+  @ValidateNested()
+  @Type(() => CreateAddressDto)
   invoicingAddress: CreateAddressDto;
 
   @ApiProperty({ type: CreateAddressDto })
   @IsObject()
+  @ValidateNested()
+  @Type(() => CreateAddressDto)
   deliveryAddress: CreateAddressDto;
 
   @ApiProperty({ type: CreateEnterpriseInterlocutorDto })
   @IsArray()
   @Optional()
+  @ValidateNested({ each: true })
+  @Type(() => CreateEnterpriseInterlocutorDto)
   interlocutors?: CreateEnterpriseInterlocutorDto[];
 }

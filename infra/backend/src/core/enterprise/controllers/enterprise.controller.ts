@@ -71,9 +71,6 @@ export class EnterpriseController {
   ): Promise<ResponseEnterpriseDto> {
     const enterprise = await this.enterpriseService.extendedSave(
       createEnterpriseDto,
-      createEnterpriseDto.deliveryAddress,
-      createEnterpriseDto.invoicingAddress,
-      createEnterpriseDto.interlocutors,
     );
     req.logInfo = { id: enterprise.id };
     return enterprise;
@@ -90,8 +87,6 @@ export class EnterpriseController {
     return this.enterpriseService.extendedUpdate(
       id,
       updateEnterpriseDto,
-      updateEnterpriseDto.deliveryAddress,
-      updateEnterpriseDto.invoicingAddress,
     );
   }
 

@@ -25,8 +25,8 @@ export class AddressEntity extends EntityHelper {
   @Column({ type: 'int' })
   zipcode: number;
 
-  @ManyToOne(() => RefParamEntity, { eager: true })
-  @JoinColumn({ name: 'countryId' })
+  @ManyToOne(() => RefParamEntity, { nullable: false })
+  @JoinColumn({ name: 'countryId', referencedColumnName: 'id' })
   country: RefParamEntity;
 
   @Column({ type: 'int' })
