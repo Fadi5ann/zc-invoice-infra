@@ -69,9 +69,8 @@ export class EnterpriseController {
     @Body() createEnterpriseDto: CreateEnterpriseDto,
     @Request() req: AdvancedRequest,
   ): Promise<ResponseEnterpriseDto> {
-    const enterprise = await this.enterpriseService.extendedSave(
-      createEnterpriseDto,
-    );
+    const enterprise =
+      await this.enterpriseService.extendedSave(createEnterpriseDto);
     req.logInfo = { id: enterprise.id };
     return enterprise;
   }
@@ -84,10 +83,7 @@ export class EnterpriseController {
     @Request() req: AdvancedRequest,
   ): Promise<ResponseEnterpriseDto> {
     req.logInfo = { id };
-    return this.enterpriseService.extendedUpdate(
-      id,
-      updateEnterpriseDto,
-    );
+    return this.enterpriseService.extendedUpdate(id, updateEnterpriseDto);
   }
 
   @Delete('/:id')

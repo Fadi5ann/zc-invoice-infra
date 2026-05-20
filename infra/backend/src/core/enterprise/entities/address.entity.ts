@@ -5,6 +5,7 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  RelationId,
 } from 'typeorm';
 import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
 
@@ -26,9 +27,9 @@ export class AddressEntity extends EntityHelper {
   zipcode: number;
 
   @ManyToOne(() => RefParamEntity, { nullable: false })
-  @JoinColumn({ name: 'countryId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'countryId' })
   country: RefParamEntity;
 
-  @Column({ type: 'int' })
+  @RelationId((address: AddressEntity) => address.country)
   countryId: number;
 }

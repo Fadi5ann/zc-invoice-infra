@@ -12,17 +12,25 @@ export class AddressService extends AbstractCrudService<AddressEntity> {
   }
 
   async save(dto: DeepPartial<AddressEntity>) {
-    const address = this.addressRepository.create({
+    // 1. Explicitly prepare the data
+    const addressData = {
       ...dto,
-      country: dto.countryId ? { id: dto.countryId } : undefined,
-    });
+      zipcode: Number(dto.zipcode),
+      // 2. Map the relationship explicitly
+      country: dto.countryId ? { id: Number(dto.countryId) } : undefined,
+    };
+
+    const address = this.addressRepository.create(addressData);
     return this.addressRepository.save(address);
   }
 
-  async update(id: string | number, dto: QueryDeepPartialEntity<AddressEntity>) {
+  async update(
+    id: string | number,
+    dto: QueryDeepPartialEntity<AddressEntity>,
+  ) {
     const entity = await this.findOneById(id);
     if (!entity) throw new Error('Entity not found');
-    
+
     return this.addressRepository.update(id, dto);
   }
 }

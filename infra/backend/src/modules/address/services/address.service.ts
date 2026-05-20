@@ -31,13 +31,17 @@ export class AddressService {
       );
     }
 
-    const address = new AddressEntity();
-    address.address = createAddressDto.address;
-    address.address2 = createAddressDto.address2;
-    address.region = createAddressDto.region;
-    address.zipcode = createAddressDto.zipcode;
-    address.country = country;
+    const { zipcode, countryId, ...rest } = createAddressDto;
 
+    // 2. Create the entity instance
+    const address = this.addressRepository.create({
+      ...rest,
+      zipcode,
+      countryId,
+      country: country, // TypeORM handles the rest via the Relation
+    });
+
+    // 3. Save the instance
     return this.addressRepository.save(address);
   }
 
@@ -45,19 +49,30 @@ export class AddressService {
     id: number,
     updateAddressDto: UpdateAddressDto,
   ): Promise<AddressEntity> {
-    const addressToUpdate = await this.findOneById(id);
+    await this.findOneById(id);
 
     const country = await this.countryService.findOneById(
       updateAddressDto.countryId,
     );
+    if (!country) {
+      throw new Error(
+        `Country with ID ${updateAddressDto.countryId} does not exist.`,
+      );
+    }
 
-    addressToUpdate.address = updateAddressDto.address;
-    addressToUpdate.address2 = updateAddressDto.address2;
-    addressToUpdate.region = updateAddressDto.region;
-    addressToUpdate.zipcode = updateAddressDto.zipcode;
-    addressToUpdate.country = country;
+    const { zipcode, countryId, ...rest } = updateAddressDto;
 
-    return this.addressRepository.save(addressToUpdate);
+    const addressData = {
+      ...rest,
+      zipcode,
+      countryId,
+      country: country,
+    };
+
+    // Pass the payload directly
+    await this.addressRepository.update(id, addressData);
+
+    return this.findOneById(id);
   }
 
   async softDelete(id: number): Promise<AddressEntity> {

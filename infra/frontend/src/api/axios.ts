@@ -3,7 +3,7 @@ import { useAuthPersistStore } from '@/hooks/stores/useAuthPersistStore';
 import { signOut } from 'next-auth/react';
 
 const BASE_URL =
-  typeof window !== 'undefined' ? process.env.NEXT_PUBLIC_BASE_URL : process.env.BASE_URL;
+  typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_BASE_URL || '/api') : (process.env.BASE_URL || '/api');
 
 const axios = _axios.create({
   baseURL: BASE_URL,

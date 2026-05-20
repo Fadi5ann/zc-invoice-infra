@@ -77,7 +77,7 @@ export class EnterpriseEntity extends EntityHelper {
 
   @Column({ type: 'int', nullable: true })
   deliveryAddressId: number;
-  
+
   @Column({ nullable: true })
   countryId: number;
 }
