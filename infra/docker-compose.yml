@@ -123,13 +123,10 @@ services:
       - DATABASE_TYPE=mysql
       - DATABASE_HOST=db-primary
       - DATABASE_PORT=3306
+      - DATABASE_NAME=${DB_NAME}
       - DATABASE_USERNAME=${DB_USER}
       - DATABASE_PASSWORD=${DB_PASSWORD}
-      - DATABASE_NAME=${DB_NAME}
-      - SMTP_USER=${SMTP_USER}
-      - SMTP_PASS=${SMTP_PASS}
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_PORT=${SMTP_PORT}
+      - DATABASE_SYNCHRONIZE=true
     expose:
       - "3000" # Only expose to the Nginx Proxy, not to the host
     healthcheck:
@@ -150,8 +147,18 @@ services:
   db-primary:
     image: mysql:8.0
     container_name: zc-db-master-v40
-    command: ["mysqld", "--server-id=1", "--report-host=10.0.3.11", "--lower_case_table_names=1"]
+    command: [
+      "mysqld", 
+      "--server-id=1", 
+      "--report-host=10.0.3.11", 
+      "--lower_case_table_names=1",
+      "--loose-group_replication_local_address=10.0.3.11:33061"
+      ]
     restart: always
+    ports:
+      - "3307:3306"
+    env_file:
+      - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -173,8 +180,16 @@ services:
     image: mysql:8.0
     container_name: zc-db-replica-v40
     # Appended case-insensitivity flag to the end of the array
-    command: ["mysqld", "--server-id=2", "--report-host=10.0.3.12", "--lower_case_table_names=1"]
+    command: [
+      "mysqld", 
+      "--server-id=2", 
+      "--report-host=10.0.3.12", 
+      "--lower_case_table_names=1",
+      "--loose-group_replication_local_address=10.0.3.12:33061"
+      ]
     restart: always
+    env_file:
+      - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -193,8 +208,16 @@ services:
   db-secondary-2:
     image: mysql:8.0
     container_name: zc-db-replica2-v40
-    command: ["mysqld", "--server-id=3", "--report-host=10.0.3.13", "--lower_case_table_names=1"]
+    command: [
+      "mysqld", 
+      "--server-id=3", 
+      "--report-host=10.0.3.13", 
+      "--lower_case_table_names=1",
+      "--loose-group_replication_local_address=10.0.3.13:33061"
+      ]
     restart: always # This tells Docker to restart the container when MySQL reboots
+    env_file:
+      - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}

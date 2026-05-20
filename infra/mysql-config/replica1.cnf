@@ -1,0 +1,13 @@
+[mysqld]
+server_id=2
+gtid_mode=ON
+enforce_gtid_consistency=ON
+binlog_format=ROW
+log_replica_updates=ON
+
+plugin_load_add='group_replication.so'
+group_replication_group_name="b565a95e-1bf6-11ee-be56-0242ac120002"
+group_replication_local_address="10.0.3.12:33061"
+group_replication_group_seeds="10.0.3.11:33061,10.0.3.12:33061,10.0.3.13:33061"
+
+group_replication_start_on_boot=OFF
