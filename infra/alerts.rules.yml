@@ -1,0 +1,12 @@
+groups:
+  - name: ZC_Invoice_Alerts
+    rules:
+      - alert: ConteneurArrete
+        # نستخدم cAdvisor لمراقبة ما إذا كانت حاوية Backend قد توقفت
+        expr: time() - container_last_seen{name=~"zc-app-v30.*"} > 15
+        for: 10s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alerte: Instance Backend hors ligne !"
+          description: "Le conteneur {{ $labels.name }} ne répond plus. Le WAF Nginx a dû rediriger le trafic."

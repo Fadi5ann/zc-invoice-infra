@@ -16,6 +16,7 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./alerts.rules.yml:/etc/prometheus/alerts.rules.yml:ro 
     networks:
       - mgmt_net
       - dmz_net
@@ -74,15 +75,36 @@ services:
     networks:
       - mgmt_net
 
+# The Alarm System Sends Notifications (SMS/Email/Webhook)
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: zc-alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    networks:
+      - mgmt_net
+
 # --- WEB LAYER ---
-# Web/DMZ Layer (The Bouncer)
+# Web/DMZ Layer (The Bouncer with WAF)
   web-entry:
-    image: nginx:alpine
+    image: owasp/modsecurity-crs:nginx-alpine
     container_name: zc-proxy-v10
     ports:
       - "80:80"
+    environment:
+      - PARANOIA=1 # OWASP the first layer of defense, set to the highest level for maximum security
+      - PROXY_SSL=on
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.conf:/etc/nginx/templates/default.conf.template:ro
+    depends_on:
+      zc-app-v30:
+        condition: service_healthy
+      zc-frontend-v20:
+        condition: service_started
     networks:
       - dmz_net
       - frontend_net
@@ -114,10 +136,17 @@ services:
 # VLAN 30 - Application Layer
   zc-app-v30:
     build: ./backend
-    container_name: zc-app-v30
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
     env_file:
       - .env
     environment:
+      - NODE_OPTIONS=--max-old-space-size=512
       - APP_HOST=0.0.0.0
       - HTTP_ENABLE=true
       - DATABASE_TYPE=mysql
@@ -130,7 +159,7 @@ services:
     expose:
       - "3000" # Only expose to the Nginx Proxy, not to the host
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
