@@ -6,4 +6,4 @@ route:
 
 receivers:
   - name: 'default-receiver'
-    # في المستقبل، يمكن إضافة Webhook هنا لإرسال رسالة إلى هاتف الفريق N1
+# In the future, a Webhook can be added here to send a message to Team phones
