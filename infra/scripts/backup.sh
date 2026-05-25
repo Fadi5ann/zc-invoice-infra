@@ -24,10 +24,10 @@ if [ "$TYPE" == "hourly" ]; then
   MSG_TITLE="🔹 [PFE INFRASTRUCTURE] - Hourly Snapshot"
 elif [ "$TYPE" == "daily" ]; then
   FILE_NAME="perfect-sauvegarde-complete-$DATE.sql"
-  MSG_TITLE="💾 [PFE INFRASTRUCTURE] - Daily Full Backup"
+  MSG_TITLE=" [PFE INFRASTRUCTURE] - Daily Full Backup"
 elif [ "$TYPE" == "monthly" ]; then
   FILE_NAME="archive-mensuelle-hors-site-$DATE.sql"
-  MSG_TITLE="📦 [PFE INFRASTRUCTURE] - Monthly Off-Site Archive"
+  MSG_TITLE=" [PFE INFRASTRUCTURE] - Monthly Off-Site Archive"
 fi
 
 echo "Executing Strategy: $MSG_TITLE..."
@@ -40,12 +40,12 @@ if [ $? -eq 0 ] && [ -s "$BACKUP_DIR/$TYPE/$FILE_NAME" ]; then
   echo "Success: $FILE_NAME generated in $BACKUP_DIR/$TYPE/"
   
   # Send successful backup notification to Slack (Green Indicator)
-  curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"✅ *$MSG_TITLE Successful*\\n*File Name:* \`$FILE_NAME\`\\n*Size:* \`$(du -sh $BACKUP_DIR/$TYPE/$FILE_NAME | cut -f1)\`\\n*Status:* \`Verified and Secured\`\\n*Timestamp:* \`$(date +'%Y-%m-%d %H:%M:%S')\`\"}" $SLACK_WEBHOOK
+  curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"*$MSG_TITLE Successful*\\n*File Name:* \`$FILE_NAME\`\\n*Size:* \`$(du -sh $BACKUP_DIR/$TYPE/$FILE_NAME | cut -f1)\`\\n*Status:* \`Verified and Secured\`\\n*Timestamp:* \`$(date +'%Y-%m-%d %H:%M:%S')\`\"}" $SLACK_WEBHOOK
 else
   echo "Critical Error: Backup strategy pipeline execution failed!"
   
   # Send critical failure alert notification to Slack (Red Alert)
-  curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"🚨 *[STRATEGY ALERT] - BACKUP PIPELINE FAILED*\\n*Type:* \`$TYPE\`\\n*Error:* Unable to extract dump from container $CONTAINER_NAME or out of storage space.\\n*Timestamp:* \`$(date +'%Y-%m-%d %H:%M:%S')\`\"}" $SLACK_WEBHOOK
+  curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"*[STRATEGY ALERT] - BACKUP PIPELINE FAILED*\\n*Type:* \`$TYPE\`\\n*Error:* Unable to extract dump from container $CONTAINER_NAME or out of storage space.\\n*Timestamp:* \`$(date +'%Y-%m-%d %H:%M:%S')\`\"}" $SLACK_WEBHOOK
   exit 1
 fi
 

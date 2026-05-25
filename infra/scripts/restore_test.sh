@@ -33,12 +33,12 @@ if [ $? -eq 0 ]; then
   echo "Weekly restore check passed successfully."
   
   # Send weekly validation success confirmation message to Slack
-  curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"🔄 *[WEEKLY RESTORE TEST PASSED]*\\n*Target File:* \`$(basename $LATEST_BACKUP)\`\\n*Result:* \`Integrity Validated Successfully\`\\n*Notice:* Backup assets match recovery thresholds perfectly.\\n*Timestamp:* \`$(date +'%Y-%m-%d %H:%M:%S')\`\"}" $SLACK_WEBHOOK
+  curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"*[WEEKLY RESTORE TEST PASSED]*\\n*Target File:* \`$(basename $LATEST_BACKUP)\`\\n*Result:* \`Integrity Validated Successfully\`\\n*Notice:* Backup assets match recovery thresholds perfectly.\\n*Timestamp:* \`$(date +'%Y-%m-%d %H:%M:%S')\`\"}" $SLACK_WEBHOOK
 else
   echo "Alert: Restored snapshot file execution has failed!"
   
   # Send warning alert if backup file parsing breaks down
-  curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"🚨 *[CRITICAL] - WEEKLY RESTORE TEST FAILED*\\n*Target File:* \`$(basename $LATEST_BACKUP)\`\\n*Danger:* Snapshot file appears corrupted or invalid for disaster recovery operations!\\n*Timestamp:* \`$(date +'%Y-%m-%d %H:%M:%S')\`\"}" $SLACK_WEBHOOK
+  curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"*[CRITICAL] - WEEKLY RESTORE TEST FAILED*\\n*Target File:* \`$(basename $LATEST_BACKUP)\`\\n*Danger:* Snapshot file appears corrupted or invalid for disaster recovery operations!\\n*Timestamp:* \`$(date +'%Y-%m-%d %H:%M:%S')\`\"}" $SLACK_WEBHOOK
 fi
 
 # Step D: Destruct and wipe the testing sandbox database cleanly
