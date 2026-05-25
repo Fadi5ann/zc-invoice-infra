@@ -22,11 +22,15 @@ import { MailModule } from 'src/shared/mail/mail.module';
 import { DatabaseModule } from 'src/shared/database/database.module';
 import { SeedersModule } from 'src/seeders/seeders.module';
 import { CommandModule } from 'nestjs-command';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   controllers: [HelloController],
   providers: [],
   imports: [
+    PrometheusModule.register({
+      path: '/metrics',
+    }),
     ConfigModule.forRoot({
       load: configs,
       isGlobal: true,
