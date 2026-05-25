@@ -1,9 +1,48 @@
+global:
+  # If an alert stays active without updates, consider it resolved after 5m
+  resolve_timeout: 5m
+
 route:
-  receiver: 'default-receiver'
-  group_wait: 10s
-  group_interval: 1m
-  repeat_interval: 1h
+  # Group alerts by their name and what container caused them
+  group_by: ['alertname', 'container', 'instance']
+  
+  # How long to wait before sending the very first notification in a group
+  group_wait: 30s
+  
+  # How long to wait before sending notifications about newly added alerts to an existing group
+  group_interval: 2m
+  
+  # If an alert is STILL firing, how long to wait before reminding you
+  repeat_interval: 3h
+  
+  # The default receiver to route alerts to
+  receiver: 'slack-notifications'
 
 receivers:
-  - name: 'default-receiver'
-# In the future, a Webhook can be added here to send a message to Team phones
+- name: 'slack-notifications'
+  slack_configs:
+  - api_url: ''
+    channel: '#alerts' # Slack channel to send alerts
+    send_resolved: true # Send a notification when the alert is resolved
+
+    # added dynamic coloring based on alert status and severity
+    color: '{{ if eq .Status "firing" }}{{ if eq .CommonLabels.severity "critical" }}danger{{ else if eq .CommonLabels.severity "warning" }}warning{{ else }}#439FE0{{ end }}{{ else }}good{{ end }}'
+    
+    # Optional: Customize the sender username and icon dynamically
+    username: 'Prometheus [{{ .Status | toUpper }}]'
+    icon_emoji: '{{ if eq .Status "firing" }}::fire:{{ else }}::white_check_mark:{{ end }}'
+
+    # Message block to format the alert details
+    title: '[{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}'
+    text: >-
+      {{ range .Alerts }}
+        *Alert:* {{ .Annotations.summary }}
+        *Description:* {{ .Annotations.description }}
+        *Severity:* `{{ .Labels.severity }}`
+        {{ if eq .Status "firing" }}
+        *Incident Started At:* `{{ .StartsAt.Format "2006-01-02 15:04:05" }}`
+        *Real-time Alert Sent:* `{{ .StartsAt.Local.Format "15:04:05" }}`
+        {{ else }}
+        *Incident Duration:* from `{{ .StartsAt.Format "15:04:05" }}` to `{{ .EndsAt.Format "15:04:05" }}`
+        {{ end }}
+      {{ end }}

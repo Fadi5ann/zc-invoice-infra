@@ -41,17 +41,18 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
     container_name: zc-cadvisor
-    privileged: true # <-- The VIP Pass
-    pid: "host" # <-- Access to Host's Process Tree
-    cgroup: "host" # <-- Access to Host's Cgroup Metrics
+    privileged: true # The VIP Pass
+    pid: "host" # Access to Host's Process Tree
+    # cgroup: "host" #Access to Host's Cgroup Metrics
     ports:
       - "8080:8080"
     volumes:
       - /:/rootfs:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro # <-- Reads the Container Names
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Reads the Container Names
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
-      - /sys/fs/cgroup:/cgroup:ro # <-- Reads modern Ubuntu metrics
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro # Reads modern cgroup metrics (required for accurate CPU and Memory usage)
+      # - /sys/fs/cgroup:/cgroup:ro #  Reads modern Ubuntu metrics
     networks:
       - mgmt_net
 
@@ -75,7 +76,7 @@ services:
     networks:
       - mgmt_net
 
-# The Alarm System Sends Notifications (SMS/Email/Webhook)
+# The Alarm System Sends Notifications
   alertmanager:
     image: prom/alertmanager:latest
     container_name: zc-alertmanager
@@ -99,10 +100,10 @@ services:
       - PARANOIA=1 # OWASP the first layer of defense, set to the highest level for maximum security
       - PROXY_SSL=on
     volumes:
-      - ./nginx.conf:/etc/nginx/templates/default.conf.template:ro
+      - ./nginx.conf:/etc/nginx/templates/nginx.conf.template:ro
     depends_on:
       zc-app-v30:
-        condition: service_healthy
+        condition: service_started
       zc-frontend-v20:
         condition: service_started
     networks:
@@ -159,11 +160,11 @@ services:
     expose:
       - "3000" # Only expose to the Nginx Proxy, not to the host
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/hello', (res) => res.statusCode === 200 ? process.exit(0) : process.exit(1))"]
+      interval: 15s
+      timeout: 10s
+      retries: 6
+      start_period: 90s
     depends_on:
       db-primary:
         condition: service_healthy

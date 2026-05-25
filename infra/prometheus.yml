@@ -10,17 +10,21 @@ scrape_configs:
     static_configs:
       - targets: ['cadvisor:8080']
 
+  - job_name: 'zc-nestjs-apps'
+    metrics_path: '/api/metrics'
+    static_configs:
+      - targets: ['zc-app-v30:3000']
+
   # - job_name: 'containers'
   #   static_configs:
   #     - targets: ['zc-web-entry:80']
 
-#  Tell Prometheus where the alarm server is located
+# Tell Prometheus where the alarm server is located
 alerting:
   alertmanagers:
     - static_configs:
-      - targets: ['zc-alertmanager:9093']
-# Tell Prometheus where to read the laws of warnings
+        - targets: ['zc-alertmanager:9093']
 
-  rule_files:
-    - "/etc/prometheus/alerts.rules.yml"
-
+# Tell Prometheus where to read the alert rules
+rule_files:
+  - "/etc/prometheus/alerts.rules.yml"

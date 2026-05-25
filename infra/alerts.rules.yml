@@ -1,12 +1,22 @@
 groups:
-  - name: ZC_Invoice_Alerts
+  - name: container_alerts
     rules:
-      - alert: ConteneurArrete
-        # نستخدم cAdvisor لمراقبة ما إذا كانت حاوية Backend قد توقفت
-        expr: time() - container_last_seen{name=~"zc-app-v30.*"} > 15
-        for: 10s
+      # Alert 1: If a container dies
+      - alert: ContainerDown
+        expr: container_last_seen{job="cadvisor"} > 60
+        for: 1m
         labels:
           severity: critical
         annotations:
-          summary: "Alerte: Instance Backend hors ligne !"
-          description: "Le conteneur {{ $labels.name }} ne répond plus. Le WAF Nginx a dû rediriger le trafic."
+          summary: "Container Down on {{ $labels.instance }}"
+          description: "A container has disappeared for more than 60 seconds."
+
+      # Alert 2: High Memory usage
+      - alert: ContainerHighMemory
+        expr: (container_memory_usage_bytes{job="cadvisor"} / container_spec_memory_limit_bytes{job="cadvisor"}) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Memory usage on {{ $labels.container }}"
+          description: "Container memory is above 85% for the last 5 minutes."

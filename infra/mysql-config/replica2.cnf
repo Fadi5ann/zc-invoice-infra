@@ -13,4 +13,4 @@ group_replication_local_address="10.0.3.13:33061"
 group_replication_group_seeds="10.0.3.11:33061,10.0.3.12:33061,10.0.3.13:33061"
 
 # Safe manual recovery initialization gate
-group_replication_start_on_boot=OFF
+group_replication_start_on_boot=ON
