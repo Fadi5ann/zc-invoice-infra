@@ -7,6 +7,14 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 
 COPY package*.json ./
+
+# Inject system build dependencies required for native node-gyp (sqlite3) compilation
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN npm install
 COPY . .
 RUN npm run build
@@ -31,12 +39,15 @@ COPY --from=builder /app/dist ./dist
 # Copy generated types for i18n
 COPY --from=builder /app/src/generated ./src/generated
 
+RUN mkdir -p /app/dist/src && ln -s /app/dist/i18n /app/dist/src/i18n
 # Tell Puppeteer exactly where Chrome is located to prevent crash errors
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 EXPOSE 3000
-CMD ["node", "dist/main.js"]
+# Change the last line from:
+# CMD ["node", "dist/main.js"]
 
+CMD ["node", "dist/main.js"]
 # FROM node:latest
 
 # # Create app directory
