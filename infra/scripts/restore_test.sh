@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path configurations matching main backup parameters
-PROJECT_DIR="/home/fadi5an/zc-invoice-infrastructure/infra"
+PROJECT_DIR="/home/fadi5an/zc-invoice-infrastructure/infra/backups"
 BACKUP_DIR="$PROJECT_DIR/backups"
 CONTAINER_NAME="zc-db-master-v40"
 DB_USER="root"
@@ -26,8 +26,7 @@ echo "Testing file integrity on: $LATEST_BACKUP"
 docker exec $CONTAINER_NAME mysql -u$DB_USER -p$DB_PASS -e "DROP DATABASE IF EXISTS $TEST_DB; CREATE DATABASE $TEST_DB;"
 
 # Step B: Inject and parse the snapshot payload data directly into the isolated test db
-docker exec -i $CONTAINER_NAME mysql -u$DB_USER -p$DB_PASS $TEST_DB < "$LATEST_BACKUP"
-
+(echo "SET SQL_LOG_BIN=0;"; cat "$LATEST_BACKUP") | docker exec -i $CONTAINER_NAME mysql -u$DB_USER -p$DB_PASS $TEST_DB
 # Step C: Evaluate if the restoration sql code successfully structured without syntax failures
 if [ $? -eq 0 ]; then
   echo "Weekly restore check passed successfully."

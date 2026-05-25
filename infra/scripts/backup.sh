@@ -33,8 +33,7 @@ fi
 echo "Executing Strategy: $MSG_TITLE..."
 
 # Dump databases from inside the target Docker container
-docker exec $CONTAINER_NAME mysqldump -u$DB_USER -p$DB_PASS --all-databases > "$BACKUP_DIR/$TYPE/$FILE_NAME"
-
+docker exec $CONTAINER_NAME mysqldump -u$DB_USER -p$DB_PASS --all-databases --single-transaction --set-gtid-purged=OFF > "$BACKUP_DIR/$TYPE/$FILE_NAME"
 # Verify execution status and that the generated backup file is not empty
 if [ $? -eq 0 ] && [ -s "$BACKUP_DIR/$TYPE/$FILE_NAME" ]; then
   echo "Success: $FILE_NAME generated in $BACKUP_DIR/$TYPE/"
