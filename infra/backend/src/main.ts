@@ -13,7 +13,7 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app: NestApplication = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('contacts');
+  app.setGlobalPrefix('api');
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
@@ -98,25 +98,37 @@ async function bootstrap() {
   }
   //===================================================================
 
-  // Bind to 0.0.0.0 so the NestJS container can accept connections from the Nginx container
-  await app.listen(3000, '0.0.0.0'); // Listen on all network interfaces
+  // Bind to host/port so the NestJS container can accept connections from the Nginx container
+  const listenHost = process.env.APP_HOST || host || '0.0.0.0';
+  const listenPort = process.env.APP_PORT || port || 3000;
+  await app.listen(listenPort, listenHost);
 
-  const server = app.getHttpServer();
-  const router = server._events.request._router;
+  // Robust Express router discovery extraction layer
+  const serverInstance = app.getHttpAdapter().getInstance();
+  const router = serverInstance?._router;
 
-  const availableRoutes = router.stack
-    .map((layer: any) => {
-      if (layer.route) {
-        return {
-          route: {
-            path: layer.route?.path,
-            method: layer.route?.stack[0].method,
-          },
-        };
-      }
-    })
-    .filter((item: any) => item !== undefined);
-  console.log('Available Routes:', JSON.stringify(availableRoutes, null, 2));
+  const availableRoutes = router?.stack
+    ? router.stack
+        .map((layer: any) => {
+          if (layer.route) {
+            return {
+              route: {
+                path: layer.route?.path,
+                method: layer.route?.stack[0].method,
+              },
+            };
+          }
+        })
+        .filter((item: any) => item !== undefined)
+    : [];
+
+  if (availableRoutes.length > 0) {
+    console.log('Available Routes:', JSON.stringify(availableRoutes, null, 2));
+  } else {
+    logger.warn(
+      'Express router stack could not be read directly in this deployment profile.',
+    );
+  }
 
   logger.log(`==========================================================`);
   logger.log(`Http Server running on ${await app.getUrl()}`, 'NestApplication');
@@ -124,6 +136,6 @@ async function bootstrap() {
     `Storage driver is set to ${configService.get<string>('app.storageDriver')}`,
   );
   logger.log(`==========================================================`);
-}
+} // Ensure this brace closes the bootstrap function cleanly!
 
 bootstrap();

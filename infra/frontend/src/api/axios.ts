@@ -6,7 +6,7 @@ const BASE_URL =
   typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_BASE_URL || '/api') : (process.env.BASE_URL || '/api');
 
 const axios = _axios.create({
-  baseURL: BASE_URL,
+  baseURL: `${BASE_URL}/contacts`,
   headers: {
     'x-custom-lang': 'en'
   }
@@ -57,7 +57,7 @@ axios.interceptors.response.use(
 
       if (authStore.refreshToken) {
         try {
-          const response = await _axios.post(`${BASE_URL}/auth/refresh-token`, {
+          const response = await _axios.post(`${BASE_URL}/contacts/auth/refresh-token`, {
             refresh_token: authStore.refreshToken
           });
 
