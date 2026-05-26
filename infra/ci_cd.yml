@@ -1,0 +1,48 @@
+name: ZC INVOICE - CI/CD Pipeline
+# CI
+on:
+  push:
+    branches: [ "main" ] # git main branch
+
+jobs:
+  continuous-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js v22
+        uses: actions/setup-node@v4
+        with:
+          node-node: '22'
+          cache: 'npm'
+          cache-dependency-path: './backend/package-lock.json'
+
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          npm ci
+
+      - name: Run Code Linter & Formatter
+        run: |
+          cd backend
+          npm run lint --if-present
+
+      - name: Compile Application (Build Test)
+        run: |
+          cd backend
+          npm run build
+    # CD
+  continuous-deployment:
+    needs: continuous-integration # the CD job depends on the successful completion of the CI job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: actions/setup-docker-action@v2
+
+      - name: Build Docker Image (Dry-Run Verification)
+        run: |
+          docker compose build zc-app-v30
