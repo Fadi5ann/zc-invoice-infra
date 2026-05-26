@@ -1,0 +1,42 @@
+- name: Ubuntu 24.04 Host OS Hardening for ZC INVOICE
+  hosts: localhost
+  connection: local
+  become: true # Requires sudo privileges to modify system files
+
+  tasks:
+    - name: Ensure APT package cache is updated
+      apt:
+        update_cache: yes
+        upgrade: safe
+
+    - name: Install UFW Firewall package securely
+      apt:
+        name: ufw
+        state: present
+
+    - name: Configure UFW default policies (Deny Incoming / Allow Outgoing)
+      ufw:
+        direction: "{{ item.direction }}"
+        policy: "{{ item.policy }}"
+      with_items:
+        - { direction: 'incoming', policy: 'deny' }
+        - { direction: 'outgoing', policy: 'allow' }
+
+    - name: Secure Port 22 - Allow Controlled SSH Access
+      ufw:
+        rule: allow
+        port: '22'
+        proto: tcp
+
+    - name: Secure Ports 80 & 443 - Allow Production Web Traffic for Nginx
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      with_items:
+        - '80'
+        - '443'
+
+    - name: Actively Enable UFW Firewall Rule State
+      ufw:
+        state: enabled
