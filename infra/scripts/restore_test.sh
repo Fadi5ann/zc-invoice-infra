@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Load environment variables
+if [ -f /home/fadi5an/zc-invoice-infrastructure/infra/.env ]; then
+    export $(grep -v '^#' /home/fadi5an/zc-invoice-infrastructure/infra/.env | xargs)
+fi
+
 # Path configurations matching main backup parameters
 PROJECT_DIR="/home/fadi5an/zc-invoice-infrastructure/infra/backups"
 BACKUP_DIR="$PROJECT_DIR/backups"
@@ -7,7 +12,7 @@ CONTAINER_NAME="zc-db-master-v40"
 DB_USER="root"
 DB_PASS="rootpassword"
 TEST_DB="zc_pfe_restore_test_db"
-SLACK_WEBHOOK=''
+SLACK_WEBHOOK=$SLACK_WEBHOOK_URL
 
 
 echo "Locating latest daily backup for recovery validation testing..."

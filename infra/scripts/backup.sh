@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Load environment variables
+if [ -f /home/fadi5an/zc-invoice-infrastructure/infra/.env ]; then
+    export $(grep -v '^#' /home/fadi5an/zc-invoice-infrastructure/infra/.env | xargs)
+fi
+
 # Configuration of absolute paths for cron job safety
 PROJECT_DIR="/home/fadi5an/zc-invoice-infrastructure/infra/backups"
 BACKUP_DIR="$PROJECT_DIR/backups"  # Absolute path to the backup directory
@@ -7,7 +12,7 @@ CONTAINER_NAME="zc-db-master-v40"
 DB_USER="root"
 DB_PASS="rootpassword"
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")
-SLACK_WEBHOOK=''
+SLACK_WEBHOOK=$SLACK_WEBHOOK_URL
 
 # Determine backup type (hourly, daily, monthly). Default is daily.
 TYPE=$1 
@@ -30,7 +35,7 @@ elif [ "$TYPE" == "monthly" ]; then
   MSG_TITLE=" [PFE INFRASTRUCTURE] - Monthly Off-Site Archive"
 fi
 
-echo "Executing Strategy: $MSG_TITLE..."
+echo "Executing Strategy: $MSG_TITLE"
 
 # Dump databases from inside the target Docker container
 docker exec $CONTAINER_NAME mysqldump -u$DB_USER -p$DB_PASS --all-databases --single-transaction --set-gtid-purged=OFF > "$BACKUP_DIR/$TYPE/$FILE_NAME"

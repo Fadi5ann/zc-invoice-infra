@@ -1,10 +1,15 @@
 #!/bin/bash
 
+# Load environment variables
+if [ -f /home/fadi5an/zc-invoice-infrastructure/infra/.env ]; then
+    export $(grep -v '^#' /home/fadi5an/zc-invoice-infrastructure/infra/.env | xargs)
+fi
+
 # Configuration and path settings
 PROJECT_DIR="/home/fadi5an/zc-invoice-infrastructure/infra"
 AUDIT_DIR="$PROJECT_DIR/backups/audits"
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")
-SLACK_WEBHOOK=''
+SLACK_WEBHOOK=$SLACK_WEBHOOK_URL
 
 # Ensure the audits output directory exists
 mkdir -p "$AUDIT_DIR"
