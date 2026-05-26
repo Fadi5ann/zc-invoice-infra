@@ -1,15 +1,21 @@
 #!/bin/bash
 
 # Load environment variables
-if [ -f /home/fadi5an/zc-invoice-infrastructure/infra/.env ]; then
-    export $(grep -v '^#' /home/fadi5an/zc-invoice-infrastructure/infra/.env | xargs)
+if [ -f "/home/fadi5an/zc-invoice-infrastructure/infra/.env" ]; then
+    # The 'set -a' command exports all variables found in the file automatically
+    set -a
+    source "/home/fadi5an/zc-invoice-infrastructure/infra/.env"
+    set +a
+else
+    echo "Error: .env file missing!"
+    exit 1
 fi
 
 # Configuration and path settings
 PROJECT_DIR="/home/fadi5an/zc-invoice-infrastructure/infra"
 AUDIT_DIR="$PROJECT_DIR/backups/audits"
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")
-SLACK_WEBHOOK=$SLACK_WEBHOOK_URL
+SLACK_WEBHOOK="$SLACK_WEBHOOK_URL"
 
 # Ensure the audits output directory exists
 mkdir -p "$AUDIT_DIR"

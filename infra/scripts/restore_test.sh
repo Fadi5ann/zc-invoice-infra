@@ -1,8 +1,14 @@
 #!/bin/bash
 
 # Load environment variables
-if [ -f /home/fadi5an/zc-invoice-infrastructure/infra/.env ]; then
-    export $(grep -v '^#' /home/fadi5an/zc-invoice-infrastructure/infra/.env | xargs)
+if [ -f "/home/fadi5an/zc-invoice-infrastructure/infra/.env" ]; then
+    # The 'set -a' command exports all variables found in the file automatically
+    set -a
+    source "/home/fadi5an/zc-invoice-infrastructure/infra/.env"
+    set +a
+else
+    echo "Error: .env file missing!"
+    exit 1
 fi
 
 # Path configurations matching main backup parameters
@@ -12,7 +18,7 @@ CONTAINER_NAME="zc-db-master-v40"
 DB_USER="root"
 DB_PASS="rootpassword"
 TEST_DB="zc_pfe_restore_test_db"
-SLACK_WEBHOOK=$SLACK_WEBHOOK_URL
+SLACK_WEBHOOK="$SLACK_WEBHOOK_URL"
 
 
 echo "Locating latest daily backup for recovery validation testing..."

@@ -1,8 +1,14 @@
 #!/bin/bash
 
 # Load environment variables
-if [ -f /home/fadi5an/zc-invoice-infrastructure/infra/.env ]; then
-    export $(grep -v '^#' /home/fadi5an/zc-invoice-infrastructure/infra/.env | xargs)
+if [ -f "/home/fadi5an/zc-invoice-infrastructure/infra/.env" ]; then
+    # The 'set -a' command exports all variables found in the file automatically
+    set -a
+    source "/home/fadi5an/zc-invoice-infrastructure/infra/.env"
+    set +a
+else
+    echo "Error: .env file missing!"
+    exit 1
 fi
 
 # Configuration of absolute paths for cron job safety
@@ -12,7 +18,7 @@ CONTAINER_NAME="zc-db-master-v40"
 DB_USER="root"
 DB_PASS="rootpassword"
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")
-SLACK_WEBHOOK=$SLACK_WEBHOOK_URL
+SLACK_WEBHOOK="$SLACK_WEBHOOK_URL"
 
 # Determine backup type (hourly, daily, monthly). Default is daily.
 TYPE=$1 
