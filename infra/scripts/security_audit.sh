@@ -1,19 +1,21 @@
 #!/bin/bash
 
-# Load environment variables
-if [ -f "/home/fadi5an/zc-invoice-infrastructure/infra/.env" ]; then
+# Determine script directory and load environment variables
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="$SCRIPT_DIR/../.env"
+
+if [ -f "$ENV_FILE" ]; then
     # The 'set -a' command exports all variables found in the file automatically
     set -a
-    source "/home/fadi5an/zc-invoice-infrastructure/infra/.env"
+    source "$ENV_FILE"
     set +a
-else
-    echo "Error: .env file missing!"
+elif [ -z "$SLACK_WEBHOOK_URL" ]; then
+    echo "Error: .env file missing at $ENV_FILE and SLACK_WEBHOOK_URL is not set."
     exit 1
 fi
 
 # Configuration and path settings
-PROJECT_DIR="/home/fadi5an/zc-invoice-infrastructure/infra"
-AUDIT_DIR="$PROJECT_DIR/backups/audits"
+AUDIT_DIR="$SCRIPT_DIR/../backups/audits"
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")
 SLACK_WEBHOOK="$SLACK_WEBHOOK_URL"
 

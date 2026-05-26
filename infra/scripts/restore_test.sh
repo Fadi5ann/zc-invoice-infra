@@ -1,22 +1,24 @@
 #!/bin/bash
 
-# Load environment variables
-if [ -f "/home/fadi5an/zc-invoice-infrastructure/infra/.env" ]; then
+# Determine script directory and load environment variables
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="$SCRIPT_DIR/../.env"
+
+if [ -f "$ENV_FILE" ]; then
     # The 'set -a' command exports all variables found in the file automatically
     set -a
-    source "/home/fadi5an/zc-invoice-infrastructure/infra/.env"
+    source "$ENV_FILE"
     set +a
-else
-    echo "Error: .env file missing!"
+elif [ -z "$SLACK_WEBHOOK_URL" ]; then
+    echo "Error: .env file missing at $ENV_FILE and SLACK_WEBHOOK_URL is not set."
     exit 1
 fi
 
 # Path configurations matching main backup parameters
-PROJECT_DIR="/home/fadi5an/zc-invoice-infrastructure/infra/backups"
-BACKUP_DIR="$PROJECT_DIR/backups"
+BACKUP_DIR="$SCRIPT_DIR/../backups"
 CONTAINER_NAME="zc-db-master-v40"
-DB_USER="root"
-DB_PASS="rootpassword"
+DB_USER="${DB_USER:-root}"
+DB_PASS="${DB_ROOT_PASSWORD:-rootpassword}"
 TEST_DB="zc_pfe_restore_test_db"
 SLACK_WEBHOOK="$SLACK_WEBHOOK_URL"
 
@@ -34,10 +36,10 @@ fi
 echo "Testing file integrity on: $LATEST_BACKUP"
 
 # Step A: Initialize an isolated temporary clean test schema database
-docker exec $CONTAINER_NAME mysql -u$DB_USER -p$DB_PASS -e "DROP DATABASE IF EXISTS $TEST_DB; CREATE DATABASE $TEST_DB;"
+docker exec -e MYSQL_PWD="$DB_PASS" $CONTAINER_NAME mysql -u "$DB_USER" -e "DROP DATABASE IF EXISTS $TEST_DB; CREATE DATABASE $TEST_DB;"
 
-# Step B: Inject and parse the snapshot payload data directly into the isolated test db
-(echo "SET SQL_LOG_BIN=0;"; cat "$LATEST_BACKUP") | docker exec -i $CONTAINER_NAME mysql -u$DB_USER -p$DB_PASS $TEST_DB
+# Step B: Inject and parse the snapshot payload data securely into the isolated test db
+(echo "SET SQL_LOG_BIN=0;"; cat "$LATEST_BACKUP") | docker exec -i -e MYSQL_PWD="$DB_PASS" $CONTAINER_NAME mysql -u "$DB_USER" "$TEST_DB"
 # Step C: Evaluate if the restoration sql code successfully structured without syntax failures
 if [ $? -eq 0 ]; then
   echo "Weekly restore check passed successfully."
