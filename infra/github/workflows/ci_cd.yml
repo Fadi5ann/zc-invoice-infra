@@ -3,6 +3,8 @@ name: ZC INVOICE - CI/CD Pipeline
 on:
   push:
     branches: [ "main" ] # git main branch
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   continuous-integration:
@@ -20,18 +22,15 @@ jobs:
 
       - name: Install Backend Dependencies
         run: |
-          cd infra/backend
-          npm ci
+          npm install --prefix infra/backend
 
       - name: Run Code Linter & Formatter
         run: |
-          cd infra/backend
-          npm run lint --if-present
+          npm run lint --prefix infra/backend --if-present
 
       - name: Compile Application (Build Test)
         run: |
-          cd infra/backend
-          npm run build
+          npm run build --prefix infra/backend
     # CD
   continuous-deployment:
     needs: continuous-integration # the CD job depends on the successful completion of the CI job
