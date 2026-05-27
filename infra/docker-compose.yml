@@ -86,8 +86,12 @@ services:
       - "9093:9093"
     volumes:
       - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
-    command:
-      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        echo "$$SLACK_WEBHOOK_URL" > /etc/alertmanager/slack_webhook
+        /bin/alertmanager --config.file=/etc/alertmanager/alertmanager.yml
     networks:
       - mgmt_net
 

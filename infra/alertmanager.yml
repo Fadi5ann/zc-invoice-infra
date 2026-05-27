@@ -21,7 +21,7 @@ route:
 receivers:
 - name: 'slack-notifications'
   slack_configs:
-  - api_url: '${SLACK_WEBHOOK_URL}'
+  - api_url_file: '/etc/alertmanager/slack_webhook'
     channel: '#alerts' # Slack channel to send alerts
     send_resolved: true # Send a notification when the alert is resolved
 
@@ -30,7 +30,7 @@ receivers:
     
     # Optional: Customize the sender username and icon dynamically
     username: 'Prometheus [{{ .Status | toUpper }}]'
-    icon_emoji: '{{ if eq .Status "firing" }}::fire:{{ else }}::white_check_mark:{{ end }}'
+    icon_emoji: '{{ if eq .Status "firing" }}:fire:{{ else }}:white_check_mark:{{ end }}'
 
     # Message block to format the alert details
     title: '[{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}'
