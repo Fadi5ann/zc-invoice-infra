@@ -1,11 +1,14 @@
 #!/bin/bash
 
+# Exit immediately if a command exits with a non-zero status
+# pipefail ensures docker exec failures aren't masked by the redirection '>'
+set -eo pipefail
+
 # Determine script directory and load environment variables
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="$SCRIPT_DIR/../.env"
 
 if [ -f "$ENV_FILE" ]; then
-    # The 'set -a' command exports all variables found in the file automatically
     set -a
     source "$ENV_FILE"
     set +a
@@ -34,7 +37,7 @@ mkdir -p "$BACKUP_DIR/$TYPE"
 # Match file naming and Slack titles exactly to your PFE Backup Strategy document
 if [ "$TYPE" == "hourly" ]; then
   FILE_NAME="hourly-snapshot-$DATE.sql"
-  MSG_TITLE="🔹 [PFE INFRASTRUCTURE] - Hourly Snapshot"
+  MSG_TITLE=" [PFE INFRASTRUCTURE] - Hourly Snapshot"
 elif [ "$TYPE" == "daily" ]; then
   FILE_NAME="perfect-sauvegarde-complete-$DATE.sql"
   MSG_TITLE=" [PFE INFRASTRUCTURE] - Daily Full Backup"
@@ -46,13 +49,14 @@ fi
 echo "Executing Strategy: $MSG_TITLE"
 
 # Dump databases securely from inside the target Docker container
-docker exec -e MYSQL_PWD="$DB_PASS" $CONTAINER_NAME mysqldump -u "$DB_USER" --all-databases --single-transaction --set-gtid-purged=OFF > "$BACKUP_DIR/$TYPE/$FILE_NAME"
-# Verify execution status and that the generated backup file is not empty
-if [ $? -eq 0 ] && [ -s "$BACKUP_DIR/$TYPE/$FILE_NAME" ]; then
+# Note: if docker exec fails, set -o pipefail catches it
+if docker exec -e MYSQL_PWD="$DB_PASS" $CONTAINER_NAME mysqldump -u "$DB_USER" --all-databases --single-transaction --set-gtid-purged=OFF > "$BACKUP_DIR/$TYPE/$FILE_NAME" 2>/dev/null && [ -s "$BACKUP_DIR/$TYPE/$FILE_NAME" ]; then
+  
   echo "Success: $FILE_NAME generated in $BACKUP_DIR/$TYPE/"
+  BACKUP_SIZE=$(du -sh "$BACKUP_DIR/$TYPE/$FILE_NAME" | cut -f1)
   
   # Send successful backup notification to Slack (Green Indicator)
-  curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"*$MSG_TITLE Successful*\\n*File Name:* \`$FILE_NAME\`\\n*Size:* \`$(du -sh $BACKUP_DIR/$TYPE/$FILE_NAME | cut -f1)\`\\n*Status:* \`Verified and Secured\`\\n*Timestamp:* \`$(date +'%Y-%m-%d %H:%M:%S')\`\"}" $SLACK_WEBHOOK
+  curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"*$MSG_TITLE Successful*\\n*File Name:* \`$FILE_NAME\`\\n*Size:* \`$BACKUP_SIZE\`\\n*Status:* \`Verified and Secured\`\\n*Timestamp:* \`$(date +'%Y-%m-%d %H:%M:%S')\`\"}" $SLACK_WEBHOOK
 else
   echo "Critical Error: Backup strategy pipeline execution failed!"
   
@@ -62,13 +66,15 @@ else
 fi
 
 # Execute data retention limits to clean up old unneeded snapshot assets
-if [ "$TYPE" == "hourly" ]; then
-  # Keep hourly snapshots for 7 days
-  find "$BACKUP_DIR/hourly" -type f -name "*.sql" -mtime +7 -exec rm {} \;
-elif [ "$TYPE" == "daily" ]; then
-  # Keep daily full backups for 30 days
-  find "$BACKUP_DIR/daily" -type f -name "*.sql" -mtime +30 -exec rm {} \;
-elif [ "$TYPE" == "monthly" ]; then
-  # Keep monthly archives for 10 years (3650 days)
-  find "$BACKUP_DIR/monthly" -type f -name "*.sql" -mtime +3650 -exec rm {} \;
+if [ -d "$BACKUP_DIR/$TYPE" ]; then
+  if [ "$TYPE" == "hourly" ]; then
+    # Keep hourly snapshots for exactly 7 days (7 * 1440 mins)
+    find "$BACKUP_DIR/hourly" -type f -name "*.sql" -mmin +10080 -delete
+  elif [ "$TYPE" == "daily" ]; then
+    # Keep daily full backups for 30 days
+    find "$BACKUP_DIR/daily" -type f -name "*.sql" -mtime +30 -delete
+  elif [ "$TYPE" == "monthly" ]; then
+    # Keep monthly archives for 10 years (3650 days)
+    find "$BACKUP_DIR/monthly" -type f -name "*.sql" -mtime +3650 -delete
+  fi
 fi
