@@ -80,6 +80,8 @@ services:
   alertmanager:
     image: prom/alertmanager:latest
     container_name: zc-alertmanager
+    environment:
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
     ports:
       - "9093:9093"
     volumes:
