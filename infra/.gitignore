@@ -1,3 +1,6 @@
 .env
 grafana_data/
 slack_webhook
+/backups/
+/templates/
+unicode.mapping
