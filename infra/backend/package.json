@@ -33,7 +33,6 @@
   },
   "overrides": {
     "tar": "^7.5.11",
-    "uuid": "^11.1.0",
     "@tootallnate/once": "^2.0.1",
     "node-gyp": "^11.0.0"
   },
