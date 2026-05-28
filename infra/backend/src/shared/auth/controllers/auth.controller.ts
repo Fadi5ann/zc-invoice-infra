@@ -63,7 +63,9 @@ export class AuthController {
     );
 
     if (!result?.user) {
-      throw new UnauthorizedException('User does not exist or invalid credentials');
+      throw new UnauthorizedException(
+        'User does not exist or invalid credentials',
+      );
     }
 
     req.logInfo = {

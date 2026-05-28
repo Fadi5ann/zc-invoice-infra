@@ -7,14 +7,14 @@ import { AuthService } from './services/auth.service';
 import { StoreModule } from '../store/store.module';
 import { MailModule } from '../mail/mail.module';
 import { AuthController } from './controllers/auth.controller';
-import { LoggerModule } from '../logger/logger.module'; 
+import { LoggerModule } from '../logger/logger.module';
 
 @Module({
   imports: [
-    UserManagementModule, 
-    ConfigModule, 
-    StoreModule, 
-    MailModule, 
+    UserManagementModule,
+    ConfigModule,
+    StoreModule,
+    MailModule,
     LoggerModule,
   ],
   controllers: [AuthController],

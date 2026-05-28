@@ -31,7 +31,6 @@ export class AuthGuard implements CanActivate {
     // Using request.path ensures query parameters are already stripped by the Express/Fastify engine
     const path = request.path || '/';
     const normalizedPath = path.replace(/\/$/, '') || '/';
-    
     if (normalizedPath === '/api/metrics' || normalizedPath === '/metrics') {
       return true;
     }
