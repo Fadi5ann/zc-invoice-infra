@@ -1,7 +1,7 @@
 import { ChildEntity, Column, JoinColumn, ManyToOne } from 'typeorm';
 import { AbstractUserEntity } from 'src/shared/abstract-user-management/entities/abstract-user.entity';
 import { StorageEntity } from 'src/shared/storage/entities/storage.entity';
-import { Gender } from 'src/shared/abstract-user-management/enums/gender.enum';
+// import { Gender } from 'src/shared/abstract-user-management/enums/gender.enum';
 
 @ChildEntity()
 export class UserEntity extends AbstractUserEntity {

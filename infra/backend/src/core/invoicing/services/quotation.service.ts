@@ -36,7 +36,7 @@ export class QuotationService extends AbstractCrudService<QuotationEntity> {
 
   @Transactional()
   async extendedUpdate(id: number, quotation: DeepPartial<QuotationEntity>) {
-    const existing = await this.repository.findOneById(id);
+    // const existing = await this.repository.findOneById(id);
     // if (!this.quotationWorkflowService.isUpdatable(existing.status)) {
     //   throw new BadRequestException(
     //     `Quotation with status '${existing.status}' cannot be updated`,
