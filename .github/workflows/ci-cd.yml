@@ -27,7 +27,7 @@ jobs:
           cache-dependency-path: 'infra/backend/package-lock.json'
 
       - name: Install Backend Dependencies
-        run: npm install --prefix infra/backend
+        run: npm ci --prefix infra/backend
 
       - name: Run Code Linter & Formatter
         run: npm run lint --prefix infra/backend --if-present
