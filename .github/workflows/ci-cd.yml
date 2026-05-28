@@ -50,4 +50,4 @@ jobs:
           cd /home/fadi5an/zc-invoice-infrastructure/infra
           git pull origin main
           docker compose build zc-app-v30
-          docker compose up -d --no-deps zc-app
+          docker compose up -d --no-deps zc-app-v30
