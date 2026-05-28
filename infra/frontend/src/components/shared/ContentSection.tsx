@@ -1,12 +1,13 @@
 import { cn } from '@/lib/utils';
 import { Separator } from '../ui/separator';
+import react from 'react';
 
 interface ContentSectionProps {
   className?: string;
   childrenClassName?: string;
   title: string;
   desc: string;
-  children?: JSX.Element;
+  children?: react.ReactNode;
 }
 
 export default function ContentSection({

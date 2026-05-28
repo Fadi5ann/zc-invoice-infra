@@ -43,7 +43,6 @@ services:
     container_name: zc-cadvisor
     privileged: true # The VIP Pass
     pid: "host" # Access to Host's Process Tree
-    # cgroup: "host" #Access to Host's Cgroup Metrics
     ports:
       - "8080:8080"
     volumes:
@@ -51,8 +50,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro # Reads the Container Names
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro # Reads modern cgroup metrics (required for accurate CPU and Memory usage)
-      # - /sys/fs/cgroup:/cgroup:ro #  Reads modern Ubuntu metrics
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro # Reads modern cgroup metrics
     networks:
       - mgmt_net
 
@@ -100,13 +98,17 @@ services:
   web-entry:
     image: owasp/modsecurity-crs:nginx-alpine
     container_name: zc-proxy-v10
+    user: root # Required for ModSecurity to access necessary files and directories
     ports:
       - "80:80"
+      - "443:443"
     environment:
       - PARANOIA=1 # OWASP the first layer of defense, set to the highest level for maximum security
       - PROXY_SSL=on
     volumes:
+      - ./unicode.mapping:/etc/nginx/modsecurity.d/unicode.mapping
       - ./nginx.conf:/etc/nginx/templates/nginx.conf.template:ro
+      - /etc/letsencrypt/live:/etc/nginx/ssl/live:ro # For SSL Certificates
     depends_on:
       zc-app-v30:
         condition: service_started
@@ -116,23 +118,43 @@ services:
       - dmz_net
       - frontend_net
       - backend_net
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
 # Frontend Layer (The Receptionist)
   zc-frontend-v20:
-    image: node:18-alpine
-    build: ./frontend
+    image: node:22-alpine
+    build:
+      context: ./frontend
+      args:
+        - NEXT_PUBLIC_BASE_URL=https://localhost/api
+        - NEXT_PUBLIC_API_URL=https://localhost/api
+        - NEXT_PUBLIC_CABINET_ID=${NEXT_PUBLIC_CABINET_ID}
     container_name: zc-frontend-v20
+    depends_on:
+      zc-app-v30:
+        condition: service_started
     environment:
-      - HOSTNAME=0.0.0.0 #Forces TO listen to the Docker network adapters
+      - HOSTNAME=0.0.0.0 # Forces to listen to the Docker network adapters
       - NEXTAUTH_SECRET=7f51b9e0c7a42bc6d13d4e8f9a2d6c5b3e8f7a1b0c9d2e4f5a6b7c8d9e0f1a2b
-      - NEXTAUTH_URL=http://localhost
-      - NEXT_PUBLIC_BASE_URL=http://localhost/api
-      - BASE_URL=http://zc-app-v30:3000
-      - NEXT_PUBLIC_API_URL=http://localhost/api
-      - BACKEND_URL=http://zc-app-v30:3000
-      - API_URL=http://zc-app-v30:3000
+      - NEXTAUTH_URL=https://localhost
+      - NEXT_PUBLIC_BASE_URL=https://localhost/api
+      - BASE_URL=http://zc-app-v30:3000/api
+      - NEXT_PUBLIC_API_URL=https://localhost/api
+      - BACKEND_URL=http://zc-app-v30:3000/api
+      - API_URL=http://zc-app-v30:3000/api
     expose:
       - "3000"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       frontend_net:
         aliases:
@@ -162,18 +184,18 @@ services:
       - DATABASE_NAME=${DB_NAME}
       - DATABASE_USERNAME=${DB_USER}
       - DATABASE_PASSWORD=${DB_PASSWORD}
-      - DATABASE_SYNCHRONIZE=true
+      - DATABASE_SYNCHRONIZE=false # Use migrations instead of sync in multi-replica environments
     expose:
       - "3000" # Only expose to the Nginx Proxy, not to the host
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/hello', (res) => res.statusCode === 200 ? process.exit(0) : process.exit(1))"]
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:3000/api/health', (res) => { console.error('NestJS responded with status:', res.statusCode); process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', (err) => { console.error('Network error:', err.message); process.exit(1); })"]
       interval: 15s
       timeout: 10s
       retries: 6
       start_period: 90s
     depends_on:
       db-primary:
-        condition: service_healthy
+        condition: service_started
     networks:
       - mgmt_net 
       - db_net
@@ -215,7 +237,6 @@ services:
   db-secondary-1:
     image: mysql:8.0
     container_name: zc-db-replica-v40
-    # Appended case-insensitivity flag to the end of the array
     command: [
       "mysqld", 
       "--server-id=2", 
@@ -251,7 +272,7 @@ services:
       "--lower_case_table_names=1",
       "--loose-group_replication_local_address=10.0.3.13:33061"
       ]
-    restart: always # This tells Docker to restart the container when MySQL reboots
+    restart: always
     env_file:
       - .env
     environment:
@@ -319,7 +340,7 @@ networks:
       config:
         - subnet: 10.0.3.0/24
 
-  # Vlan 100: Adiministration
+  # Vlan 100: Administration
   mgmt_net:
     driver: bridge
     labels:

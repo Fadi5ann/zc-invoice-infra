@@ -27,8 +27,12 @@ export class AuthGuard implements CanActivate {
     }
     const request = context.switchToHttp().getRequest();
 
-    // Allow Prometheus metrics
-    if (request.url.includes('/metrics')) {
+    // Allow Prometheus metrics bypass
+    // Using request.path ensures query parameters are already stripped by the Express/Fastify engine
+    const path = request.path || '/';
+    const normalizedPath = path.replace(/\/$/, '') || '/';
+    
+    if (normalizedPath === '/api/metrics' || normalizedPath === '/metrics') {
       return true;
     }
 

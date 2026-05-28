@@ -9,12 +9,13 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 import { useRouter } from 'next/router';
+import react from 'react';
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   items: {
     href: string;
     title: string;
-    icon: JSX.Element;
+    icon: react.ReactNode;
   }[];
 }
 

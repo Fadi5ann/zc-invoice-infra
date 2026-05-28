@@ -1,6 +1,3 @@
-# syntax=docker/dockerfile:1
-# ^ Activates advanced BuildKit mounting features
-
 # --- Stage 1: Build ---
 FROM node:22-bookworm-slim AS builder
 WORKDIR /app
@@ -18,9 +15,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     make \
     g++
 
-# 2. Turbo-charge npm ci by mounting the global npm cache
+# 2. Turbo-charge npm install by mounting the global npm cache
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci
+    npm install
 
 COPY . .
 RUN npm run build
