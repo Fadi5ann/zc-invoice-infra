@@ -26,7 +26,7 @@ jobs:
 
       - name: Install Backend Dependencies
         run: |
-          npm install --prefix infra/backend
+          npm ci --prefix infra/backend
 
       - name: Run Code Linter & Formatter
         run: |
