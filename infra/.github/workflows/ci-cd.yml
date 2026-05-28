@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   continuous-integration:
     runs-on: ubuntu-latest
@@ -28,6 +32,10 @@ jobs:
         run: |
           npm run lint --prefix infra/backend --if-present
 
+      - name: Run Unit Tests
+        run: |
+          npm test --prefix infra/backend --if-present
+
       - name: Compile Application (Build Test)
         run: |
           npm run build --prefix infra/backend
@@ -48,4 +56,4 @@ jobs:
             --cache-from=type=gha \
             --cache-to=type=gha,mode=max \
             -f infra/backend/Dockerfile \
-            -t zc-app:test .
+            -t zc-app:test infra/backend
