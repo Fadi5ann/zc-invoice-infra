@@ -39,18 +39,23 @@ services:
 
   # The "Security Camera" - Container Metrics
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    image: gcr.io/cadvisor/cadvisor:latest
     container_name: zc-cadvisor
-    privileged: true # The VIP Pass
-    pid: "host" # Access to Host's Process Tree
+    privileged: true
+    pid: "host"
     ports:
       - "8080:8080"
+    command:
+      - --docker_only=true
+      - --housekeeping_interval=10s
+      - --store_container_labels=true
     volumes:
       - /:/rootfs:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro # Reads the Container Names
+      - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro # Reads modern cgroup metrics
+      - /dev/disk/:/dev/disk:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     networks:
       - mgmt_net
 
@@ -207,10 +212,7 @@ services:
     container_name: zc-db-master-v40
     command: [
       "mysqld", 
-      "--server-id=1", 
-      "--report-host=10.0.3.11", 
       "--lower_case_table_names=1",
-      "--loose-group_replication_local_address=10.0.3.11:33061"
       ]
     restart: always
     ports:
@@ -228,7 +230,8 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - ./mysql-config/my.cnf:/etc/mysql/my.cnf
+      - ./mysql-config/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+      - ./mysql-config/master.cnf:/etc/mysql/conf.d/master.cnf:ro
       - db_master_data:/var/lib/mysql
     networks:
       db_net:
@@ -238,11 +241,8 @@ services:
     image: mysql:8.0
     container_name: zc-db-replica-v40
     command: [
-      "mysqld", 
-      "--server-id=2", 
-      "--report-host=10.0.3.12", 
+      "mysqld",  
       "--lower_case_table_names=1",
-      "--loose-group_replication_local_address=10.0.3.12:33061"
       ]
     restart: always
     env_file:
@@ -256,7 +256,8 @@ services:
       db-primary:
         condition: service_healthy
     volumes:
-      - ./mysql-config/my.cnf:/etc/mysql/my.cnf
+      - ./mysql-config/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+      - ./mysql-config/replica1.cnf:/etc/mysql/conf.d/replica1.cnf:ro
       - db_replica1_data:/var/lib/mysql
     networks:
       db_net:
@@ -267,10 +268,7 @@ services:
     container_name: zc-db-replica2-v40
     command: [
       "mysqld", 
-      "--server-id=3", 
-      "--report-host=10.0.3.13", 
       "--lower_case_table_names=1",
-      "--loose-group_replication_local_address=10.0.3.13:33061"
       ]
     restart: always
     env_file:
@@ -284,7 +282,8 @@ services:
       db-primary:
         condition: service_healthy
     volumes:
-      - ./mysql-config/my.cnf:/etc/mysql/my.cnf
+      - ./mysql-config/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+      - ./mysql-config/replica2.cnf:/etc/mysql/conf.d/replica2.cnf:ro
       - db_replica2_data:/var/lib/mysql
     networks:
       db_net:

@@ -1,16 +1,5 @@
 [mysqld]
-# Core Cluster Settings
-server_id=1
-gtid_mode=ON
-enforce_gtid_consistency=ON
-binlog_format=ROW
-log_replica_updates=ON
 
-# Group Replication Settings
-plugin_load_add='group_replication.so'
-group_replication_group_name="b565a95e-1bf6-11ee-be56-0242ac120002"
-group_replication_local_address="10.0.3.11:33061"
-group_replication_group_seeds="10.0.3.11:33061,10.0.3.12:33061,10.0.3.13:33061"
-
-# Safety Mechanism
-group_replication_start_on_boot=OFF
+server_id = 1
+report_host = 10.0.3.11
+loose-group_replication_local_address = "10.0.3.11:33061"
