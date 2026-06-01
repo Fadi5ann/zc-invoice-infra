@@ -3,7 +3,7 @@ groups:
     rules:
       # Alert 1: If a container dies
       - alert: ContainerDown
-        expr: container_last_seen{job="cadvisor"} > 60
+        expr: time() - container_last_seen{job="cadvisor"} > 60
         for: 1m
         labels:
           severity: critical
