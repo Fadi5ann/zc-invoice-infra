@@ -154,6 +154,12 @@ services:
       - API_URL=http://zc-app-v30:3000/api
     expose:
       - "3000"
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+      - frontend_next:/app/.next
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/"]
       interval: 10s
@@ -171,7 +177,7 @@ services:
   zc-app-v30:
     build: ./backend
     deploy:
-      replicas: 3
+      replicas: 1
       resources:
         limits:
           memory: 1G
@@ -192,6 +198,12 @@ services:
       - DATABASE_SYNCHRONIZE=false # Use migrations instead of sync in multi-replica environments
     expose:
       - "3000" # Only expose to the Nginx Proxy, not to the host
+    working_dir: /app
+    command: sh -c "npm install && npm run start:dev"
+    volumes:
+      - ./backend:/app
+      - backend_node_modules:/app/node_modules
+      - backend_dist:/app/dist
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:3000/api/health', (res) => { console.error('NestJS responded with status:', res.statusCode); process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', (err) => { console.error('Network error:', err.message); process.exit(1); })"]
       interval: 15s
@@ -355,3 +367,7 @@ volumes:
   db_master_data:
   db_replica1_data:
   db_replica2_data:
+  frontend_node_modules:
+  frontend_next:
+  backend_node_modules:
+  backend_dist:
