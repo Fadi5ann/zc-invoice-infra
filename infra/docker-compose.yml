@@ -132,7 +132,6 @@ services:
 
 # Frontend Layer (The Receptionist)
   zc-frontend-v20:
-    image: node:22-alpine
     build:
       context: ./frontend
       args:
@@ -144,7 +143,9 @@ services:
       zc-app-v30:
         condition: service_started
     environment:
-      - HOSTNAME=0.0.0.0 # Forces to listen to the Docker network adapters
+      - HOSTNAME=0.0.0.0
+      - PORT=3000
+      - NODE_ENV=production
       - NEXTAUTH_SECRET=7f51b9e0c7a42bc6d13d4e8f9a2d6c5b3e8f7a1b0c9d2e4f5a6b7c8d9e0f1a2b
       - NEXTAUTH_URL=https://localhost
       - NEXT_PUBLIC_BASE_URL=https://localhost/api
@@ -154,12 +155,6 @@ services:
       - API_URL=http://zc-app-v30:3000/api
     expose:
       - "3000"
-    working_dir: /app
-    command: sh -c "npm install && npm run dev"
-    volumes:
-      - ./frontend:/app
-      - frontend_node_modules:/app/node_modules
-      - frontend_next:/app/.next
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/"]
       interval: 10s
@@ -169,8 +164,8 @@ services:
     networks:
       frontend_net:
         aliases:
-          - zc-frontend-link # A unique hostname only on the frontend VLAN
-      mgmt_net: # (For monitoring access)
+          - zc-frontend-link
+      mgmt_net:
       backend_net:
 
 # VLAN 30 - Application Layer
@@ -188,6 +183,7 @@ services:
     environment:
       - NODE_OPTIONS=--max-old-space-size=512
       - APP_HOST=0.0.0.0
+      - APP_PORT=3000
       - HTTP_ENABLE=true
       - DATABASE_TYPE=mysql
       - DATABASE_HOST=db-primary
@@ -195,7 +191,8 @@ services:
       - DATABASE_NAME=${DB_NAME}
       - DATABASE_USERNAME=${DB_USER}
       - DATABASE_PASSWORD=${DB_PASSWORD}
-      - DATABASE_SYNCHRONIZE=false # Use migrations instead of sync in multi-replica environments
+      - DATABASE_SYNCHRONIZE=false
+      - DATABASE_LOGGING=true
     expose:
       - "3000" # Only expose to the Nginx Proxy, not to the host
     working_dir: /app
@@ -203,7 +200,6 @@ services:
     volumes:
       - ./backend:/app
       - backend_node_modules:/app/node_modules
-      - backend_dist:/app/dist
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:3000/api/health', (res) => { console.error('NestJS responded with status:', res.statusCode); process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', (err) => { console.error('Network error:', err.message); process.exit(1); })"]
       interval: 15s
@@ -370,4 +366,3 @@ volumes:
   frontend_node_modules:
   frontend_next:
   backend_node_modules:
-  backend_dist:

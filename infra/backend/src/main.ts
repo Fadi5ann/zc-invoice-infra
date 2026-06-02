@@ -93,7 +93,8 @@ async function bootstrap() {
         await migrationService.runMigrations(migrationPath, migrationFiles);
       }
     } catch (error) {
-      logger.error('Migration process failed', error.stack);
+      logger.error('Migration process failed', error.stack || error.message);
+      throw error;
     }
   }
   //===================================================================
