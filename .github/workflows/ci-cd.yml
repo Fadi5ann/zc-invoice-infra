@@ -1,15 +1,12 @@
 name: ZC INVOICE - CI/CD Pipeline
-
 on:
   push:
     branches: [ "main" ] 
   pull_request:
     branches: [ "main" ]
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   continuous-integration:
     runs-on: ubuntu-latest
@@ -18,33 +15,26 @@ jobs:
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
-
       - name: Setup Node.js v22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
           cache-dependency-path: 'infra/backend/package-lock.json'
-
       - name: Install Backend Dependencies
         run: npm ci --prefix infra/backend
-
       - name: Run Code Linter & Formatter
         run: npm run lint --prefix infra/backend --if-present
-
       - name: Run Unit Tests
         run: npm test --prefix infra/backend --if-present
-
       - name: Compile Application (Build Test)
         run: npm run build --prefix infra/backend
-
   continuous-deployment:
     needs: continuous-integration
     runs-on: self-hosted 
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
-
       - name: Deploy to Local Infrastructure
         run: |
           cd /home/fadi5an/zc-invoice-infrastructure/infra

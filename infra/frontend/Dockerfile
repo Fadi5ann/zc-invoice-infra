@@ -8,27 +8,20 @@ RUN apk add --no-cache python3 build-base
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-
 ENV NPM_CONFIG_LEGACY_PEER_DEPS=true
-
 RUN npm config set maxsockets 1 \
     && npm ci --legacy-peer-deps --include=dev --network-concurrency=1
-
 # --- Stage 2: Builder ---
 FROM base AS builder
 WORKDIR /app
-
 ENV NPM_CONFIG_LEGACY_PEER_DEPS=true
-
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ARG NEXT_PUBLIC_BASE_URL
 ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
-
 ARG NEXT_PUBLIC_CABINET_ID
 ENV NEXT_PUBLIC_CABINET_ID=${NEXT_PUBLIC_CABINET_ID}
-
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npm run build
@@ -43,7 +36,6 @@ ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
 COPY --from=builder --chown=node:node /app/public ./public
-
 RUN mkdir -p .next && chown node:node .next
 
 COPY --from=builder --chown=node:node /app/.next/standalone ./

@@ -296,14 +296,27 @@ services:
     image: mysql:8.0
     container_name: zc-backup-v200
     command: tail -f /dev/null
+    env_file:
+      - .env
     volumes:
       - ./backups:/backup-vault
+      - ./scripts:/scripts
     networks:
       backup_net:
         ipv4_address: 10.0.200.50
       db_net:
         ipv4_address: 10.0.3.50
 
+  restore-test-db:
+    image: mysql:8.0
+    container_name: zc-restore-test-v200
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    networks:
+      db_net:
+        ipv4_address: 10.0.3.60
+        
 networks:
   # Vlan 10: Public Entry Point
   dmz_net:
